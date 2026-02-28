@@ -1,26 +1,333 @@
 @import "tailwindcss";
 
+@theme {
+  --color-shell-bg: #FFFFFF;
+  --color-shell-panel: #F7F7F7;
+  --color-shell-panel-alt: #F0F0F0;
+  --color-shell-border: #E5E5E5;
+  --color-shell-border-subtle: #DCDCDC;
+  --color-shell-text: #111111;
+  --color-shell-text-muted: #777777;
+  --color-shell-text-faint: #AAAAAA;
+  --color-shell-accent: #C8E000;
+  --color-shell-canvas: #F5F5F5;
+}
+
+/* ─── Shell design tokens ──────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces — clean neutral white */
+  --sh-bg:            #FFFFFF;
+  --sh-canvas:        #F5F5F5;
+  --sh-canvas-dot:    #E0E0E0;
+  --sh-panel:         #F7F7F7;
+  --sh-panel-alt:     #F0F0F0;
+  /* Borders */
+  --sh-border:        #E5E5E5;
+  --sh-border-sub:    #DCDCDC;
+  /* Text */
+  --sh-text:          #111111;
+  --sh-text-muted:    #777777;
+  --sh-text-faint:    #AAAAAA;
+  /* Accent palette — chartreuse primary */
+  --sh-accent:        #C8E000;
+  --sh-accent-h:      #B4CC00;
+  --sh-accent-a:      #A0B800;
+  --sh-accent-rose:   #E896A8;
+  --sh-accent-blue:   #7EC4E0;
+  --sh-accent-sage:   #96C4A4;
+  /* Compound / alpha */
+  --sh-accent-sel:    rgba(200, 224, 0, 0.14);
+  --sh-accent-ring:   rgba(200, 224, 0, 0.35);
+  --sh-box-border:    rgba(200, 224, 0, 0.30);
+  --sh-box-bg:        rgba(200, 224, 0, 0.05);
+  --sh-box-inner:     rgba(200, 224, 0, 0.18);
+  --sh-hover:         rgba(0, 0, 0, 0.04);
+  --sh-hover-str:     rgba(0, 0, 0, 0.06);
+  --sh-badge-bg:      rgba(0, 0, 0, 0.05);
+  /* UI controls */
+  --sh-input-bg:      #F0F0F0;
+  --sh-option-bg:     #F7F7F7;
+  --sh-switch-off:    #D0D0D0;
+  --sh-skeleton:      #E5E5E5;
+  --sh-skeleton-alt:  #EEEEEE;
+  /* Accent text — dark on chartreuse */
+  --sh-accent-text:   #111111;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* ─── Dark mode via system preference (unless user pinned light) ─────────── */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    /* Surfaces — neutral near-black */
+    --sh-bg:            #111111;
+    --sh-canvas:        #0E0E0E;
+    --sh-canvas-dot:    #1E1E1E;
+    --sh-panel:         #1A1A1A;
+    --sh-panel-alt:     #222222;
+    /* Borders */
+    --sh-border:        #2E2E2E;
+    --sh-border-sub:    #282828;
+    /* Text */
+    --sh-text:          #F5F5F5;
+    --sh-text-muted:    #888888;
+    --sh-text-faint:    #505050;
+    /* Accent palette — vivid chartreuse against neutral dark */
+    --sh-accent:        #C8E000;
+    --sh-accent-h:      #D4EE00;
+    --sh-accent-a:      #E0FA00;
+    --sh-accent-rose:   #E896A8;
+    --sh-accent-blue:   #7EC4E0;
+    --sh-accent-sage:   #96C4A4;
+    /* Compound / alpha */
+    --sh-accent-sel:    rgba(200, 224, 0, 0.15);
+    --sh-accent-ring:   rgba(200, 224, 0, 0.30);
+    --sh-box-border:    rgba(200, 224, 0, 0.28);
+    --sh-box-bg:        rgba(200, 224, 0, 0.06);
+    --sh-box-inner:     rgba(200, 224, 0, 0.18);
+    --sh-hover:         rgba(255, 255, 255, 0.04);
+    --sh-hover-str:     rgba(255, 255, 255, 0.07);
+    --sh-badge-bg:      rgba(255, 255, 255, 0.06);
+    /* UI controls */
+    --sh-input-bg:      #222222;
+    --sh-option-bg:     #1A1A1A;
+    --sh-switch-off:    #2E2E2E;
+    --sh-skeleton:      #2E2E2E;
+    --sh-skeleton-alt:  #222222;
+    /* Accent text — dark on chartreuse (chartreuse is light even on dark bg) */
+    --sh-accent-text:   #111111;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ─── Dark mode via explicit toggle ─────────────────────────────────────── */
+:root[data-theme="dark"] {
+  --sh-bg:            #111111;
+  --sh-canvas:        #0E0E0E;
+  --sh-canvas-dot:    #1E1E1E;
+  --sh-panel:         #1A1A1A;
+  --sh-panel-alt:     #222222;
+  --sh-border:        #2E2E2E;
+  --sh-border-sub:    #282828;
+  --sh-text:          #F5F5F5;
+  --sh-text-muted:    #888888;
+  --sh-text-faint:    #505050;
+  --sh-accent:        #C8E000;
+  --sh-accent-h:      #D4EE00;
+  --sh-accent-a:      #E0FA00;
+  --sh-accent-rose:   #E896A8;
+  --sh-accent-blue:   #7EC4E0;
+  --sh-accent-sage:   #96C4A4;
+  --sh-accent-sel:    rgba(200, 224, 0, 0.15);
+  --sh-accent-ring:   rgba(200, 224, 0, 0.30);
+  --sh-box-border:    rgba(200, 224, 0, 0.28);
+  --sh-box-bg:        rgba(200, 224, 0, 0.06);
+  --sh-box-inner:     rgba(200, 224, 0, 0.18);
+  --sh-hover:         rgba(255, 255, 255, 0.04);
+  --sh-hover-str:     rgba(255, 255, 255, 0.07);
+  --sh-badge-bg:      rgba(255, 255, 255, 0.06);
+  --sh-input-bg:      #222222;
+  --sh-option-bg:     #1A1A1A;
+  --sh-switch-off:    #2E2E2E;
+  --sh-skeleton:      #2E2E2E;
+  --sh-skeleton-alt:  #222222;
+  --sh-accent-text:   #111111;
+}
+
+/* ─── Light mode via explicit toggle (overrides system dark) ─────────────── */
+:root[data-theme="light"] {
+  --sh-bg:            #FFFFFF;
+  --sh-canvas:        #F5F5F5;
+  --sh-canvas-dot:    #E0E0E0;
+  --sh-panel:         #F7F7F7;
+  --sh-panel-alt:     #F0F0F0;
+  --sh-border:        #E5E5E5;
+  --sh-border-sub:    #DCDCDC;
+  --sh-text:          #111111;
+  --sh-text-muted:    #777777;
+  --sh-text-faint:    #AAAAAA;
+  --sh-accent:        #C8E000;
+  --sh-accent-h:      #B4CC00;
+  --sh-accent-a:      #A0B800;
+  --sh-accent-rose:   #E896A8;
+  --sh-accent-blue:   #7EC4E0;
+  --sh-accent-sage:   #96C4A4;
+  --sh-accent-sel:    rgba(200, 224, 0, 0.14);
+  --sh-accent-ring:   rgba(200, 224, 0, 0.35);
+  --sh-box-border:    rgba(200, 224, 0, 0.30);
+  --sh-box-bg:        rgba(200, 224, 0, 0.05);
+  --sh-box-inner:     rgba(200, 224, 0, 0.18);
+  --sh-hover:         rgba(0, 0, 0, 0.04);
+  --sh-hover-str:     rgba(0, 0, 0, 0.06);
+  --sh-badge-bg:      rgba(0, 0, 0, 0.05);
+  --sh-input-bg:      #F0F0F0;
+  --sh-option-bg:     #F7F7F7;
+  --sh-switch-off:    #D0D0D0;
+  --sh-skeleton:      #E5E5E5;
+  --sh-skeleton-alt:  #EEEEEE;
+  --sh-accent-text:   #111111;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--sh-bg);
+  color: var(--sh-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Thin scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sh-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sh-border-sub);
+}
+
+/* Dot-grid canvas background */
+.canvas-grid {
+  background-color: var(--sh-canvas);
+  background-image: radial-gradient(circle, var(--sh-canvas-dot) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Prevent text selection during resize drag */
+.no-select {
+  user-select: none;
+}
+
+/* ─── Portfolio Design System — Button tokens ──────────────────────────────── */
+:root {
+  /* Size scale */
+  --pds-btn-h-sm: 28px;
+  --pds-btn-h-md: 36px;
+  --pds-btn-h-lg: 44px;
+
+  --pds-btn-px-sm: 12px;
+  --pds-btn-px-md: 16px;
+  --pds-btn-px-lg: 20px;
+
+  --pds-btn-font-sm: 11.5px;
+  --pds-btn-font-md: 13px;
+  --pds-btn-font-lg: 15px;
+  --pds-btn-font-weight: 500;
+  --pds-btn-letter-spacing: -0.01em;
+
+  --pds-btn-gap-sm: 6px;
+  --pds-btn-gap-md: 8px;
+  --pds-btn-gap-lg: 10px;
+
+  --pds-btn-radius-sm: 6px;
+  --pds-btn-radius-md: 8px;
+  --pds-btn-radius-lg: 10px;
+
+  /* Primary — vivid chartreuse with dark text */
+  --pds-btn-primary-bg:          #C8E000;
+  --pds-btn-primary-bg-hover:    #B4CC00;
+  --pds-btn-primary-bg-active:   #A0B800;
+  --pds-btn-primary-color:       #111111;
+  --pds-btn-primary-border:      transparent;
+  --pds-btn-primary-shadow:      0 1px 2px rgba(200,224,0,0.30), inset 0 1px 0 rgba(255,255,255,0.22);
+  --pds-btn-primary-shadow-hover:0 3px 14px rgba(200,224,0,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
+
+  /* Secondary */
+  --pds-btn-secondary-bg:           transparent;
+  --pds-btn-secondary-bg-hover:     rgba(200,224,0,0.08);
+  --pds-btn-secondary-bg-active:    rgba(200,224,0,0.14);
+  --pds-btn-secondary-color:        #111111;
+  --pds-btn-secondary-border:       rgba(200,224,0,0.45);
+  --pds-btn-secondary-border-hover: rgba(200,224,0,0.75);
+  --pds-btn-secondary-shadow:       none;
+
+  /* Ghost */
+  --pds-btn-ghost-bg:           transparent;
+  --pds-btn-ghost-bg-hover:     rgba(0,0,0,0.05);
+  --pds-btn-ghost-bg-active:    rgba(0,0,0,0.09);
+  --pds-btn-ghost-color:        #777777;
+  --pds-btn-ghost-color-hover:  #111111;
+  --pds-btn-ghost-border:       transparent;
+  --pds-btn-ghost-shadow:       none;
+}
+
+/* ─── Dark mode button tokens ─────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* Primary — electric chartreuse against neutral dark */
+    --pds-btn-primary-bg:           #C8E000;
+    --pds-btn-primary-bg-hover:     #D4EE00;
+    --pds-btn-primary-bg-active:    #E0FA00;
+    --pds-btn-primary-color:        #111111;
+    --pds-btn-primary-shadow:       0 1px 3px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+    --pds-btn-primary-shadow-hover: 0 3px 14px rgba(200,224,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+
+    /* Secondary */
+    --pds-btn-secondary-bg-hover:     rgba(200,224,0,0.10);
+    --pds-btn-secondary-bg-active:    rgba(200,224,0,0.16);
+    --pds-btn-secondary-color:        #C8E000;
+    --pds-btn-secondary-border:       rgba(200,224,0,0.40);
+    --pds-btn-secondary-border-hover: rgba(200,224,0,0.70);
+
+    /* Ghost */
+    --pds-btn-ghost-bg-hover:    rgba(255,255,255,0.06);
+    --pds-btn-ghost-bg-active:   rgba(255,255,255,0.10);
+    --pds-btn-ghost-color:       #888888;
+    --pds-btn-ghost-color-hover: #F5F5F5;
+  }
+}
+
+/* ─── Explicit dark mode button tokens ───────────────────────────────────── */
+:root[data-theme="dark"] {
+  --pds-btn-primary-bg:           #C8E000;
+  --pds-btn-primary-bg-hover:     #D4EE00;
+  --pds-btn-primary-bg-active:    #E0FA00;
+  --pds-btn-primary-color:        #111111;
+  --pds-btn-primary-shadow:       0 1px 3px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+  --pds-btn-primary-shadow-hover: 0 3px 14px rgba(200,224,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+  --pds-btn-secondary-bg-hover:     rgba(200,224,0,0.10);
+  --pds-btn-secondary-bg-active:    rgba(200,224,0,0.16);
+  --pds-btn-secondary-color:        #C8E000;
+  --pds-btn-secondary-border:       rgba(200,224,0,0.40);
+  --pds-btn-secondary-border-hover: rgba(200,224,0,0.70);
+  --pds-btn-ghost-bg-hover:    rgba(255,255,255,0.06);
+  --pds-btn-ghost-bg-active:   rgba(255,255,255,0.10);
+  --pds-btn-ghost-color:       #888888;
+  --pds-btn-ghost-color-hover: #F5F5F5;
+}
+
+/* Spinner keyframe */
+@keyframes pds-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Intro animation — cursor blink */
+@keyframes ls-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Intro animation — element reveal (fade up) */
+@keyframes intro-reveal {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Intro animation — center canvas fade */
+@keyframes intro-canvas-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
