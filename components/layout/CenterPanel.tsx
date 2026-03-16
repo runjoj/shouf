@@ -31,17 +31,27 @@ function introStyle(delay: number, launched: boolean): CSSProperties {
 // ─── Breadcrumb bar ──────────────────────────────────────────────────────────
 
 function CanvasHeader() {
-  const { selectedComponentId, launched } = useAppStore();
+  const { selectedComponentId, selectedSectionId, launched } = useAppStore();
   const { theme, toggleTheme } = useTheme();
 
-  // "welcome" is not in navSections, so handle it separately
+  // Resolve component entry + its owning section (relevant in both grid and solo views)
   const entry = selectedComponentId && selectedComponentId !== "welcome"
     ? navSections.flatMap((s) => s.entries).find((e) => e.id === selectedComponentId)
     : null;
+  const entrySection = entry ? navSections.find((s) => s.id === entry.sectionId) : null;
 
-  const section = entry
-    ? navSections.find((s) => s.id === entry.sectionId)
+  // Active grid section (may be set even when no component is selected)
+  const gridSection = selectedSectionId
+    ? navSections.find((s) => s.id === selectedSectionId)
     : null;
+
+  // Breadcrumb resolution:
+  //   grid + component selected  → "Section Title / Component Name"
+  //   grid + nothing selected    → "Section Title"
+  //   solo canvas with entry     → "Section Title / Component Name"
+  //   welcome                    → "Welcome"
+  //   fallback                   → "Canvas"
+  const activeSection = gridSection ?? entrySection;
 
   return (
     <div
@@ -91,14 +101,18 @@ function CanvasHeader() {
         className="flex items-center gap-1.5 text-[11px] flex-1 min-w-0"
         style={introStyle(D_BREADCRUMB, launched)}
       >
-        {section && entry ? (
+        {activeSection && entry ? (
+          /* Section Name / Component Name */
           <>
-            <span style={{ color: "var(--sh-text-faint)" }}>{section.title}</span>
+            <span style={{ color: "var(--sh-text-faint)" }}>{activeSection.title}</span>
             <span style={{ color: "var(--sh-border)", fontSize: "11px" }}>/</span>
             <span className="font-medium truncate" style={{ color: "var(--sh-text)" }}>
               {entry.name}
             </span>
           </>
+        ) : activeSection ? (
+          /* Grid view — section selected but no component yet */
+          <span style={{ color: "var(--sh-text-faint)" }}>{activeSection.title}</span>
         ) : selectedComponentId === "welcome" ? (
           <span style={{ color: "var(--sh-text-faint)" }}>Welcome</span>
         ) : (

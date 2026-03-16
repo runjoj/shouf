@@ -1,0 +1,266 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { onWaterRipple } from "@/lib/waterRipple";
+import { ACCENT_PRESETS } from "@/lib/accent";
+
+// ─── Animation constants ───────────────────────────────────────────────────────
+
+const DURATION   = 1400; // ms — slow, tide-like wash across the screen
+const MAX_RADIUS = 1200; // px — ring expands to this radius
+const LINE_WIDTH = 200;  // px — very wide stroke; heavy blur turns it into a soft wash
+
+// ─── Easing ────────────────────────────────────────────────────────────────────
+// Cubic ease-out: snappy initial expansion, long gentle deceleration.
+// Smoother than quadratic — the wave decelerates more gracefully at the edges.
+
+function easeOut(t: number): number {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+// ─── Accent var resolver ───────────────────────────────────────────────────────
+// Maps each --sh-accent-* var name to its concrete colour value for a given
+// preset so we can set explicit property values on each cascade target.
+
+function resolveVar(
+  varName: string,
+  r: number, g: number, b: number,
+  hexH: string, hexA: string,
+): string {
+  switch (varName.trim()) {
+    case "--sh-accent":      return `rgb(${r},${g},${b})`;
+    case "--sh-accent-h":    return hexH;
+    case "--sh-accent-a":    return hexA;
+    case "--sh-accent-sel":  return `rgba(${r},${g},${b},0.15)`;
+    case "--sh-accent-ring": return `rgba(${r},${g},${b},0.30)`;
+    case "--sh-box-border":  return `rgba(${r},${g},${b},0.28)`;
+    case "--sh-box-bg":      return `rgba(${r},${g},${b},0.06)`;
+    case "--sh-box-inner":   return `rgba(${r},${g},${b},0.18)`;
+    default:                 return `rgb(${r},${g},${b})`;
+  }
+}
+
+// ─── DOM helpers ───────────────────────────────────────────────────────────────
+
+// Only cascade these vars — they are all derived from the dynamic accent colour.
+// Fixed palette vars like --sh-accent-sage/rose/blue are intentionally excluded.
+const CASCADE_VARS = new Set([
+  "--sh-accent", "--sh-accent-h", "--sh-accent-a",
+  "--sh-accent-sel", "--sh-accent-ring",
+  "--sh-box-border", "--sh-box-bg", "--sh-box-inner",
+]);
+
+// Parse every CSS property in an element's inline style that references a
+// cascadeable --sh-accent var (e.g. "background-color: var(--sh-accent-sel)").
+function getAccentEntries(el: HTMLElement): Array<{ prop: string; varName: string }> {
+  const attr = el.getAttribute("style") ?? "";
+  const result: Array<{ prop: string; varName: string }> = [];
+  for (const rule of attr.split(";")) {
+    const ci = rule.indexOf(":");
+    if (ci < 0) continue;
+    const prop  = rule.slice(0, ci).trim();
+    const value = rule.slice(ci + 1).trim();
+    const m     = value.match(/var\((--sh-accent[^)]*)\)/);
+    if (m && CASCADE_VARS.has(m[1])) result.push({ prop, varName: m[1] });
+  }
+  return result;
+}
+
+function dist(x1: number, y1: number, x2: number, y2: number): number {
+  return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+}
+
+// ─── Cascade target ────────────────────────────────────────────────────────────
+
+interface CascadeTarget {
+  el:       HTMLElement;
+  distance: number;
+  revealed: boolean;
+  entries:  Array<{ prop: string; varName: string }>;
+}
+
+// Query all elements whose inline style uses any --sh-accent var, compute their
+// distance from the ripple origin, and freeze them at their current computed
+// colours so they don't immediately respond when setAccent updates :root.
+// (AccentPicker fires the ripple event BEFORE calling setAccent, so we get
+// the old colour here and the freeze holds until we individually reveal each
+// element as the ring reaches its distance threshold.)
+function buildTargets(originX: number, originY: number): CascadeTarget[] {
+  const els     = document.querySelectorAll<HTMLElement>("[style*='--sh-accent']");
+  const targets: CascadeTarget[] = [];
+
+  for (const el of els) {
+    const entries = getAccentEntries(el);
+    if (!entries.length) continue;
+
+    const rect = el.getBoundingClientRect();
+    if (!rect.width && !rect.height) continue;
+
+    // Freeze each accent property at its current computed RGBA value.
+    for (const { prop } of entries) {
+      const val = getComputedStyle(el).getPropertyValue(prop).trim();
+      if (val && val !== "rgba(0, 0, 0, 0)" && val !== "transparent") {
+        el.style.setProperty(prop, val);
+      }
+    }
+
+    // Pre-load the transition so it fires the moment we change the property.
+    el.style.setProperty(
+      "transition",
+      entries.map(e => `${e.prop} 200ms ease`).join(", "),
+    );
+
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    targets.push({ el, distance: dist(originX, originY, cx, cy), revealed: false, entries });
+  }
+
+  return targets.sort((a, b) => a.distance - b.distance);
+}
+
+// Transition this element from its frozen colour to the new accent colour,
+// then restore the CSS var reference so the element stays in sync with :root.
+// We MUST NOT removeProperty — React set these via its style prop as
+// var(--sh-accent-*), so removing the property leaves no source for the colour
+// and the element goes transparent. Instead we restore the CSS var expression;
+// :root already holds the new accent (setAccent ran after the ripple fired),
+// so the var resolves to the correct new colour immediately.
+function revealTarget(
+  target:  CascadeTarget,
+  r: number, g: number, b: number,
+  hexH: string, hexA: string,
+) {
+  for (const { prop, varName } of target.entries) {
+    target.el.style.setProperty(prop, resolveVar(varName, r, g, b, hexH, hexA));
+  }
+  // After the 200ms transition completes, restore CSS var references so the
+  // element re-links to :root and will pick up any future accent changes.
+  setTimeout(() => {
+    for (const { prop, varName } of target.entries) {
+      target.el.style.setProperty(prop, `var(${varName})`);
+    }
+    target.el.style.removeProperty("transition");
+  }, 250);
+}
+
+// ─── Active ripple ─────────────────────────────────────────────────────────────
+
+interface ActiveRipple {
+  x: number; y: number;
+  r: number; g: number; b: number;
+  hexH: string; hexA: string;
+  startTime: number;
+  targets: CascadeTarget[];
+}
+
+// ─── WaterRippleCanvas ─────────────────────────────────────────────────────────
+//
+// Full-viewport fixed <canvas>, pointer-events:none, filter:blur(20px).
+// A single ring expands from the exact toolbar swatch position:
+//   radius  2 → 1200px over 1400ms, cubic ease-out (slow, tide-like feel)
+//   opacity 1 → 0 as it expands  (1 - easeOut)
+//   stroke  200px wide + 20px blur = broad, diffuse wash of colour
+//
+// As the ring expands it acts as a colour wave: every UI element whose inline
+// style uses a --sh-accent var is frozen at the old colour at click time.
+// When the ring radius crosses that element's distance from the origin, the
+// element transitions to the new accent colour over 200ms ease.
+// Elements closest to the swatch change first; distant elements change last.
+
+export function WaterRippleCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rippleRef = useRef<ActiveRipple | null>(null);
+  const rafRef    = useRef<number | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // ── Size canvas to viewport ───────────────────────────────────────────────
+    function resize() {
+      if (!canvas) return;
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    // ── rAF draw loop ─────────────────────────────────────────────────────────
+    function draw(now: number) {
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const rip = rippleRef.current;
+      if (rip) {
+        const t      = Math.min((now - rip.startTime) / DURATION, 1);
+        const e      = easeOut(t);
+        const radius  = 2 + (MAX_RADIUS - 2) * e;
+        const opacity = (1 - e) * 0.25; // faint wash — element transitions are the noticeable part
+
+        if (opacity > 0.001) {
+          ctx.beginPath();
+          ctx.arc(rip.x, rip.y, radius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(${rip.r},${rip.g},${rip.b},${opacity.toFixed(4)})`;
+          ctx.lineWidth   = LINE_WIDTH;
+          ctx.stroke();
+        }
+
+        // Reveal each cascade target the first time the ring radius exceeds
+        // its distance from the origin.
+        for (const target of rip.targets) {
+          if (!target.revealed && radius >= target.distance) {
+            target.revealed = true;
+            revealTarget(target, rip.r, rip.g, rip.b, rip.hexH, rip.hexA);
+          }
+        }
+
+        if (t >= 1) rippleRef.current = null;
+      }
+
+      rafRef.current = requestAnimationFrame(draw);
+    }
+
+    rafRef.current = requestAnimationFrame(draw);
+
+    // ── Subscribe to accent click events ──────────────────────────────────────
+    // AccentPicker fires this event BEFORE calling setAccent(), so at this
+    // point :root --sh-accent still holds the previous colour — exactly when
+    // we need to freeze targets at the old computed values.
+    const unsub = onWaterRipple((x, y, hex) => {
+      const preset = ACCENT_PRESETS.find(
+        p => p.hex.toLowerCase() === hex.toLowerCase(),
+      ) ?? ACCENT_PRESETS[0];
+
+      const targets = buildTargets(x, y);
+      rippleRef.current = {
+        x, y,
+        r: preset.r, g: preset.g, b: preset.b,
+        hexH: preset.hexH, hexA: preset.hexA,
+        startTime: performance.now(),
+        targets,
+      };
+    });
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      unsub();
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position:      "fixed",
+        inset:         0,
+        pointerEvents: "none",
+        zIndex:        9990,
+        filter:        "blur(30px)",
+      }}
+    />
+  );
+}

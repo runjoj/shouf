@@ -3,7 +3,7 @@ import type { NavSection } from "@/lib/types";
 export const navSections: NavSection[] = [
   {
     id: "portfolio-design-system",
-    title: "Portfolio Design System",
+    title: "Shouf Design System",
     entries: [
       { id: "pds-color-tokens", name: "Color Tokens", sectionId: "portfolio-design-system" },
       { id: "pds-typography", name: "Typography Scale", sectionId: "portfolio-design-system" },
@@ -33,6 +33,8 @@ export const navSections: NavSection[] = [
       { id: "eu-modal", name: "Modal", sectionId: "eucalyptus" },
       { id: "eu-badge", name: "Badge", sectionId: "eucalyptus" },
       { id: "eu-tooltip", name: "Tooltip", sectionId: "eucalyptus" },
+      { id: "eu-statuses",          name: "Statuses",         sectionId: "eucalyptus" },
+      { id: "eu-folder-container", name: "Folder Container", sectionId: "eucalyptus" },
     ],
   },
 ];

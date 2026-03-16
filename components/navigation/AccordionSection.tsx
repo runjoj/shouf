@@ -17,14 +17,16 @@ export function AccordionSection({
   headerDelay = 0,
   itemDelays = [],
 }: AccordionSectionProps) {
-  const { expandedSections, toggleSection, launched } = useAppStore();
+  const { expandedSections, toggleSection, selectSection, launched } = useAppStore();
   const isExpanded = expandedSections.has(section.id);
 
   return (
     <div className="flex flex-col">
-      {/* Section header */}
+      {/* Section header — clicking navigates to the section grid AND toggles
+          the accordion. The grid remains visible even if the accordion is
+          collapsed; selectedSectionId and expandedSections are independent. */}
       <button
-        onClick={() => toggleSection(section.id)}
+        onClick={() => { toggleSection(section.id); selectSection(section.id); }}
         className="group w-full flex items-center gap-1.5 px-3 py-2 text-left transition-colors"
         style={{
           color: "var(--sh-text)",

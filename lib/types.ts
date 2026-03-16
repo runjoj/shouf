@@ -67,6 +67,8 @@ export type ComponentRegistration = {
 
 export type AppState = {
   selectedComponentId: string | null;
+  /** When set, the center canvas shows the section grid for this section id */
+  selectedSectionId: string | null;
   activeMobilePanel: MobilePanel;
   expandedSections: Set<string>;
   controlValues: Record<string, ComponentControlValues>;
@@ -76,6 +78,11 @@ export type AppState = {
 
 export type AppActions = {
   selectComponent: (id: string | null) => void;
+  /**
+   * Navigate to a section grid view. Passing non-null also clears selectedComponentId
+   * so the grid opens with nothing pre-selected. Passing null exits grid mode.
+   */
+  selectSection: (id: string | null) => void;
   setActiveMobilePanel: (panel: MobilePanel) => void;
   toggleSection: (sectionId: string) => void;
   setControlValue: (componentId: string, controlId: string, value: ControlValue) => void;

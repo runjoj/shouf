@@ -331,3 +331,45 @@ body,
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+
+/* Water ripple — rendered on canvas via WaterRippleCanvas.tsx. No CSS needed. */
+
+/* ─── Eucalyptus — Status badge tokens ────────────────────────────────────── */
+:root {
+  /* Variant colors — background / text pairs */
+  --eu-status-repaired-bg:    #D9D3F8;
+  --eu-status-repaired-color: #000000;
+  --eu-status-running-bg:     #2FC291;
+  --eu-status-running-color:  #040708;
+  --eu-status-queued-bg:      #D9DAE2;
+  --eu-status-queued-color:   #000000;
+  --eu-status-failed-bg:      #FF6161;
+  --eu-status-failed-color:   #040708;
+  --eu-status-passed-bg:      #B5E9DD;
+  --eu-status-passed-color:   #000000;
+  --eu-status-added-bg:       #D9D3F8;
+  --eu-status-added-color:    #000000;
+  --eu-status-deleted-bg:     #0F1012;
+  --eu-status-deleted-color:  #FFFFFF;
+
+  /* Shape */
+  --eu-status-radius-pill:   4px;
+  --eu-status-radius-circle: 50%;
+
+  /* Typography */
+  --eu-status-fw:      500;
+  --eu-status-font-sm: 11px;
+  --eu-status-font-md: 12px;
+
+  /* Spacing — small */
+  --eu-status-px-sm:     8px;
+  --eu-status-py-sm:     4px;
+  --eu-status-gap-sm:    4px;
+  --eu-status-circle-sm: 22px;
+
+  /* Spacing — medium */
+  --eu-status-px-md:     10px;
+  --eu-status-py-md:     5px;
+  --eu-status-gap-md:    5px;
+  --eu-status-circle-md: 22px;
+}

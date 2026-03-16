@@ -432,3 +432,34 @@ const { theme, toggleTheme, accentId, setAccent } = useTheme();
 - `lib/types.ts` — all types live here; changes cascade everywhere
 - `app/layout.tsx` — contains the FOUC prevention script that runs before hydration
 - The `animationPlayState` pattern on nav items and toolbar elements — it is load-bearing for the intro stagger
+
+---
+
+## EXPRESSIVE CRAFT MOMENTS
+
+Every page and component in this portfolio should contain at least one moment of expressive web storytelling — an animation, interaction, or visual detail that shows craft beyond functional UI. This is intentional and a core requirement of the portfolio, not an afterthought.
+
+**The guiding question for every new page or component:** *What is the expressive moment here?*
+
+The system is the canvas. The storytelling lives inside it.
+
+### Principles
+
+- **Considered, not gratuitous.** Moments should feel purposeful — chosen because they reveal something about the content, not added to impress. An animation that makes a concept clearer is always preferable to one that merely looks good.
+- **Enhances understanding, never distracts.** The expressive moment should make the user more aware of meaning, not less aware of it. If it competes with the content, cut it.
+- **Proportional to context.** A data visualization has room for more expression than a button component. Match the intensity of the moment to the weight of the content it lives in.
+- **Craft in the details.** Expression doesn't require spectacle. A carefully tuned easing curve, a well-timed fade, or a path that draws itself on hover can carry as much weight as a complex animation.
+
+### Examples in this project
+
+- **Intro animation** — The border-draw assembly sequence is an expressive moment: the tool assembles itself in front of you, implying that it was built, not handed down.
+- **Typing headline** — The word-by-word monospace type mimics someone writing in a code editor — it establishes Jo's voice before she speaks.
+- **About page fact animations** — Each SVG sketch draws itself on hover, tying a unique visual metaphor to each biographical fact. The heartbeat line for "military veteran," the cedar tree for "Lebanese American." Content and craft unified.
+- **Accent picker** — The ability to swap the accent color live is itself expressive: it shows that the token system is real and runtime-capable, not a static mock.
+
+### When building anything new
+
+1. Identify the expressive moment before writing any code.
+2. It can be micro (a hover state with a custom easing) or macro (a canvas-level interaction). Scale to context.
+3. Document the intention in a code comment so future sessions understand it was deliberate.
+4. If you cannot identify a natural expressive moment, that is a signal to reconsider the design — not a reason to skip it.

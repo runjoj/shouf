@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { navSections } from "@/data/navigation";
 import { isRegistered, COMPONENT_RENDERERS } from "@/lib/registry";
+import { ColorTokensCanvas } from "./ColorTokensCanvas";
+import { SectionGridCanvas } from "./SectionGridCanvas";
 
 const MONO = "ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace";
 
@@ -11,7 +13,7 @@ const MONO = "ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospa
 // These timing values must stay in sync with IntroAnimation.tsx.
 
 const HEADLINE_STR =
-  "I\u2019m Jo, a designer and frontend engineer who specializes in design systems\u2009\u2014";
+  "I\u2019m Jo, a designer and engineer who specializes in design systems";
 const WORDS            = HEADLINE_STR.split(" "); // 12 words
 const WORD_INTERVAL_MS = 110;                     // ms per word  (same as IntroAnimation)
 // Hide cursor just before the border-draw sequence starts (matches T_LEFT_BORDER - 80ms)
@@ -135,8 +137,22 @@ function WelcomeCanvas() {
             transition: launched ? "opacity 400ms ease 100ms" : "none",
           }}
         >
-          building components in Storybook, defining design tokens, and
-          closing the gap between how a product looks and how it actually gets built.
+          Experienced in building components in Storybook, defining design tokens, and
+          turning design decisions into production-ready code.
+        </p>
+        {/* Shouf label — subtle, below subhead */}
+        <p
+          style={{
+            fontSize:      "10px",
+            fontFamily:    MONO,
+            letterSpacing: "0.05em",
+            color:         "var(--sh-text-faint)",
+            margin:        "4px 0 0",
+            opacity:       launched ? 1 : 0,
+            transition:    launched ? "opacity 400ms ease 150ms" : "none",
+          }}
+        >
+          Shouf Design System
         </p>
       </div>
 
@@ -152,7 +168,7 @@ function WelcomeCanvas() {
           transition:    launched ? "opacity 400ms ease 200ms" : "none",
         }}
       >
-        ← select a component from the navigator
+        ← select a section from the navigator to explore components
       </p>
     </div>
   );
@@ -282,7 +298,7 @@ function LiveComponentCanvas({ componentId }: { componentId: string }) {
 // ─── ComponentRenderer ───────────────────────────────────────────────────────
 
 export function ComponentRenderer() {
-  const { selectedComponentId, launched } = useAppStore();
+  const { selectedComponentId, selectedSectionId, launched } = useAppStore();
 
   // During intro, WelcomeCanvas renders above the dark overlay (z-index 50)
   // by elevating this wrapper to z-index 55.  After launch the stacking order
@@ -292,15 +308,21 @@ export function ComponentRenderer() {
   // independently without hiding the canvas content during the intro.
   const showWelcome = !launched || selectedComponentId === "welcome";
 
+  // Section grid view takes over the entire canvas — needs the same stretch
+  // layout as ColorTokensCanvas so it can own its own scrolling.
+  const isGridCanvas  = !showWelcome && selectedSectionId !== null;
+  const isFullCanvas  = !showWelcome && (selectedComponentId === "pds-color-tokens" || isGridCanvas);
+
   return (
     <div
       style={{
-        flex:     1,
-        display:  "flex",
-        position: "relative",
+        flex:      1,
+        minHeight: 0,
+        display:   "flex",
+        position:  "relative",
         // Rise above the overlay (z:50) during intro so WelcomeCanvas types
         // at its real DOM position — no size or position change on launch.
-        zIndex:   launched ? undefined : 55,
+        zIndex:    launched ? undefined : 55,
       }}
     >
       {/* Dot-grid canvas background — fades in 1300 ms after launch */}
@@ -324,19 +346,30 @@ export function ComponentRenderer() {
           position:       "relative",
           zIndex:         1,
           flex:           1,
+          minHeight:      0,
           display:        "flex",
-          alignItems:     "center",
-          justifyContent: "center",
+          alignItems:     isFullCanvas ? "stretch"    : "center",
+          justifyContent: isFullCanvas ? "flex-start" : "center",
         }}
       >
         {showWelcome && <WelcomeCanvas />}
 
-        {!showWelcome && !selectedComponentId && <NoSelectionState />}
+        {!showWelcome && !selectedComponentId && !selectedSectionId && <NoSelectionState />}
 
-        {!showWelcome && selectedComponentId && isRegistered(selectedComponentId) && (
+        {/* ── Section grid view ────────────────────────────────────────────── */}
+        {/* Grid takes priority — individual component canvas is suppressed    */}
+        {isGridCanvas && (
+          <SectionGridCanvas sectionId={selectedSectionId!} />
+        )}
+
+        {/* ── Individual component canvases — only when NOT in grid mode ───── */}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "pds-color-tokens" && (
+          <ColorTokensCanvas />
+        )}
+        {!showWelcome && !isGridCanvas && selectedComponentId && selectedComponentId !== "pds-color-tokens" && isRegistered(selectedComponentId) && (
           <LiveComponentCanvas componentId={selectedComponentId} />
         )}
-        {!showWelcome && selectedComponentId && !isRegistered(selectedComponentId) && (
+        {!showWelcome && !isGridCanvas && selectedComponentId && selectedComponentId !== "pds-color-tokens" && !isRegistered(selectedComponentId) && (
           <PlaceholderState componentId={selectedComponentId} />
         )}
       </div>

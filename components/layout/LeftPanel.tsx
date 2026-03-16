@@ -45,7 +45,7 @@ function LogoMark() {
           </svg>
         </div>
         <span className="text-[13px] font-bold tracking-tight" style={{ color: "var(--sh-text)" }}>
-          DS Portfolio
+          helloitsjo
         </span>
       </div>
     </button>

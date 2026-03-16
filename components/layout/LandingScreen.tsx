@@ -18,13 +18,13 @@ const LH    = 1.1;
 
 const HEADLINE_SERIF = (
   <>
-    I&rsquo;m Jo, a designer and frontend engineer who specializes in
-    design systems&thinsp;&mdash;
+    I&rsquo;m Jo, a designer and engineer who specializes in
+    design systems
   </>
 );
 
 const HEADLINE_STR =
-  "I'm Jo, a designer and frontend engineer who specializes in design systems\u2009\u2014";
+  "I'm Jo, a designer and engineer who specializes in design systems";
 
 const WORDS = HEADLINE_STR.split(" ");
 
@@ -73,7 +73,7 @@ function LogoMark() {
           color:         "#F5F5F5",
         }}
       >
-        DS Portfolio
+        helloitsjo
       </span>
     </div>
   );
@@ -341,9 +341,23 @@ export function LandingScreen() {
               transition: "opacity 500ms ease, transform 500ms ease",
             }}
           >
-            building components in Storybook, defining design tokens, and
-            closing the gap between how a product looks and how it actually
-            gets built.
+            Experienced in building components in Storybook, defining design tokens, and
+            turning design decisions into production-ready code.
+          </p>
+
+          {/* ── Shouf label ──────────────────────────────────────────────── */}
+          <p
+            style={{
+              marginTop:     "16px",
+              fontSize:      "11px",
+              fontFamily:    MONO,
+              letterSpacing: "0.04em",
+              color:         "#555555",
+              opacity:       subheadVisible ? 1 : 0,
+              transition:    "opacity 500ms ease 200ms",
+            }}
+          >
+            Shouf Design System
           </p>
 
           {/* ── CTA — pops in below the subhead ─────────────────────────── */}

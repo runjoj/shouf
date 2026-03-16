@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Figtree, Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/store";
 import { ThemeProvider } from "@/lib/theme";
@@ -7,6 +7,12 @@ import { ThemeProvider } from "@/lib/theme";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+});
+
+const figtree = Figtree({
+  subsets: ["latin"],
+  variable: "--font-figtree",
+  weight: ["400", "500", "600"],
 });
 
 const playfair = Playfair_Display({
@@ -34,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${figtree.variable}`} suppressHydrationWarning>
       {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         {/* biome-ignore lint: FOUC prevention must run inline before hydration */}

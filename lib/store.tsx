@@ -34,6 +34,7 @@ function buildInitialControlValues(): Record<string, ComponentControlValues> {
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
+  const [selectedSectionId,   setSelectedSectionId]   = useState<string | null>(null);
   const [activeMobilePanel, setActiveMobilePanel] = useState<MobilePanel>("navigator");
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     () => new Set(navSections.map((s) => s.id))
@@ -45,6 +46,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const selectComponent = useCallback((id: string | null) => {
     setSelectedComponentId(id);
+  }, []);
+
+  // Navigate to a section grid. Non-null id also clears the component selection
+  // so the grid always opens fresh with no tile pre-highlighted.
+  const selectSection = useCallback((id: string | null) => {
+    setSelectedSectionId(id);
+    if (id !== null) setSelectedComponentId(null);
   }, []);
 
   const toggleSection = useCallback((sectionId: string) => {
@@ -72,22 +80,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Called by IntroAnimation when assembly completes — reveals panels, selects Welcome
   const launch = useCallback(() => {
     setSelectedComponentId("welcome");
+    setSelectedSectionId(null);
     setLaunched(true);
   }, []);
 
   // Navigate to Welcome page (logo click) — does not replay intro
   const reset = useCallback(() => {
     setSelectedComponentId("welcome");
+    setSelectedSectionId(null);
   }, []);
 
   const store = useMemo<AppStore>(
     () => ({
       selectedComponentId,
+      selectedSectionId,
       activeMobilePanel,
       expandedSections,
       controlValues,
       launched,
       selectComponent,
+      selectSection,
       setActiveMobilePanel,
       toggleSection,
       setControlValue,
@@ -96,11 +108,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }),
     [
       selectedComponentId,
+      selectedSectionId,
       activeMobilePanel,
       expandedSections,
       controlValues,
       launched,
       selectComponent,
+      selectSection,
       toggleSection,
       setControlValue,
       launch,

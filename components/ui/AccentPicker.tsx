@@ -2,6 +2,7 @@
 
 import { useTheme } from "@/lib/theme";
 import { ACCENT_PRESETS } from "@/lib/accent";
+import { fireWaterRipple } from "@/lib/waterRipple";
 
 interface AccentPickerProps {
   /** "sm" = 14px (toolbar), "md" = 18px (landing screen) */
@@ -25,20 +26,33 @@ export function AccentPicker({ size = "sm" }: AccentPickerProps) {
         return (
           <button
             key={preset.id}
-            onClick={() => setAccent(preset.id)}
+            onClick={(e) => {
+              // Fire the ripple event BEFORE setAccent so the canvas can read
+              // --sh-accent while it still holds the previous colour — the
+              // "from" value for the wave-carried colour transition.
+              if (size === "sm") {
+                const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                fireWaterRipple(
+                  rect.left + rect.width  / 2,
+                  rect.top  + rect.height / 2,
+                  preset.hex,
+                );
+              }
+              setAccent(preset.id);
+            }}
             title={preset.label}
             style={{
-              width:         sz + 8,
-              height:        sz + 8,
-              display:       "flex",
-              alignItems:    "center",
-              justifyContent:"center",
-              background:    "none",
-              border:        "none",
-              padding:       0,
-              cursor:        "pointer",
-              borderRadius:  "50%",
-              flexShrink:    0,
+              width:          sz + 8,
+              height:         sz + 8,
+              display:        "flex",
+              alignItems:     "center",
+              justifyContent: "center",
+              background:     "none",
+              border:         "none",
+              padding:        0,
+              cursor:         "pointer",
+              borderRadius:   "50%",
+              flexShrink:     0,
             }}
           >
             <span

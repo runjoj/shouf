@@ -12,12 +12,14 @@ type NavItemProps = {
 };
 
 export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
-  const { selectedComponentId, selectComponent, setActiveMobilePanel, launched } =
+  const { selectedComponentId, selectComponent, selectSection, setActiveMobilePanel, launched } =
     useAppStore();
 
   const isSelected = selectedComponentId === entry.id;
 
   function handleClick() {
+    // Exit grid mode so the solo component canvas renders instead of the grid.
+    selectSection(null);
     selectComponent(entry.id);
     setActiveMobilePanel("canvas");
   }

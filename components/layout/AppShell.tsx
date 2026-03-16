@@ -6,9 +6,9 @@ import { CenterPanel } from "./CenterPanel";
 import { RightPanel } from "./RightPanel";
 import { MobileTabBar } from "./MobileTabBar";
 import { IntroAnimation } from "./IntroAnimation";
-import { AccentPicker } from "@/components/ui/AccentPicker";
 import { AccordionNav } from "@/components/navigation/AccordionNav";
 import { InspectPanel } from "@/components/inspect/InspectPanel";
+import { WaterRippleCanvas } from "@/components/ui/WaterRippleCanvas";
 
 // ─── Mobile single-panel view ─────────────────────────────────────────────────
 
@@ -63,8 +63,6 @@ function MobileView() {
 // ─── Desktop three-panel view ─────────────────────────────────────────────────
 
 function DesktopView() {
-  const { launched } = useAppStore();
-
   return (
     <div
       className="hidden lg:flex h-full"
@@ -86,35 +84,6 @@ function DesktopView() {
       {/* ── Intro animation overlay ───────────────────────────────────────────── */}
       {/* Covers everything during typing + border-draw phase, then fades out.    */}
       <IntroAnimation />
-
-      {/* ── Accent color picker — bottom right, appears after intro ─────────── */}
-      <div
-        style={{
-          position:      "absolute",
-          bottom:        28,
-          right:         16,
-          zIndex:        10,
-          display:       "flex",
-          alignItems:    "center",
-          gap:           "8px",
-          opacity:       launched ? 1 : 0,
-          transition:    "opacity 600ms ease",
-          pointerEvents: launched ? "auto" : "none",
-        }}
-      >
-        <span
-          style={{
-            fontSize:      "10px",
-            fontFamily:    "ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace",
-            letterSpacing: "0.05em",
-            color:         "var(--sh-text-faint)",
-            userSelect:    "none",
-          }}
-        >
-          --accent
-        </span>
-        <AccentPicker size="sm" />
-      </div>
     </div>
   );
 }
@@ -124,6 +93,10 @@ function DesktopView() {
 export function AppShell() {
   return (
     <div className="h-screen overflow-hidden">
+      {/* Canvas ripple layer — fixed, full-screen, pointer-events: none.
+          rAF loop draws an expanding elliptical radial gradient from the
+          exact toolbar swatch position whenever an accent color is clicked. */}
+      <WaterRippleCanvas />
       <DesktopView />
       <MobileView />
     </div>
