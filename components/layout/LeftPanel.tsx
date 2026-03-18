@@ -1,7 +1,9 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { AccordionNav } from "@/components/navigation/AccordionNav";
+import { PdsInput } from "@/components/portfolio-design-system/PdsInput/PdsInput";
 
 // ─── Intro delay schedule for left-panel elements ─────────────────────────────
 // These are ms after launch() fires. AccordionNav items continue from 270ms+.
@@ -52,15 +54,31 @@ function LogoMark() {
   );
 }
 
-// ─── Search bar placeholder ──────────────────────────────────────────────────
+// ─── Search bar ───────────────────────────────────────────────────────────────
+// Uses PdsInput so the shell search and the canvas demo share the exact same
+// component — design spec is always in sync. ⌘K (or Ctrl+K) focuses the input.
 
 function SearchBar() {
   const { launched } = useAppStore();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // ⌘K / Ctrl+K focuses the search input
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
   return (
     <div
       className="px-3 py-2"
       style={{
-        // Intro stagger
+        // Intro stagger — same timing as before
         animationName:           "intro-reveal",
         animationDuration:       "220ms",
         animationTimingFunction: "ease",
@@ -69,24 +87,16 @@ function SearchBar() {
         animationPlayState:      launched ? "running" : "paused",
       }}
     >
-      <div
-        className="flex items-center gap-2 px-2.5 py-[6px] rounded-md"
-        style={{ backgroundColor: "var(--sh-input-bg)", border: "1px solid var(--sh-border)" }}
-      >
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-          <circle cx="5.5" cy="5.5" r="3.5" stroke="var(--sh-text-faint)" strokeWidth="1.5" />
-          <path d="M8.5 8.5L11 11" stroke="var(--sh-text-faint)" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-        <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
-          Search components…
-        </span>
-        <span
-          className="ml-auto text-[12px] px-1 py-px rounded"
-          style={{ backgroundColor: "var(--sh-border)", color: "var(--sh-text-faint)" }}
-        >
-          ⌘K
-        </span>
-      </div>
+      <PdsInput
+        ref={inputRef}
+        size="sm"
+        withLabel={false}
+        withIcon={true}
+        withHelper={false}
+        placeholder="Search components…"
+        kbd="⌘K"
+        fullWidth
+      />
     </div>
   );
 }
