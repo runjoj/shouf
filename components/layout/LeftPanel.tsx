@@ -1,16 +1,202 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+// ─── LeftPanel ─────────────────────────────────────────────────────────────────
+// Contains the logo, the live search bar, and the accordion nav.
+//
+// Search: filters all nav entries by name. Results appear in a portal-based
+// dropdown (escapes the panel's overflow:hidden). Keyboard nav: ↑↓ to move,
+// Enter to select, Escape to dismiss. Matching text is highlighted with the
+// accent color — an expressive moment that shows the token system is live.
+
+import { useRef, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useAppStore } from "@/lib/store";
 import { AccordionNav } from "@/components/navigation/AccordionNav";
 import { PdsInput } from "@/components/portfolio-design-system/PdsInput/PdsInput";
+import { navSections } from "@/data/navigation";
+import type { ComponentEntry } from "@/lib/types";
 
-// ─── Intro delay schedule for left-panel elements ─────────────────────────────
-// These are ms after launch() fires. AccordionNav items continue from 270ms+.
+// ─── Intro delay schedule ─────────────────────────────────────────────────────
+// ms after launch() fires. AccordionNav items continue from 270ms+.
 const LOGO_DELAY   = 0;
 const SEARCH_DELAY = 80;
 
-// ─── Logo mark ───────────────────────────────────────────────────────────────
+// ─── Section metadata for search result labels ────────────────────────────────
+// Colors map to shell accent tokens so they work in light + dark mode.
+
+const SECTION_META: Record<string, { short: string; color: string }> = {
+  "portfolio-design-system": { short: "Shouf",      color: "var(--sh-accent)"      },
+  "responsive-components":   { short: "Responsive", color: "var(--sh-accent-blue)" },
+  "eucalyptus":              { short: "Eucalyptus", color: "var(--sh-accent-sage)" },
+};
+
+// Flattened list of every nav entry — the search index.
+const ALL_ENTRIES: ComponentEntry[] = navSections.flatMap((s) => s.entries);
+
+// ─── HighlightMatch ───────────────────────────────────────────────────────────
+// Expressive craft moment: the matched substring is tinted with the live
+// accent color, showing the token system in action during search.
+
+function HighlightMatch({ text, query }: { text: string; query: string }) {
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark
+        style={{
+          background:   "var(--sh-accent-sel)",
+          color:        "inherit",
+          borderRadius: "2px",
+          padding:      "0 1px",
+        }}
+      >
+        {text.slice(idx, idx + query.length)}
+      </mark>
+      {text.slice(idx + query.length)}
+    </>
+  );
+}
+
+// ─── SearchDropdown ───────────────────────────────────────────────────────────
+// Rendered via createPortal so it escapes the panel's overflow:hidden.
+// Positioned below the search container using getBoundingClientRect.
+
+function SearchDropdown({
+  anchorEl,
+  results,
+  activeIndex,
+  query,
+  onSelect,
+  onClose,
+}: {
+  anchorEl:    HTMLDivElement | null;
+  results:     ComponentEntry[];
+  activeIndex: number;
+  query:       string;
+  onSelect:    (entry: ComponentEntry) => void;
+  onClose:     () => void;
+}) {
+  const r = anchorEl?.getBoundingClientRect();
+  if (!r) return null;
+
+  // Align to the input element inside the px-3 (12px) wrapper padding
+  const left  = r.left + 12;
+  const width = r.width - 24;
+  const top   = r.bottom + 4;
+
+  return createPortal(
+    <>
+      {/* Backdrop — click anywhere outside to dismiss */}
+      <div
+        style={{ position: "fixed", inset: 0, zIndex: 9000 }}
+        onMouseDown={onClose}
+      />
+
+      {/* Results panel */}
+      <div
+        style={{
+          position:        "fixed",
+          top,
+          left,
+          width,
+          zIndex:          9001,
+          backgroundColor: "var(--sh-panel)",
+          border:          "1px solid var(--sh-border)",
+          borderRadius:    "8px",
+          boxShadow:       "0 4px 20px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06)",
+          overflow:        "hidden",
+          animation:       "search-in 100ms ease both",
+        }}
+      >
+        {results.length === 0 ? (
+          <div
+            style={{
+              padding:  "10px 12px",
+              fontSize: "12px",
+              color:    "var(--sh-text-faint)",
+            }}
+          >
+            No results for &ldquo;{query}&rdquo;
+          </div>
+        ) : (
+          <div style={{ padding: "4px" }}>
+            {results.map((entry, i) => {
+              const meta     = SECTION_META[entry.sectionId] ?? { short: entry.sectionId, color: "var(--sh-text-faint)" };
+              const isActive = i === activeIndex;
+              return (
+                <button
+                  key={entry.id}
+                  // preventDefault prevents the input from blurring on mousedown
+                  onMouseDown={(e) => { e.preventDefault(); onSelect(entry); }}
+                  style={{
+                    display:      "flex",
+                    alignItems:   "center",
+                    gap:          "8px",
+                    width:        "100%",
+                    padding:      "6px 8px",
+                    border:       "none",
+                    borderRadius: "5px",
+                    background:   isActive ? "var(--sh-accent-sel)" : "transparent",
+                    cursor:       "pointer",
+                    textAlign:    "left",
+                    transition:   "background 60ms ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = "var(--sh-hover)";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                  }}
+                >
+                  {/* Section color indicator */}
+                  <div
+                    style={{
+                      width:           "6px",
+                      height:          "6px",
+                      borderRadius:    "50%",
+                      flexShrink:      0,
+                      backgroundColor: meta.color,
+                    }}
+                  />
+
+                  {/* Entry name with match highlight */}
+                  <span
+                    style={{
+                      flex:       1,
+                      fontSize:   "12px",
+                      color:      "var(--sh-text)",
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    <HighlightMatch text={entry.name} query={query} />
+                  </span>
+
+                  {/* Section tag */}
+                  <span
+                    style={{
+                      fontSize:        "10px",
+                      color:           "var(--sh-text-faint)",
+                      backgroundColor: "var(--sh-panel-alt)",
+                      padding:         "2px 5px",
+                      borderRadius:    "4px",
+                      flexShrink:      0,
+                    }}
+                  >
+                    {meta.short}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </>,
+    document.body,
+  );
+}
+
+// ─── Logo mark ────────────────────────────────────────────────────────────────
 
 function LogoMark() {
   const { reset, launched } = useAppStore();
@@ -24,7 +210,6 @@ function LogoMark() {
         cursor:     "pointer",
         display:    "flex",
         alignItems: "center",
-        // Intro stagger
         animationName:           "intro-reveal",
         animationDuration:       "250ms",
         animationTimingFunction: "ease",
@@ -40,9 +225,9 @@ function LogoMark() {
           style={{ backgroundColor: "var(--sh-accent)" }}
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <rect x="2" y="2" width="3.5" height="3.5" rx="0.75" fill="#111111" />
-            <rect x="6.5" y="2" width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.5" />
-            <rect x="2" y="6.5" width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.5" />
+            <rect x="2"   y="2"   width="3.5" height="3.5" rx="0.75" fill="#111111" />
+            <rect x="6.5" y="2"   width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.5" />
+            <rect x="2"   y="6.5" width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.5" />
             <rect x="6.5" y="6.5" width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.75" />
           </svg>
         </div>
@@ -55,14 +240,21 @@ function LogoMark() {
 }
 
 // ─── Search bar ───────────────────────────────────────────────────────────────
-// Uses PdsInput so the shell search and the canvas demo share the exact same
-// component — design spec is always in sync. ⌘K (or Ctrl+K) focuses the input.
+// Uses PdsInput (controlled) so the shell and canvas demo share the same spec.
+// ⌘K focuses the input from anywhere. The dropdown renders via portal.
 
 function SearchBar() {
-  const { launched } = useAppStore();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { launched, selectComponent } = useAppStore();
+  const inputRef     = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // ⌘K / Ctrl+K focuses the search input
+  const [query,       setQuery]       = useState("");
+  const [activeIndex, setActiveIndex] = useState(-1);
+  // Portal guard — createPortal needs document.body (not available during SSR)
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  // ⌘K / Ctrl+K global shortcut → focus input
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -74,11 +266,50 @@ function SearchBar() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
+  // Filter entries by query (case-insensitive substring)
+  const results =
+    query.trim().length > 0
+      ? ALL_ENTRIES.filter((e) =>
+          e.name.toLowerCase().includes(query.toLowerCase())
+        )
+      : [];
+
+  const isOpen = mounted && query.trim().length > 0;
+
+  // Reset keyboard cursor whenever the result list changes
+  useEffect(() => { setActiveIndex(-1); }, [query]);
+
+  const navigate = (entry: ComponentEntry) => {
+    selectComponent(entry.id);
+    setQuery("");
+    setActiveIndex(-1);
+    inputRef.current?.blur();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!isOpen) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.min(i + 1, results.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.max(i - 1, -1));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const target = activeIndex >= 0 ? results[activeIndex] : results[0];
+      if (target) navigate(target);
+    } else if (e.key === "Escape") {
+      setQuery("");
+      setActiveIndex(-1);
+      inputRef.current?.blur();
+    }
+  };
+
   return (
     <div
+      ref={containerRef}
       className="px-3 py-2"
       style={{
-        // Intro stagger — same timing as before
         animationName:           "intro-reveal",
         animationDuration:       "220ms",
         animationTimingFunction: "ease",
@@ -94,14 +325,28 @@ function SearchBar() {
         withIcon={true}
         withHelper={false}
         placeholder="Search components…"
-        kbd="⌘K"
+        kbd={query ? "" : "⌘K"}
+        value={query}
+        onChange={setQuery}
+        onKeyDown={handleKeyDown}
         fullWidth
       />
+
+      {isOpen && (
+        <SearchDropdown
+          anchorEl={containerRef.current}
+          results={results}
+          activeIndex={activeIndex}
+          query={query}
+          onSelect={navigate}
+          onClose={() => { setQuery(""); setActiveIndex(-1); }}
+        />
+      )}
     </div>
   );
 }
 
-// ─── LeftPanel ───────────────────────────────────────────────────────────────
+// ─── LeftPanel ────────────────────────────────────────────────────────────────
 
 export function LeftPanel() {
   return (
@@ -109,9 +354,9 @@ export function LeftPanel() {
       className="flex flex-col h-full overflow-hidden"
       style={{
         backgroundColor: "var(--sh-panel)",
-        borderRight: "1px solid var(--sh-border-sub)",
-        width: "260px",
-        minWidth: "260px",
+        borderRight:     "1px solid var(--sh-border-sub)",
+        width:           "260px",
+        minWidth:        "260px",
       }}
     >
       {/* Top bar with logo */}
@@ -122,10 +367,10 @@ export function LeftPanel() {
         <LogoMark />
       </div>
 
-      {/* Search */}
+      {/* Live search */}
       <SearchBar />
 
-      {/* Accordion navigation + Welcome item */}
+      {/* Accordion navigation */}
       <AccordionNav />
 
       {/* Bottom status bar */}

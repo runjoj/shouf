@@ -90,6 +90,10 @@ export type PdsInputProps = {
   kbd?:         string;
   // fullWidth: stretches to 100% of the parent instead of the fixed 280px demo width
   fullWidth?:   boolean;
+  // Controlled value / change / keydown — used when PdsInput is embedded in the shell
+  value?:       string;
+  onChange?:    (value: string) => void;
+  onKeyDown?:   (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
 export const PdsInput = forwardRef<HTMLInputElement, PdsInputProps>(
@@ -103,6 +107,9 @@ export const PdsInput = forwardRef<HTMLInputElement, PdsInputProps>(
       withHelper  = false,
       kbd         = "",
       fullWidth   = false,
+      value,
+      onChange,
+      onKeyDown,
     },
     ref,
   ) {
@@ -224,6 +231,10 @@ export const PdsInput = forwardRef<HTMLInputElement, PdsInputProps>(
             placeholder={placeholder}
             disabled={isDisabled}
             style={inputStyle}
+            // Controlled mode when value/onChange are provided; uncontrolled otherwise
+            {...(value !== undefined ? { value } : {})}
+            onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+            onKeyDown={onKeyDown}
             onFocus={() => !isDisabled && setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             aria-label={withLabel ? undefined : "Search"}
