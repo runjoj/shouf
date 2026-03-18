@@ -11,6 +11,8 @@ import { EuFolderContainerRenderer } from "@/components/eucalyptus/EuFolderConta
 import { PDS_TYPOGRAPHY_REGISTRATION }    from "@/components/portfolio-design-system/PdsTypography/definition";
 import { PDS_SPACING_REGISTRATION }       from "@/components/portfolio-design-system/PdsSpacing/definition";
 import { PDS_COLOR_TOKENS_REGISTRATION }  from "@/components/portfolio-design-system/PdsColorTokens/definition";
+import { PDS_INPUT_REGISTRATION }         from "@/components/portfolio-design-system/PdsInput/definition";
+import { PdsInputRenderer }               from "@/components/portfolio-design-system/PdsInput/PdsInput";
 
 // ─── Registry maps ─────────────────────────────────────────────────────────────
 // Add each new component here. The renderer is kept separate from the
@@ -18,6 +20,7 @@ import { PDS_COLOR_TOKENS_REGISTRATION }  from "@/components/portfolio-design-sy
 
 export const COMPONENT_REGISTRY: Record<string, ComponentRegistration> = {
   "pds-button":           PDS_BUTTON_REGISTRATION,
+  "pds-input":            PDS_INPUT_REGISTRATION,
   "pds-color-tokens":     PDS_COLOR_TOKENS_REGISTRATION,
   "pds-typography":       PDS_TYPOGRAPHY_REGISTRATION,
   "pds-spacing":          PDS_SPACING_REGISTRATION,
@@ -30,6 +33,7 @@ export const COMPONENT_RENDERERS: Record<
   (values: ComponentControlValues) => ReactNode
 > = {
   "pds-button":           PdsButtonRenderer,
+  "pds-input":            PdsInputRenderer,
   "eu-statuses":          EuStatusesRenderer,
   "eu-folder-container":  EuFolderContainerRenderer,
 };

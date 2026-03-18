@@ -385,6 +385,75 @@ body,
   to   { opacity: 1; transform: translateX(0); }
 }
 
+/* ─── Portfolio Design System — Input tokens ─────────────────────────────── */
+:root {
+  /* Size scale — matches the shell search bar's visual DNA */
+  --pds-inp-h-sm:      28px;
+  --pds-inp-h-md:      36px;
+  --pds-inp-h-lg:      44px;
+
+  --pds-inp-px-sm:     10px;
+  --pds-inp-px-md:     12px;
+  --pds-inp-px-lg:     14px;
+
+  --pds-inp-font-sm:   11.5px;
+  --pds-inp-font-md:   13px;
+  --pds-inp-font-lg:   15px;
+
+  --pds-inp-radius-sm: 6px;
+  --pds-inp-radius-md: 8px;
+  --pds-inp-radius-lg: 10px;
+
+  /* Default state */
+  --pds-inp-bg:          #F0F0F0;
+  --pds-inp-border:      #E5E5E5;
+  --pds-inp-color:       #111111;
+  --pds-inp-placeholder: #AAAAAA;
+
+  /* Focused state — border and ring are accent-derived so they react to the
+     accent picker in real time. Demonstrates the runtime token system. */
+  --pds-inp-bg-focus:     #FFFFFF;
+  --pds-inp-border-focus: var(--sh-accent);
+  --pds-inp-ring-focus:   var(--sh-accent-ring);
+
+  /* Error state */
+  --pds-inp-bg-error:     rgba(229, 62, 62, 0.05);
+  --pds-inp-border-error: #E53E3E;
+  --pds-inp-ring-error:   rgba(229, 62, 62, 0.22);
+  --pds-inp-error-color:  #E53E3E;
+
+  /* Label and helper text */
+  --pds-inp-label-color:  #111111;
+  --pds-inp-helper-color: #777777;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --pds-inp-bg:          #222222;
+    --pds-inp-border:      #464646;
+    --pds-inp-color:       #F5F5F5;
+    --pds-inp-placeholder: #606060;
+    --pds-inp-bg-focus:    #1A1A1A;
+    --pds-inp-label-color: #F5F5F5;
+    --pds-inp-helper-color: #888888;
+  }
+}
+:root[data-theme="dark"] {
+  --pds-inp-bg:          #222222;
+  --pds-inp-border:      #464646;
+  --pds-inp-color:       #F5F5F5;
+  --pds-inp-placeholder: #606060;
+  --pds-inp-bg-focus:    #1A1A1A;
+  --pds-inp-label-color: #F5F5F5;
+  --pds-inp-helper-color: #888888;
+}
+
+/* Placeholder color — must be done via global CSS, not inline style */
+.pds-inp::placeholder {
+  color: var(--pds-inp-placeholder);
+}
+
 /* ─── Eucalyptus — Status badge tokens ────────────────────────────────────── */
 :root {
   /* Variant colors — background / text pairs */

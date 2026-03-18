@@ -511,7 +511,7 @@ export function RcGlobalNavCanvas() {
                       {/* Drawer footer: avatar + name (+ chevron in mobile → opens account panel) */}
                       <button
                         onClick={isMobile ? () => setAccountOpen(true) : undefined}
-                        style={{ padding: "12px 16px 16px", borderTop: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: "10px", flexShrink: 0, background: "transparent", border: "none", borderTop: `1px solid ${C.border}`, cursor: isMobile ? "pointer" : "default", width: "100%", textAlign: "left", transition: "background 80ms ease" }}
+                        style={{ padding: "12px 16px 16px", display: "flex", alignItems: "center", gap: "10px", flexShrink: 0, background: "transparent", border: "none", borderTop: `1px solid ${C.border}`, cursor: isMobile ? "pointer" : "default", width: "100%", textAlign: "left", transition: "background 80ms ease" }}
                         onMouseEnter={(e) => { if (isMobile) (e.currentTarget as HTMLElement).style.background = "#F9FAFB"; }}
                         onMouseLeave={(e) => { if (isMobile) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
                       >
@@ -1029,21 +1029,24 @@ function NavFlyout({
       <div style={{ padding: "10px 14px 6px", fontSize: "10px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", borderBottom: `1px solid ${C.divider}` }}>
         {entry.label}
       </div>
-      {subItems.map((sub) => (
-        <button
-          key={sub.id}
-          onClick={() => onSelect(sub.id)}
-          style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", padding: "9px 14px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
-          onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
-        >
-          <span style={{ width: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <FontAwesomeIcon icon={sub.icon} style={{ width: 13, height: 13, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
-          </span>
-          <span style={{ fontSize: "13px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1 }}>{sub.label}</span>
-          {sub.count != null && <span style={{ fontSize: "11px", color: "#9CA3AF", flexShrink: 0 }}>({sub.count})</span>}
-        </button>
-      ))}
+      {subItems.map((sub, si) => {
+        if (sub === "divider") return <hr key={`fd-${si}`} style={{ border: "none", borderTop: `1px solid ${C.divider}`, margin: "3px 0" }} />;
+        return (
+          <button
+            key={sub.id}
+            onClick={() => onSelect(sub.id)}
+            style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", padding: "9px 14px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
+            onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
+          >
+            <span style={{ width: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <FontAwesomeIcon icon={sub.icon} style={{ width: 13, height: 13, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
+            </span>
+            <span style={{ fontSize: "13px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1 }}>{sub.label}</span>
+            {sub.count != null && <span style={{ fontSize: "11px", color: "#9CA3AF", flexShrink: 0 }}>({sub.count})</span>}
+          </button>
+        );
+      })}
     </div>
   );
   return typeof document !== "undefined" ? createPortal(flyout, document.body) : null;
