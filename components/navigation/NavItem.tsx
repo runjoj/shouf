@@ -55,7 +55,7 @@ export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
           backgroundColor: isSelected ? "var(--sh-accent)" : "var(--sh-text-faint)",
         }}
       />
-      <span className="text-[12px] font-medium leading-none truncate">
+      <span className="text-[14px] font-medium leading-none truncate">
         {entry.name}
       </span>
     </button>

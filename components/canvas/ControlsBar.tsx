@@ -21,7 +21,7 @@ function SelectWidget({ control, value, onChange }: WidgetProps) {
       <select
         value={String(value)}
         onChange={(e) => onChange(e.target.value)}
-        className="appearance-none text-[11px] font-medium pl-2.5 pr-7 py-[5px] bg-transparent outline-none cursor-pointer"
+        className="appearance-none text-[12px] font-medium pl-2.5 pr-7 py-[5px] bg-transparent outline-none cursor-pointer"
         style={{ color: "var(--sh-text)" }}
       >
         {control.options?.map((opt) => (
@@ -64,7 +64,7 @@ function TextWidget({ value, onChange }: WidgetProps) {
       type="text"
       value={String(value)}
       onChange={(e) => onChange(e.target.value)}
-      className="text-[11px] font-medium px-2.5 py-[5px] rounded outline-none"
+      className="text-[12px] font-medium px-2.5 py-[5px] rounded outline-none"
       style={{ backgroundColor: "var(--sh-input-bg)", border: "1px solid var(--sh-border)", color: "var(--sh-text)", width: "110px" }}
       onFocus={(e) => ((e.target as HTMLInputElement).style.borderColor = "var(--sh-accent)")}
       onBlur={(e)  => ((e.target as HTMLInputElement).style.borderColor = "var(--sh-border)")}
@@ -88,7 +88,7 @@ function ControlRow({
 
   return (
     <div className="flex items-center gap-2.5 shrink-0">
-      <span className="text-[11px] font-medium shrink-0" style={{ color: "var(--sh-text-muted)", minWidth: "60px" }}>
+      <span className="text-[12px] font-medium shrink-0" style={{ color: "var(--sh-text-muted)", minWidth: "60px" }}>
         {control.label}
       </span>
       {control.type === "select"  && <SelectWidget  {...props} />}
@@ -135,7 +135,7 @@ export function ControlsBar() {
           <rect x="1" y="7" width="4" height="4" rx="1" fill="var(--sh-text-faint)" />
           <rect x="7" y="7" width="4" height="4" rx="1" fill="var(--sh-text-faint)" />
         </svg>
-        <span className="text-[11px] font-semibold uppercase tracking-wider"
+        <span className="text-[12px] font-semibold uppercase tracking-wider"
           style={{ color: "var(--sh-text-muted)", letterSpacing: "0.06em" }}>
           Controls
         </span>
@@ -143,12 +143,12 @@ export function ControlsBar() {
         <div className="ml-auto flex items-center gap-3">
           {/* Status hint */}
           {!selectedComponentId && (
-            <span className="text-[10px]" style={{ color: "var(--sh-text-faint)" }}>
+            <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
               Select a component to enable
             </span>
           )}
           {selectedComponentId && !registration && (
-            <span className="text-[10px]" style={{ color: "var(--sh-text-faint)" }}>
+            <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
               No controls for this component yet
             </span>
           )}
@@ -157,7 +157,7 @@ export function ControlsBar() {
           {registration && (
             <button
               onClick={handleReset}
-              className="text-[10px] px-2 py-0.5 rounded transition-colors"
+              className="text-[12px] px-2 py-0.5 rounded transition-colors"
               style={{ color: "var(--sh-text-muted)", border: "1px solid var(--sh-border)" }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLElement).style.color = "var(--sh-text)";

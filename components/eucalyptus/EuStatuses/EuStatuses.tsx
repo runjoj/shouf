@@ -85,6 +85,7 @@ export function EuStatuses({
 
   return (
     <div
+      className="eu-scope"
       style={{
         display:       "flex",
         flexDirection: "column",

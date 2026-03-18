@@ -39,24 +39,26 @@ export function TokenRow({ row, isEmpty = false }: TokenRowProps) {
     >
       {/* Left: property + token */}
       <div className="flex flex-col gap-0.5">
-        <span className="text-[11px] font-medium" style={{ color: "var(--sh-text)" }}>
+        <span className="text-[12px] font-medium" style={{ color: "var(--sh-text)" }}>
           {row.property}
         </span>
-        <span className="text-[10px] font-mono" style={{ color: "var(--sh-text-faint)" }}>
+        <span className="text-[12px] font-mono" style={{ color: "var(--sh-text-faint)" }}>
           {row.tokenName}
         </span>
       </div>
 
-      {/* Right: css value with category dot */}
+      {/* Right: css value with category dot (hidden for typography) */}
       <div className="flex items-center gap-2">
-        <span className="text-[11px] font-mono" style={{ color: "var(--sh-text-muted)" }}>
+        <span className="text-[12px] font-mono" style={{ color: "var(--sh-text-muted)" }}>
           {row.cssValue}
         </span>
-        <span
-          className="w-2 h-2 rounded-full shrink-0"
-          style={{ backgroundColor: accentColor }}
-          title={row.category}
-        />
+        {row.category !== "typography" && (
+          <span
+            className="w-2 h-2 rounded-full shrink-0"
+            style={{ backgroundColor: row.category === "color" ? row.cssValue : accentColor }}
+            title={row.category}
+          />
+        )}
       </div>
     </div>
   );

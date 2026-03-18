@@ -28,9 +28,7 @@ const T_HINT_OUT = 2600;
 // Panel geometry — must match actual panel widths / toolbar height
 const LEFT_W    = 260;
 const RIGHT_W   = 280;
-const TOOLBAR_H = 42;
-
-const MONO = "ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace";
+const TOOLBAR_H = 44;
 
 // ─── IntroAnimation ──────────────────────────────────────────────────────────
 
@@ -176,8 +174,8 @@ export function IntroAnimation() {
           opacity:       hintVisible ? 0.25 : 0,
           transition:    "opacity 500ms ease",
           whiteSpace:    "nowrap",
-          fontSize:      "11px",
-          fontFamily:    MONO,
+          fontSize:      "12px",
+          fontFamily:    "var(--font-mono)",
           letterSpacing: "0.04em",
           color:         "#FFFFFF",
           pointerEvents: "none",

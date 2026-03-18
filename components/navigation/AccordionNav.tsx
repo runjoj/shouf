@@ -79,7 +79,7 @@ function WelcomeNavItem({ delay }: { delay: number }) {
           strokeLinejoin="round"
         />
       </svg>
-      <span className="text-[12px] font-medium leading-none truncate">Welcome</span>
+      <span className="text-[14px] font-medium leading-none truncate">Welcome</span>
     </button>
   );
 }
@@ -123,7 +123,7 @@ function AboutNavItem({ delay }: { delay: number }) {
         <circle cx="6" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.4" />
         <path d="M1.5 11C1.5 8.5 3.5 7 6 7s4.5 1.5 4.5 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
       </svg>
-      <span className="text-[12px] font-medium leading-none truncate">About</span>
+      <span className="text-[14px] font-medium leading-none truncate">About</span>
     </button>
   );
 }

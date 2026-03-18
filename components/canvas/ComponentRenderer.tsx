@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { navSections } from "@/data/navigation";
 import { isRegistered, COMPONENT_RENDERERS } from "@/lib/registry";
-import { ColorTokensCanvas } from "./ColorTokensCanvas";
-import { SectionGridCanvas } from "./SectionGridCanvas";
-
-const MONO = "ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace";
+import { ColorTokensCanvas }   from "./ColorTokensCanvas";
+import { SectionGridCanvas }   from "./SectionGridCanvas";
+import { TypographyCanvas }    from "./TypographyCanvas";
+import { SpacingCanvas }       from "./SpacingCanvas";
+import { EuGuideCanvas }       from "./EuGuideCanvas";
+import { RcGlobalNavCanvas }   from "./RcGlobalNavCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
 // These timing values must stay in sync with IntroAnimation.tsx.
@@ -101,9 +103,9 @@ function WelcomeCanvas() {
         */}
         <h2
           style={{
-            fontSize:   "18px",
+            fontSize:   "20px",
             fontWeight: 400,
-            fontFamily: MONO,
+            fontFamily: "var(--font-mono)",
             lineHeight: 1.35,
             color:      headlineColor,
             transition: headlineTransition,
@@ -129,7 +131,7 @@ function WelcomeCanvas() {
         {/* Subhead — hidden during intro, fades in after launch */}
         <p
           style={{
-            fontSize:   "13px",
+            fontSize:   "14px",
             lineHeight: 1.7,
             color:      "var(--sh-text-muted)",
             margin:     0,
@@ -143,8 +145,8 @@ function WelcomeCanvas() {
         {/* Shouf label — subtle, below subhead */}
         <p
           style={{
-            fontSize:      "10px",
-            fontFamily:    MONO,
+            fontSize:      "12px",
+            fontFamily:    "var(--font-mono)",
             letterSpacing: "0.05em",
             color:         "var(--sh-text-faint)",
             margin:        "4px 0 0",
@@ -159,8 +161,8 @@ function WelcomeCanvas() {
       {/* Nav hint — hidden during intro, fades in after launch */}
       <p
         style={{
-          fontSize:      "11px",
-          fontFamily:    MONO,
+          fontSize:      "12px",
+          fontFamily:    "var(--font-mono)",
           letterSpacing: "0.02em",
           color:         "var(--sh-text-faint)",
           margin:        0,
@@ -209,7 +211,7 @@ function PlaceholderState({ componentId }: { componentId: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-5 select-none">
       {entry && section && (
-        <div className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--sh-text-faint)" }}>
+        <div className="flex items-center gap-1.5 text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
           <span>{section.title}</span>
           <span>/</span>
           <span style={{ color: "var(--sh-text-muted)" }}>{entry.name}</span>
@@ -227,7 +229,7 @@ function PlaceholderState({ componentId }: { componentId: string }) {
         <div className="h-7 rounded-md" style={{ backgroundColor: "var(--sh-skeleton)", width: "88px" }} />
       </div>
       {entry && (
-        <p className="text-[11px]" style={{ color: "var(--sh-text-faint)" }}>
+        <p className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
           <span style={{ color: "var(--sh-accent)" }}>{entry.name}</span>
           {" "}— coming soon
         </p>
@@ -263,11 +265,11 @@ function LiveComponentCanvas({ componentId }: { componentId: string }) {
       <div className="flex items-center gap-2 select-none">
         {entry && section && (
           <>
-            <span className="text-[10px]" style={{ color: "var(--sh-text-faint)" }}>
+            <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
               {section.title}
             </span>
-            <span style={{ color: "var(--sh-border)", fontSize: "10px" }}>/</span>
-            <span className="text-[10px] font-medium" style={{ color: "var(--sh-text-muted)" }}>
+            <span style={{ color: "var(--sh-border)", fontSize: "12px" }}>/</span>
+            <span className="text-[12px] font-medium" style={{ color: "var(--sh-text-muted)" }}>
               {entry.name}
             </span>
           </>
@@ -275,14 +277,14 @@ function LiveComponentCanvas({ componentId }: { componentId: string }) {
         {variant && (
           <>
             <span
-              className="text-[10px] px-1.5 py-px rounded"
+              className="text-[12px] px-1.5 py-px rounded"
               style={{ backgroundColor: "var(--sh-accent-sel)", color: "var(--sh-accent)" }}
             >
               {variant}
             </span>
             {size && (
               <span
-                className="text-[10px] px-1.5 py-px rounded"
+                className="text-[12px] px-1.5 py-px rounded"
                 style={{ backgroundColor: "var(--sh-hover)", color: "var(--sh-text-faint)" }}
               >
                 {size}
@@ -311,7 +313,14 @@ export function ComponentRenderer() {
   // Section grid view takes over the entire canvas — needs the same stretch
   // layout as ColorTokensCanvas so it can own its own scrolling.
   const isGridCanvas  = !showWelcome && selectedSectionId !== null;
-  const isFullCanvas  = !showWelcome && (selectedComponentId === "pds-color-tokens" || isGridCanvas);
+  const isFullCanvas  = !showWelcome && (
+    selectedComponentId === "pds-color-tokens" ||
+    selectedComponentId === "pds-typography"   ||
+    selectedComponentId === "pds-spacing"      ||
+    selectedComponentId === "eu-guide"         ||
+    selectedComponentId === "rc-global-nav"    ||
+    isGridCanvas
+  );
 
   return (
     <div
@@ -366,10 +375,38 @@ export function ComponentRenderer() {
         {!showWelcome && !isGridCanvas && selectedComponentId === "pds-color-tokens" && (
           <ColorTokensCanvas />
         )}
-        {!showWelcome && !isGridCanvas && selectedComponentId && selectedComponentId !== "pds-color-tokens" && isRegistered(selectedComponentId) && (
+        {!showWelcome && !isGridCanvas && selectedComponentId === "pds-typography" && (
+          <TypographyCanvas />
+        )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "pds-spacing" && (
+          <SpacingCanvas />
+        )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "eu-guide" && (
+          <EuGuideCanvas />
+        )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "rc-global-nav" && (
+          <RcGlobalNavCanvas />
+        )}
+
+        {/* ── Registered components via LiveComponentCanvas ─────────────── */}
+        {!showWelcome && !isGridCanvas && selectedComponentId &&
+          selectedComponentId !== "pds-color-tokens" &&
+          selectedComponentId !== "pds-typography"   &&
+          selectedComponentId !== "pds-spacing"      &&
+          selectedComponentId !== "eu-guide"         &&
+          selectedComponentId !== "rc-global-nav"    &&
+          isRegistered(selectedComponentId) && (
           <LiveComponentCanvas componentId={selectedComponentId} />
         )}
-        {!showWelcome && !isGridCanvas && selectedComponentId && selectedComponentId !== "pds-color-tokens" && !isRegistered(selectedComponentId) && (
+
+        {/* ── Placeholder for unbuilt components ────────────────────────── */}
+        {!showWelcome && !isGridCanvas && selectedComponentId &&
+          selectedComponentId !== "pds-color-tokens" &&
+          selectedComponentId !== "pds-typography"   &&
+          selectedComponentId !== "pds-spacing"      &&
+          selectedComponentId !== "eu-guide"         &&
+          selectedComponentId !== "rc-global-nav"    &&
+          !isRegistered(selectedComponentId) && (
           <PlaceholderState componentId={selectedComponentId} />
         )}
       </div>

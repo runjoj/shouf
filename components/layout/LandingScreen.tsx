@@ -9,7 +9,6 @@ import { useAppStore } from "@/lib/store";
 // ─── Typography constants ─────────────────────────────────────────────────────
 
 const SERIF = "var(--font-playfair), Georgia, 'Times New Roman', serif";
-const MONO  = "ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace";
 const FS    = "clamp(2.4rem, 3.6vw, 4.2rem)";
 const LH    = 1.1;
 
@@ -299,7 +298,7 @@ export function LandingScreen() {
                 right:         0,
                 fontSize:      FS,
                 fontWeight:    400,
-                fontFamily:    MONO,
+                fontFamily:    "var(--font-mono)",
                 lineHeight:    LH,
                 color:         "#F5F5F5",
                 margin:        0,
@@ -331,7 +330,7 @@ export function LandingScreen() {
           <p
             style={{
               marginTop:  "24px",
-              fontSize:   "15px",
+              fontSize:   "16px",
               lineHeight: 1.65,
               color:      "#888888",
               maxWidth:   "460px",
@@ -349,8 +348,8 @@ export function LandingScreen() {
           <p
             style={{
               marginTop:     "16px",
-              fontSize:      "11px",
-              fontFamily:    MONO,
+              fontSize:      "12px",
+              fontFamily:    "var(--font-mono)",
               letterSpacing: "0.04em",
               color:         "#555555",
               opacity:       subheadVisible ? 1 : 0,
@@ -392,8 +391,8 @@ export function LandingScreen() {
           opacity:       hintVisible ? 0.22 : 0,
           transition:    "opacity 500ms ease",
           whiteSpace:    "nowrap",
-          fontSize:      "11px",
-          fontFamily:    MONO,
+          fontSize:      "12px",
+          fontFamily:    "var(--font-mono)",
           letterSpacing: "0.04em",
           color:         "#FFFFFF",
         }}
@@ -415,8 +414,8 @@ export function LandingScreen() {
       >
         <span
           style={{
-            fontSize:      "10px",
-            fontFamily:    MONO,
+            fontSize:      "12px",
+            fontFamily:    "var(--font-mono)",
             letterSpacing: "0.06em",
             color:         "rgba(255,255,255,0.22)",
             userSelect:    "none",

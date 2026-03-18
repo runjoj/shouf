@@ -8,6 +8,9 @@ import { EU_STATUSES_REGISTRATION } from "@/components/eucalyptus/EuStatuses/def
 import { EuStatusesRenderer } from "@/components/eucalyptus/EuStatuses/EuStatuses";
 import { EU_FOLDER_CONTAINER_REGISTRATION } from "@/components/eucalyptus/EuFolderContainer/definition";
 import { EuFolderContainerRenderer } from "@/components/eucalyptus/EuFolderContainer/EuFolderContainer";
+import { PDS_TYPOGRAPHY_REGISTRATION }    from "@/components/portfolio-design-system/PdsTypography/definition";
+import { PDS_SPACING_REGISTRATION }       from "@/components/portfolio-design-system/PdsSpacing/definition";
+import { PDS_COLOR_TOKENS_REGISTRATION }  from "@/components/portfolio-design-system/PdsColorTokens/definition";
 
 // ─── Registry maps ─────────────────────────────────────────────────────────────
 // Add each new component here. The renderer is kept separate from the
@@ -15,6 +18,9 @@ import { EuFolderContainerRenderer } from "@/components/eucalyptus/EuFolderConta
 
 export const COMPONENT_REGISTRY: Record<string, ComponentRegistration> = {
   "pds-button":           PDS_BUTTON_REGISTRATION,
+  "pds-color-tokens":     PDS_COLOR_TOKENS_REGISTRATION,
+  "pds-typography":       PDS_TYPOGRAPHY_REGISTRATION,
+  "pds-spacing":          PDS_SPACING_REGISTRATION,
   "eu-statuses":          EU_STATUSES_REGISTRATION,
   "eu-folder-container":  EU_FOLDER_CONTAINER_REGISTRATION,
 };

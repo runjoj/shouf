@@ -1,98 +1,145 @@
 import type { ComponentRegistration, ComponentControlValues, TokenRow } from "@/lib/types";
 
-// ─── Token table ────────────────────────────────────────────────────────────────
-// Two states: selected row vs default row.
-// Clicking a row in the canvas always shows the "selected" state tokens —
-// the inspect panel teaches the full selected-row design spec on each click.
+// ─── Token values ────────────────────────────────────────────────────────────
 
-const TOKENS = {
-  selectedBg:      "#E0E5ED",
-  selectedColor:   "#052942",
-  defaultBg:       "transparent",
-  defaultColor:    "#525151",
-  countDefault:    "#9CA3AF",
-  countSelected:   "#052942",
-  rowRadius:       "6px",
-  rowPx:           "10px",
-  rowPy:           "5px",
-  fontSize:        "14px",
-  fontWeight:      "400",
-  fontFamily:      "Figtree",
+const BASE = {
+  selectedBg:    "#E0E5ED",
+  selectedColor: "#052942",
+  defaultColor:  "#525151",
+  countColor:    "#9CA3AF",
+  rowRadius:     "6px",
+  fontSize:      "14px",
+  fontWeightDefault: "400",
+  fontWeightSelected: "600",
+  fontFamily:    "Figtree",
 } as const;
 
-// ─── getTokens ──────────────────────────────────────────────────────────────────
-// `selected` is the id of the active folder row, driven by canvas click.
-// The inspect panel always reflects the selected-row design tokens.
+const PADDING = {
+  default: { py: "5px", px: "10px" },
+  compact: { py: "3px", px: "8px"  },
+} as const;
 
-function getTokens(_values: ComponentControlValues): TokenRow[] {
+const SIZE = {
+  default: { rowHeight: "28px", rowGap: "6px" },
+  compact: { rowHeight: "24px", rowGap: "4px" },
+} as const;
+
+const CARD_WIDTH = "200px";
+
+// ─── getTokens ───────────────────────────────────────────────────────────────
+
+function getTokens(values: ComponentControlValues): TokenRow[] {
+  const isCompact = values.size === "compact";
+  const pad = isCompact ? PADDING.compact : PADDING.default;
+  const sz  = isCompact ? SIZE.compact   : SIZE.default;
+
   return [
+    // Color & effect
     {
       id:        "selected-bg",
       property:  "background",
-      cssValue:  TOKENS.selectedBg,
+      cssValue:  BASE.selectedBg,
       tokenName: "--eu-folder-selected-bg",
       category:  "color",
     },
     {
       id:        "selected-color",
       property:  "color",
-      cssValue:  TOKENS.selectedColor,
+      cssValue:  BASE.selectedColor,
       tokenName: "--eu-folder-selected-color",
       category:  "color",
     },
     {
       id:        "default-color",
       property:  "color (default)",
-      cssValue:  TOKENS.defaultColor,
+      cssValue:  BASE.defaultColor,
       tokenName: "--eu-folder-default-color",
       category:  "color",
     },
     {
       id:        "count-color",
       property:  "color (count)",
-      cssValue:  TOKENS.countDefault,
+      cssValue:  BASE.countColor,
       tokenName: "--eu-folder-count-color",
       category:  "color",
     },
-    {
-      id:        "row-radius",
-      property:  "border-radius",
-      cssValue:  TOKENS.rowRadius,
-      tokenName: "--eu-folder-row-radius",
-      category:  "radius",
-    },
+    // Typography
     {
       id:        "font-size",
       property:  "font-size",
-      cssValue:  TOKENS.fontSize,
+      cssValue:  BASE.fontSize,
       tokenName: "--eu-folder-font-size",
       category:  "typography",
     },
     {
       id:        "font-weight",
       property:  "font-weight",
-      cssValue:  TOKENS.fontWeight,
+      cssValue:  BASE.fontWeightDefault,
       tokenName: "--eu-folder-fw",
       category:  "typography",
     },
+    // Box
     {
-      id:        "row-padding",
+      id:        "height",
+      property:  "row height",
+      cssValue:  sz.rowHeight,
+      tokenName: "--eu-folder-row-height",
+      category:  "spacing",
+    },
+    {
+      id:        "width",
+      property:  "card width",
+      cssValue:  CARD_WIDTH,
+      tokenName: "--eu-folder-width",
+      category:  "spacing",
+    },
+    {
+      id:        "gap",
+      property:  "row gap",
+      cssValue:  sz.rowGap,
+      tokenName: "--eu-folder-row-gap",
+      category:  "spacing",
+    },
+    {
+      id:        "radius",
+      property:  "border-radius",
+      cssValue:  BASE.rowRadius,
+      tokenName: "--eu-folder-row-radius",
+      category:  "radius",
+    },
+    {
+      id:        "padding",
       property:  "padding",
-      cssValue:  `${TOKENS.rowPy} ${TOKENS.rowPx}`,
+      cssValue:  `${pad.py} ${pad.px}`,
       tokenName: "--eu-folder-row-p",
       category:  "spacing",
     },
   ];
 }
 
-// ─── Registration ───────────────────────────────────────────────────────────────
+// ─── Registration ─────────────────────────────────────────────────────────────
 
 export const EU_FOLDER_CONTAINER_REGISTRATION: ComponentRegistration = {
   id: "eu-folder-container",
-  controls: [],
+  controls: [
+    {
+      id:           "showIcons",
+      label:        "Show Icons",
+      type:         "boolean",
+      defaultValue: true,
+    },
+    {
+      id:           "showCounts",
+      label:        "Show Counts",
+      type:         "boolean",
+      defaultValue: true,
+    },
+  ],
   defaultValues: {
-    // Driven by clicking a row — not exposed in the controls bar:
-    selected: "contact",
+    selected:   "contact",
+    size:       "default",
+    showIcons:  true,
+    showCounts: true,
   },
   getTokens,
 };

@@ -64,12 +64,12 @@
     --sh-panel:         #1A1A1A;
     --sh-panel-alt:     #222222;
     /* Borders */
-    --sh-border:        #2E2E2E;
-    --sh-border-sub:    #282828;
+    --sh-border:        #505050;
+    --sh-border-sub:    #464646;
     /* Text */
     --sh-text:          #F5F5F5;
-    --sh-text-muted:    #888888;
-    --sh-text-faint:    #505050;
+    --sh-text-muted:    #C4C4C4;
+    --sh-text-faint:    #949494;
     /* Accent palette — vivid chartreuse against neutral dark */
     --sh-accent:        #C8E000;
     --sh-accent-h:      #D4EE00;
@@ -104,11 +104,11 @@
   --sh-canvas-dot:    #1E1E1E;
   --sh-panel:         #1A1A1A;
   --sh-panel-alt:     #222222;
-  --sh-border:        #2E2E2E;
-  --sh-border-sub:    #282828;
+  --sh-border:        #505050;
+  --sh-border-sub:    #464646;
   --sh-text:          #F5F5F5;
-  --sh-text-muted:    #888888;
-  --sh-text-faint:    #505050;
+  --sh-text-muted:    #C4C4C4;
+  --sh-text-faint:    #949494;
   --sh-accent:        #C8E000;
   --sh-accent-h:      #D4EE00;
   --sh-accent-a:      #E0FA00;
@@ -208,6 +208,17 @@ body,
 /* Prevent text selection during resize drag */
 .no-select {
   user-select: none;
+}
+
+/* ─── Typography tokens ─────────────────────────────────────────────────────── */
+:root {
+  /* Monospace stack — used for code labels, token values, welcome headline */
+  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+}
+
+/* Scope Figtree to Eucalyptus components only — never bleeds into shell or Shouf DS */
+.eu-scope {
+  font-family: var(--font-figtree), sans-serif;
 }
 
 /* ─── Portfolio Design System — Button tokens ──────────────────────────────── */
@@ -334,6 +345,46 @@ body,
 
 /* Water ripple — rendered on canvas via WaterRippleCanvas.tsx. No CSS needed. */
 
+/* RcGlobalNav — sidebar label slide-in (expressive stagger moment) */
+@keyframes rc-nav-label-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* RcGlobalNav — scrollbar hidden at rest, fades in while actively scrolling.
+   Firefox: scrollbar-width:none keeps it hidden (no per-scroll control in FF).
+   Chrome/Safari: track is always 4px wide but thumb is transparent until
+   the JS hook adds .is-scrolling, which transitions the thumb to visible. */
+.rc-nav-scroll {
+  scrollbar-width: none; /* Firefox — always hidden */
+}
+.rc-nav-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.rc-nav-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.rc-nav-scroll::-webkit-scrollbar-thumb {
+  background:    transparent;
+  border-radius: 4px;
+  transition:    background 200ms ease;
+}
+.rc-nav-scroll.is-scrolling::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+/* RcGlobalNav — search dropdown entrance */
+@keyframes rc-search-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* RcGlobalNav — tablet sidebar drawer slide in from left */
+@keyframes rc-drawer-in {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
 /* ─── Eucalyptus — Status badge tokens ────────────────────────────────────── */
 :root {
   /* Variant colors — background / text pairs */
@@ -372,4 +423,29 @@ body,
   --eu-status-py-md:     5px;
   --eu-status-gap-md:    5px;
   --eu-status-circle-md: 22px;
+}
+
+/* ─── Spacing scale tokens ───────────────────────────────────────────────────── */
+:root {
+  --pds-space-4:  4px;
+  --pds-space-8:  8px;
+  --pds-space-12: 12px;
+  --pds-space-16: 16px;
+  --pds-space-20: 20px;
+  --pds-space-24: 24px;
+  --pds-space-32: 32px;
+  --pds-space-48: 48px;
+  --pds-space-64: 64px;
+}
+
+/* ─── Type scale tokens ─────────────────────────────────────────────────────── */
+:root {
+  --pds-type-8:  10px;
+  --pds-type-9:  10px;
+  --pds-type-10: 12px;
+  --pds-type-11: 12px;
+  --pds-type-12: 14px;
+  --pds-type-13: 14px;
+  --pds-type-15: 16px;
+  --pds-type-18: 20px;
 }

@@ -28,7 +28,7 @@ function SectionHeader({ label }: { label: string }) {
   return (
     <div className="flex items-center px-3 py-2" style={{ borderBottom: "1px solid var(--sh-border-sub)" }}>
       <span
-        className="text-[10px] font-semibold uppercase tracking-wider"
+        className="text-[12px] font-semibold uppercase tracking-wider"
         style={{ color: "var(--sh-text-faint)", letterSpacing: "0.08em" }}
       >
         {label}
@@ -50,7 +50,7 @@ function EmptyInspect() {
       </svg>
       <div className="text-center flex flex-col gap-1">
         <p className="text-xs font-medium" style={{ color: "var(--sh-text-muted)" }}>Nothing to inspect</p>
-        <p className="text-[11px]" style={{ color: "var(--sh-text-faint)" }}>
+        <p className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
           Select a component to see its CSS tokens
         </p>
       </div>
@@ -81,6 +81,7 @@ function PlaceholderInspect() {
 function SpacingSection({ tokens }: { tokens: TokenRowType[] }) {
   const get = (id: string) => tokens.find((t) => t.id === id)?.cssValue ?? "—";
   const height = get("height");
+  const width  = get("width");
   const px     = get("padding").replace("0 ", "");
   const radius = get("radius");
   const gap    = get("gap");
@@ -90,7 +91,7 @@ function SpacingSection({ tokens }: { tokens: TokenRowType[] }) {
       <SectionHeader label="Box" />
       <div className="flex flex-col gap-2 px-3 py-3">
         {/* Box model diagram */}
-        <div className="relative flex items-center justify-center" style={{ height: "60px" }}>
+        <div className="relative flex items-center justify-center" style={{ height: "72px" }}>
           <div
             className="absolute inset-0 flex items-center justify-center"
             style={{
@@ -100,21 +101,31 @@ function SpacingSection({ tokens }: { tokens: TokenRowType[] }) {
             }}
           >
             <div style={{ height: "22px", width: "52px", backgroundColor: "var(--sh-box-inner)", borderRadius: "3px" }} />
-            <span className="absolute text-[8px] font-mono left-1.5 top-1" style={{ color: "var(--sh-accent)", opacity: 0.8 }}>
+            {/* top-left: height */}
+            <span className="absolute text-[12px] font-mono left-1.5 top-1" style={{ color: "var(--sh-accent)", opacity: 0.8 }}>
               h: {height}
             </span>
-            <span className="absolute text-[8px] font-mono right-1.5 top-1" style={{ color: "var(--sh-accent-rose)", opacity: 0.8 }}>
-              px: {px}
+            {/* top-right: width */}
+            <span className="absolute text-[12px] font-mono right-1.5 top-1" style={{ color: "var(--sh-accent)", opacity: 0.8 }}>
+              w: {width}
+            </span>
+            {/* bottom-left: padding */}
+            <span className="absolute text-[12px] font-mono left-1.5 bottom-1" style={{ color: "var(--sh-accent-rose)", opacity: 0.8 }}>
+              p: {px}
+            </span>
+            {/* bottom-right: gap */}
+            <span className="absolute text-[12px] font-mono right-1.5 bottom-1" style={{ color: "var(--sh-accent-rose)", opacity: 0.8 }}>
+              gap: {gap}
             </span>
           </div>
         </div>
         {/* Values grid */}
         <div className="grid grid-cols-2 gap-1">
-          {([["Height", height], ["Padding", px], ["Radius", radius], ["Gap", gap]] as [string, string][]).map(([label, val]) => (
+          {([["Height", height], ["Width", width], ["Padding", px], ["Radius", radius], ["Gap", gap]] as [string, string][]).map(([label, val]) => (
             <div key={label} className="flex items-center justify-between px-2 py-1.5 rounded"
               style={{ backgroundColor: "var(--sh-input-bg)" }}>
-              <span className="text-[10px]" style={{ color: "var(--sh-text-faint)" }}>{label}</span>
-              <span className="text-[10px] font-mono" style={{ color: "var(--sh-text-muted)" }}>{val}</span>
+              <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>{label}</span>
+              <span className="text-[12px] font-mono" style={{ color: "var(--sh-text-muted)" }}>{val}</span>
             </div>
           ))}
         </div>
@@ -135,23 +146,41 @@ function LiveInspect({ componentId }: { componentId: string }) {
   const typeTokens  = tokens.filter((t) => t.category === "typography");
   const sizeTokens  = tokens.filter((t) => t.category === "spacing" || t.category === "radius");
 
+  const hasColor = colorTokens.length > 0;
+  const hasType  = typeTokens.length > 0;
+  const hasSize  = sizeTokens.length > 0;
+
   return (
     <div className="flex flex-col overflow-y-auto flex-1">
-      <div className="flex flex-col">
-        <SectionHeader label="Color & Effect" />
-        <div className="flex flex-col py-1">
-          {colorTokens.map((row) => <TokenRow key={row.id} row={row} />)}
+      {hasColor && (
+        <div className="flex flex-col">
+          <SectionHeader label="Color & Effect" />
+          <div className="flex flex-col py-1">
+            {colorTokens.map((row) => <TokenRow key={row.id} row={row} />)}
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="flex flex-col" style={{ borderTop: "1px solid var(--sh-border-sub)" }}>
-        <SectionHeader label="Typography" />
-        <div className="flex flex-col py-1">
-          {typeTokens.map((row) => <TokenRow key={row.id} row={row} />)}
+      {hasType && (
+        <div className="flex flex-col" style={hasColor ? { borderTop: "1px solid var(--sh-border-sub)" } : {}}>
+          <SectionHeader label="Typography" />
+          <div className="flex flex-col py-1">
+            {typeTokens.map((row) => <TokenRow key={row.id} row={row} />)}
+          </div>
         </div>
-      </div>
+      )}
 
-      <SpacingSection tokens={sizeTokens} />
+      {hasSize && (
+        <SpacingSection tokens={sizeTokens} />
+      )}
+
+      {!hasColor && !hasType && !hasSize && (
+        <div className="flex flex-col flex-1 items-center justify-center gap-2 px-4 py-8 select-none">
+          <p className="text-[12px] text-center" style={{ color: "var(--sh-text-faint)" }}>
+            Select a component to inspect tokens
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -164,7 +193,7 @@ function VariantChip({ componentId }: { componentId: string }) {
   if (!variant) return null;
   return (
     <span
-      className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded mr-1 shrink-0"
+      className="ml-auto text-[12px] font-medium px-2 py-0.5 rounded mr-1 shrink-0"
       style={{
         backgroundColor: "var(--sh-accent-sel)",
         color: "var(--sh-accent)",
@@ -193,7 +222,7 @@ export function InspectPanel() {
         className="shrink-0 flex items-center px-2 gap-px"
         style={{
           borderBottom: "1px solid var(--sh-border-sub)",
-          height: "42px",
+          height: "44px",
           ...rIntroStyle(D_TABS, launched),
         }}
       >
@@ -201,7 +230,7 @@ export function InspectPanel() {
           const isActive = tab === activeTab;
           return (
             <button key={tab} onClick={() => setActiveTab(tab)}
-              className="px-3 h-full text-[11px] font-medium relative"
+              className="px-3 h-full text-[12px] font-medium relative"
               style={{ color: isActive ? "var(--sh-text)" : "var(--sh-text-muted)" }}
             >
               {tab}
@@ -232,7 +261,7 @@ export function InspectPanel() {
         {activeTab === "Properties" && (
           <div className="flex flex-col flex-1 items-center justify-center gap-2 px-4 select-none">
             <p className="text-xs font-medium" style={{ color: "var(--sh-text-muted)" }}>Properties</p>
-            <p className="text-[11px] text-center" style={{ color: "var(--sh-text-faint)" }}>
+            <p className="text-[12px] text-center" style={{ color: "var(--sh-text-faint)" }}>
               Component props and API reference will appear here
             </p>
           </div>
@@ -240,7 +269,7 @@ export function InspectPanel() {
         {activeTab === "Docs" && (
           <div className="flex flex-col flex-1 items-center justify-center gap-2 px-4 select-none">
             <p className="text-xs font-medium" style={{ color: "var(--sh-text-muted)" }}>Documentation</p>
-            <p className="text-[11px] text-center" style={{ color: "var(--sh-text-faint)" }}>
+            <p className="text-[12px] text-center" style={{ color: "var(--sh-text-faint)" }}>
               Usage guidelines and examples will appear here
             </p>
           </div>

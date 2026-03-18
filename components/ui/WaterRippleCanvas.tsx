@@ -22,21 +22,24 @@ function easeOut(t: number): number {
 // Maps each --sh-accent-* var name to its concrete colour value for a given
 // preset so we can set explicit property values on each cascade target.
 
+// fg* = theme-correct foreground (dark in light-mode, bright in dark-mode)
+// bg* = always-bright decoration rgb (used for translucent tints)
 function resolveVar(
   varName: string,
-  r: number, g: number, b: number,
+  fgR: number, fgG: number, fgB: number,
+  bgR: number, bgG: number, bgB: number,
   hexH: string, hexA: string,
 ): string {
   switch (varName.trim()) {
-    case "--sh-accent":      return `rgb(${r},${g},${b})`;
+    case "--sh-accent":      return `rgb(${fgR},${fgG},${fgB})`;
     case "--sh-accent-h":    return hexH;
     case "--sh-accent-a":    return hexA;
-    case "--sh-accent-sel":  return `rgba(${r},${g},${b},0.15)`;
-    case "--sh-accent-ring": return `rgba(${r},${g},${b},0.30)`;
-    case "--sh-box-border":  return `rgba(${r},${g},${b},0.28)`;
-    case "--sh-box-bg":      return `rgba(${r},${g},${b},0.06)`;
-    case "--sh-box-inner":   return `rgba(${r},${g},${b},0.18)`;
-    default:                 return `rgb(${r},${g},${b})`;
+    case "--sh-accent-sel":  return `rgba(${bgR},${bgG},${bgB},0.15)`;
+    case "--sh-accent-ring": return `rgba(${bgR},${bgG},${bgB},0.30)`;
+    case "--sh-box-border":  return `rgba(${fgR},${fgG},${fgB},0.28)`;
+    case "--sh-box-bg":      return `rgba(${bgR},${bgG},${bgB},0.06)`;
+    case "--sh-box-inner":   return `rgba(${bgR},${bgG},${bgB},0.18)`;
+    default:                 return `rgb(${fgR},${fgG},${fgB})`;
   }
 }
 
@@ -127,11 +130,12 @@ function buildTargets(originX: number, originY: number): CascadeTarget[] {
 // so the var resolves to the correct new colour immediately.
 function revealTarget(
   target:  CascadeTarget,
-  r: number, g: number, b: number,
+  fgR: number, fgG: number, fgB: number,
+  bgR: number, bgG: number, bgB: number,
   hexH: string, hexA: string,
 ) {
   for (const { prop, varName } of target.entries) {
-    target.el.style.setProperty(prop, resolveVar(varName, r, g, b, hexH, hexA));
+    target.el.style.setProperty(prop, resolveVar(varName, fgR, fgG, fgB, bgR, bgG, bgB, hexH, hexA));
   }
   // After the 200ms transition completes, restore CSS var references so the
   // element re-links to :root and will pick up any future accent changes.
@@ -147,7 +151,10 @@ function revealTarget(
 
 interface ActiveRipple {
   x: number; y: number;
+  // Foreground: theme-correct text/indicator colour
   r: number; g: number; b: number;
+  // Decoration: always-bright rgb for translucent tints
+  bgR: number; bgG: number; bgB: number;
   hexH: string; hexA: string;
   startTime: number;
   targets: CascadeTarget[];
@@ -195,7 +202,7 @@ export function WaterRippleCanvas() {
 
       const rip = rippleRef.current;
       if (rip) {
-        const t      = Math.min((now - rip.startTime) / DURATION, 1);
+        const t      = Math.max(0, Math.min((now - rip.startTime) / DURATION, 1));
         const e      = easeOut(t);
         const radius  = 2 + (MAX_RADIUS - 2) * e;
         const opacity = (1 - e) * 0.25; // faint wash — element transitions are the noticeable part
@@ -203,7 +210,7 @@ export function WaterRippleCanvas() {
         if (opacity > 0.001) {
           ctx.beginPath();
           ctx.arc(rip.x, rip.y, radius, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(${rip.r},${rip.g},${rip.b},${opacity.toFixed(4)})`;
+          ctx.strokeStyle = `rgba(${rip.bgR},${rip.bgG},${rip.bgB},${opacity.toFixed(4)})`;
           ctx.lineWidth   = LINE_WIDTH;
           ctx.stroke();
         }
@@ -213,7 +220,7 @@ export function WaterRippleCanvas() {
         for (const target of rip.targets) {
           if (!target.revealed && radius >= target.distance) {
             target.revealed = true;
-            revealTarget(target, rip.r, rip.g, rip.b, rip.hexH, rip.hexA);
+            revealTarget(target, rip.r, rip.g, rip.b, rip.bgR, rip.bgG, rip.bgB, rip.hexH, rip.hexA);
           }
         }
 
@@ -230,15 +237,27 @@ export function WaterRippleCanvas() {
     // point :root --sh-accent still holds the previous colour — exactly when
     // we need to freeze targets at the old computed values.
     const unsub = onWaterRipple((x, y, hex) => {
-      const preset = ACCENT_PRESETS.find(
+      // Match preset by hex (always the bright/dark-mode swatch colour).
+      const preset  = ACCENT_PRESETS.find(
         p => p.hex.toLowerCase() === hex.toLowerCase(),
       ) ?? ACCENT_PRESETS[0];
+
+      // Use theme-appropriate foreground values so the reveal transition
+      // paints elements at the correct accessible colour, not the bright
+      // dark-mode value, which would cause a visible flash in light mode.
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
+      const fgR  = isLight ? preset.lR  : preset.r;
+      const fgG  = isLight ? preset.lG  : preset.g;
+      const fgB  = isLight ? preset.lB  : preset.b;
+      const hexH = isLight ? preset.lightHexH : preset.hexH;
+      const hexA = isLight ? preset.lightHexA : preset.hexA;
 
       const targets = buildTargets(x, y);
       rippleRef.current = {
         x, y,
-        r: preset.r, g: preset.g, b: preset.b,
-        hexH: preset.hexH, hexA: preset.hexA,
+        r: fgR, g: fgG, b: fgB,
+        bgR: preset.r, bgG: preset.g, bgB: preset.b, // bright rgb for tints
+        hexH, hexA,
         startTime: performance.now(),
         targets,
       };

@@ -57,7 +57,7 @@ function TrashSvg() {
 // ─── Context menu icons ───────────────────────────────────────────────────────
 function DuplicateSvg() {
   return (
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="20" height="20" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M10.8333 2.70833V12.4583C10.8333 12.602 10.7763 12.7398 10.6747 12.8414C10.5731 12.9429 10.4353 13 10.2917 13H0.541667C0.398008 13 0.260233 12.9429 0.158651 12.8414C0.0570684 12.7398 0 12.602 0 12.4583V2.70833C0 2.56467 0.0570684 2.4269 0.158651 2.32532C0.260233 2.22374 0.398008 2.16667 0.541667 2.16667H10.2917C10.4353 2.16667 10.5731 2.22374 10.6747 2.32532C10.7763 2.4269 10.8333 2.56467 10.8333 2.70833ZM12.4583 0H2.70833C2.56467 0 2.4269 0.0570684 2.32532 0.158651C2.22374 0.260233 2.16667 0.398008 2.16667 0.541667C2.16667 0.685326 2.22374 0.823101 2.32532 0.924683C2.4269 1.02627 2.56467 1.08333 2.70833 1.08333H11.9167V10.2917C11.9167 10.4353 11.9737 10.5731 12.0753 10.6747C12.1769 10.7763 12.3147 10.8333 12.4583 10.8333C12.602 10.8333 12.7398 10.7763 12.8414 10.6747C12.9429 10.5731 13 10.4353 13 10.2917V0.541667C13 0.398008 12.9429 0.260233 12.8414 0.158651C12.7398 0.0570684 12.602 0 12.4583 0Z" fill="#052942"/>
     </svg>
   );
@@ -65,7 +65,7 @@ function DuplicateSvg() {
 
 function PencilSvg() {
   return (
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M13.2883 4.29913L10.6759 1.68116C10.5891 1.59408 10.4859 1.525 10.3724 1.47788C10.259 1.43075 10.1373 1.40649 10.0145 1.40649C9.89163 1.40649 9.76999 1.43075 9.6565 1.47788C9.54301 1.525 9.43989 1.59408 9.35304 1.68116L2.14477 8.90635C2.05754 8.99309 1.98838 9.09635 1.94132 9.21011C1.89425 9.32388 1.87022 9.44589 1.87061 9.56905V12.1876C1.87061 12.4362 1.96915 12.6747 2.14455 12.8505C2.31996 13.0263 2.55786 13.1251 2.80591 13.1251H12.6266C12.7506 13.1251 12.8696 13.0757 12.9573 12.9878C13.045 12.8999 13.0943 12.7807 13.0943 12.6564C13.0943 12.532 13.045 12.4128 12.9573 12.3249C12.8696 12.237 12.7506 12.1876 12.6266 12.1876H6.7412L13.2883 5.6251C13.3752 5.53804 13.4441 5.43469 13.4911 5.32093C13.5381 5.20717 13.5623 5.08525 13.5623 4.96211C13.5623 4.83898 13.5381 4.71706 13.4911 4.6033C13.4441 4.48954 13.3752 4.38618 13.2883 4.29913ZM11.2236 6.36866L8.61181 3.7501L10.0148 2.34385L12.6266 4.96241L11.2236 6.36866Z" fill="#052942"/>
     </svg>
   );
@@ -73,7 +73,7 @@ function PencilSvg() {
 
 function TrashFillSvg() {
   return (
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M12.6562 2.8125H10.3125V2.34375C10.3125 1.97079 10.1643 1.6131 9.90062 1.34938C9.6369 1.08566 9.27921 0.9375 8.90625 0.9375H6.09375C5.72079 0.9375 5.3631 1.08566 5.09938 1.34938C4.83566 1.6131 4.6875 1.97079 4.6875 2.34375V2.8125H2.34375C2.21943 2.8125 2.1002 2.86189 2.01229 2.94979C1.92439 3.0377 1.875 3.15693 1.875 3.28125C1.875 3.40557 1.92439 3.5248 2.01229 3.61271C2.1002 3.70061 2.21943 3.75 2.34375 3.75H2.8125V12.1875C2.8125 12.4361 2.91127 12.6746 3.08709 12.8504C3.2629 13.0262 3.50136 13.125 3.75 13.125H11.25C11.4986 13.125 11.7371 13.0262 11.9129 12.8504C12.0887 12.6746 12.1875 12.4361 12.1875 12.1875V3.75H12.6562C12.7806 3.75 12.8998 3.70061 12.9877 3.61271C13.0756 3.5248 13.125 3.40557 13.125 3.28125C13.125 3.15693 13.0756 3.0377 12.9877 2.94979C12.8998 2.86189 12.7806 2.8125 12.6562 2.8125ZM6.5625 9.84375C6.5625 9.96807 6.51311 10.0873 6.42521 10.1752C6.3373 10.2631 6.21807 10.3125 6.09375 10.3125C5.96943 10.3125 5.8502 10.2631 5.76229 10.1752C5.67439 10.0873 5.625 9.96807 5.625 9.84375V6.09375C5.625 5.96943 5.67439 5.8502 5.76229 5.76229C5.8502 5.67439 5.96943 5.625 6.09375 5.625C6.21807 5.625 6.3373 5.67439 6.42521 5.76229C6.51311 5.8502 6.5625 5.96943 6.5625 6.09375V9.84375ZM9.375 9.84375C9.375 9.96807 9.32561 10.0873 9.23771 10.1752C9.1498 10.2631 9.03057 10.3125 8.90625 10.3125C8.78193 10.3125 8.6627 10.2631 8.57479 10.1752C8.48689 10.0873 8.4375 9.96807 8.4375 9.84375V6.09375C8.4375 5.96943 8.48689 5.8502 8.57479 5.76229C8.6627 5.67439 8.78193 5.625 8.90625 5.625C9.03057 5.625 9.1498 5.67439 9.23771 5.76229C9.32561 5.8502 9.375 5.96943 9.375 6.09375V9.84375ZM9.375 2.8125H5.625V2.34375C5.625 2.21943 5.67439 2.1002 5.76229 2.01229C5.8502 1.92439 5.96943 1.875 6.09375 1.875H8.90625C9.03057 1.875 9.1498 1.92439 9.23771 2.01229C9.32561 2.1002 9.375 2.21943 9.375 2.34375V2.8125Z" fill="#052942"/>
     </svg>
   );
@@ -122,10 +122,18 @@ function RowIcon({ type, isSelected }: { type: FolderItem["icon"]; isSelected: b
 // ─── EuFolderContainer ───────────────────────────────────────────────────────────
 
 export type EuFolderContainerProps = {
-  selected?: string;
+  selected?:    string;
+  showIcons?:   boolean;
+  showCounts?:  boolean;
+  size?:        "default" | "compact";
 };
 
-export function EuFolderContainer({ selected = "contact" }: EuFolderContainerProps) {
+export function EuFolderContainer({
+  selected    = "contact",
+  showIcons   = true,
+  showCounts  = true,
+  size        = "default",
+}: EuFolderContainerProps) {
   const { selectedComponentId, setControlValue } = useAppStore();
   const [mounted, setMounted]       = useState(false);
   const [hoveredId, setHoveredId]   = useState<string | null>(null);
@@ -157,13 +165,13 @@ export function EuFolderContainer({ selected = "contact" }: EuFolderContainerPro
   return (
     <div
       ref={containerRef}
+      className="eu-scope"
       style={{
         width:           "200px",
         backgroundColor: "#FFFFFF",
         borderRadius:    "10px",
         // overflow visible so the context menu can escape the card bounds
         boxShadow:       "0 1px 4px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.06)",
-        fontFamily:      "var(--font-figtree), sans-serif",
         opacity:         mounted ? 1 : 0,
         transform:       mounted ? "translateY(0)" : "translateY(6px)",
         transition:      "opacity 220ms ease, transform 220ms ease",
@@ -232,13 +240,15 @@ export function EuFolderContainer({ selected = "contact" }: EuFolderContainerPro
       </div>
 
       {/* ── Folder rows ───────────────────────────────────────────── */}
-      <div style={{ padding: "2px 6px 8px", display: "flex", flexDirection: "column", gap: "6px" }}>
+      <div style={{ padding: "2px 6px 8px", display: "flex", flexDirection: "column", gap: size === "compact" ? "4px" : "6px" }}>
         {FOLDERS.map((f, i) => {
           const isSelected  = f.id === selected;
           const isHovered   = hoveredId === f.id;
           const menuOpen    = openMenuId === f.id;
           const showDots    = isHovered || menuOpen;
           const dotsColor   = isSelected ? SELECTED_COLOR : DEFAULT_COLOR;
+          const rowPy       = size === "compact" ? "3px" : "5px";
+          const rowPx       = size === "compact" ? "8px" : "10px";
 
           return (
             <div key={f.id} style={{ position: "relative" }}>
@@ -251,8 +261,8 @@ export function EuFolderContainer({ selected = "contact" }: EuFolderContainerPro
                   alignItems:      "center",
                   width:           "100%",
                   gap:             "8px",
-                  padding:         "5px 10px",
-                  minHeight:       "28px",
+                  padding:         `${rowPy} ${rowPx}`,
+                  minHeight:       size === "compact" ? "24px" : "28px",
                   backgroundColor: isSelected ? SELECTED_BG : "transparent",
                   color:           isSelected ? SELECTED_COLOR : DEFAULT_COLOR,
                   borderRadius:    "6px",
@@ -269,23 +279,24 @@ export function EuFolderContainer({ selected = "contact" }: EuFolderContainerPro
                 }}
               >
                 {/* Icon */}
-                <span style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
-                  <RowIcon type={f.icon} isSelected={isSelected} />
-                </span>
+                {showIcons && (
+                  <span style={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
+                    <RowIcon type={f.icon} isSelected={isSelected} />
+                  </span>
+                )}
 
                 {/* Label */}
                 <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {f.label}
                 </span>
 
-                {/* Count / dots trigger */}
+                {/* Count / dots trigger — generous hit area via padding + negative margin */}
                 <span
                   onClick={(e) => {
                     e.stopPropagation();
                     setOpenMenuId(menuOpen ? null : f.id);
                   }}
                   style={{
-                    width:          "24px",
                     flexShrink:     0,
                     display:        "flex",
                     alignItems:     "center",
@@ -294,11 +305,25 @@ export function EuFolderContainer({ selected = "contact" }: EuFolderContainerPro
                     fontWeight:     isSelected ? 600 : 400,
                     color:          isSelected ? SELECTED_COLOR : COUNT_DEFAULT,
                     cursor:         "pointer",
+                    padding:        "6px 8px",
+                    margin:         "-6px -8px",
                   }}
                 >
                   {showDots
-                    ? <Dots2Svg color={dotsColor} />
-                    : f.count
+                    ? (
+                      <span style={{
+                        display:         "inline-flex",
+                        alignItems:      "center",
+                        justifyContent:  "center",
+                        width:           "20px",
+                        height:          "16px",
+                        backgroundColor: menuOpen ? "#E9E9E9" : "transparent",
+                        borderRadius:    "4px",
+                      }}>
+                        <Dots2Svg color={dotsColor} />
+                      </span>
+                    )
+                    : showCounts ? f.count : null
                   }
                 </span>
               </button>
@@ -308,8 +333,8 @@ export function EuFolderContainer({ selected = "contact" }: EuFolderContainerPro
                 <div
                   style={{
                     position:     "absolute",
-                    top:          "calc(100% + 4px)",
-                    right:        "-4px",
+                    top:          "calc(100% - 2px)",
+                    right:        "10px",
                     zIndex:       50,
                     width:        "170px",
                     backgroundColor: "#FFFFFF",
@@ -368,7 +393,10 @@ export function EuFolderContainer({ selected = "contact" }: EuFolderContainerPro
 export function EuFolderContainerRenderer(values: ComponentControlValues): ReactNode {
   return (
     <EuFolderContainer
-      selected={(values.selected as string) ?? "contact"}
+      selected={   (values.selected   as string)              ?? "contact"  }
+      showIcons={  (values.showIcons  as boolean)             ?? true       }
+      showCounts={ (values.showCounts as boolean)             ?? true       }
+      size={       (values.size       as "default" | "compact") ?? "default" }
     />
   );
 }

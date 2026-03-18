@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -11,7 +12,6 @@ import {
   ACCENT_PRESETS,
   DEFAULT_ACCENT_ID,
   applyAccentPreset,
-  applyAccentById,
 } from "./accent";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -21,6 +21,7 @@ export type Theme = "light" | "dark";
 interface ThemeCtx {
   theme:       Theme;
   toggleTheme: () => void;
+  setTheme:    (t: Theme) => void;
   accentId:    string;
   setAccent:   (id: string) => void;
 }
@@ -33,62 +34,73 @@ const ThemeContext = createContext<ThemeCtx | null>(null);
 
 function applyTheme(theme: Theme) {
   document.documentElement.setAttribute("data-theme", theme);
-  try {
-    localStorage.setItem("pf-theme", theme);
-  } catch {
-    // ignore (e.g. private browsing)
-  }
+  try { localStorage.setItem("pf-theme", theme); } catch { /* ignore */ }
 }
 
 // ─── ThemeProvider ────────────────────────────────────────────────────────────
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  // Default to "dark" — FOUC prevention script in layout.tsx sets the
-  // data-theme attr synchronously before hydration, so the visual state is
-  // already correct; we just need to keep React state in sync.
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme,    setTheme]    = useState<Theme>("dark");
   const [accentId, setAccentId] = useState<string>(DEFAULT_ACCENT_ID);
 
+  // ── One-time init: read persisted theme + accent, apply both ────────────────
   useEffect(() => {
-    // ── Sync theme with what FOUC script already applied ─────────────────────
-    const existing = document.documentElement.getAttribute(
-      "data-theme"
-    ) as Theme | null;
-    if (existing === "light" || existing === "dark") {
-      setTheme(existing);
-    } else {
-      // No attr yet — default to dark
-      applyTheme("dark");
-      setTheme("dark");
-    }
+    const existing = document.documentElement.getAttribute("data-theme") as Theme | null;
+    const t: Theme = (existing === "light" || existing === "dark") ? existing : "dark";
+    if (!existing) applyTheme(t);
+    setTheme(t);
 
-    // ── Restore saved accent color ────────────────────────────────────────────
     try {
-      const saved = localStorage.getItem("pf-accent");
-      if (saved && ACCENT_PRESETS.find((p) => p.id === saved)) {
-        setAccentId(saved);
-        applyAccentById(saved);
-      }
+      const savedAccent = localStorage.getItem("pf-accent");
+      const preset =
+        ACCENT_PRESETS.find((p) => p.id === savedAccent) ??
+        ACCENT_PRESETS.find((p) => p.id === DEFAULT_ACCENT_ID)!;
+      setAccentId(preset.id);
+      applyAccentPreset(preset, t);
     } catch { /* ignore */ }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Re-apply accent whenever theme switches so fg colours update ─────────────
+  // useRef avoids the stale-closure problem: the ref mutates synchronously
+  // so the next effect invocation always sees the current value.
+  const didInit = useRef(false);
+  useEffect(() => {
+    if (!didInit.current) { didInit.current = true; return; }
+    const preset = ACCENT_PRESETS.find((p) => p.id === accentId) ?? ACCENT_PRESETS[0];
+    applyAccentPreset(preset, theme);
+  }, [theme]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Public API ───────────────────────────────────────────────────────────────
 
   const toggleTheme = () => {
     setTheme((prev) => {
       const next: Theme = prev === "light" ? "dark" : "light";
       applyTheme(next);
+      // Apply accent synchronously with the surface change — if we defer to the
+      // useEffect the accent stays at its old-theme value for one paint frame,
+      // causing a visible flash of the wrong colour on the new background.
+      const preset = ACCENT_PRESETS.find((p) => p.id === accentId) ?? ACCENT_PRESETS[0];
+      applyAccentPreset(preset, next);
       return next;
     });
+  };
+
+  const setThemeDirect = (t: Theme) => {
+    applyTheme(t);
+    const preset = ACCENT_PRESETS.find((p) => p.id === accentId) ?? ACCENT_PRESETS[0];
+    applyAccentPreset(preset, t);
+    setTheme(t);
   };
 
   const setAccent = (id: string) => {
     const preset = ACCENT_PRESETS.find((p) => p.id === id);
     if (!preset) return;
     setAccentId(id);
-    applyAccentPreset(preset);
+    applyAccentPreset(preset, theme);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, accentId, setAccent }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme: setThemeDirect, accentId, setAccent }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -67,7 +67,7 @@ export function AccordionSection({
         </svg>
 
         <span
-          className="text-[11px] font-semibold uppercase tracking-wider truncate"
+          className="text-[12px] font-semibold uppercase tracking-wider truncate"
           style={{ color: "var(--sh-text-muted)", letterSpacing: "0.06em" }}
         >
           {section.title}
@@ -75,7 +75,7 @@ export function AccordionSection({
 
         {/* Entry count badge */}
         <span
-          className="ml-auto shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded"
+          className="ml-auto shrink-0 text-[12px] font-medium px-1.5 py-0.5 rounded"
           style={{
             backgroundColor: "var(--sh-badge-bg)",
             color: "var(--sh-text-faint)",

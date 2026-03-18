@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { ACCENT_PRESETS, applyAccentPreset } from "@/lib/accent";
+import { ACCENT_PRESETS } from "@/lib/accent";
+import { useTheme } from "@/lib/theme";
+import { useAppStore } from "@/lib/store";
 
-const MONO = "ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace";
 
 // ─── Token group definitions ──────────────────────────────────────────────────
 
@@ -51,8 +52,8 @@ function SectionHeader({ label }: { label: string }) {
     <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
       <span
         style={{
-          fontSize:      "9px",
-          fontFamily:    MONO,
+          fontSize:      "10px",
+          fontFamily:    "var(--font-mono)",
           letterSpacing: "0.14em",
           color:         "var(--sh-text-faint)",
           textTransform: "uppercase",
@@ -105,8 +106,8 @@ function ColorSwatch({
       <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
         <code
           style={{
-            fontSize:   "9.5px",
-            fontFamily: MONO,
+            fontSize:   "10px",
+            fontFamily: "var(--font-mono)",
             color:      "var(--sh-text-muted)",
             lineHeight: 1.3,
           }}
@@ -115,8 +116,8 @@ function ColorSwatch({
         </code>
         <code
           style={{
-            fontSize:   "9px",
-            fontFamily: MONO,
+            fontSize:   "10px",
+            fontFamily: "var(--font-mono)",
             color:      "var(--sh-text-faint)",
           }}
         >
@@ -124,7 +125,7 @@ function ColorSwatch({
         </code>
         <span
           style={{
-            fontSize:   "9px",
+            fontSize:   "10px",
             color:      "var(--sh-text-faint)",
             lineHeight: 1.4,
           }}
@@ -136,20 +137,16 @@ function ColorSwatch({
   );
 }
 
-// ─── Preset swatch — interactive, changes global accent ───────────────────────
-// No ripple here — ripple is owned by the toolbar AccentPicker only.
+// ─── Preset swatch — display only, no interaction ─────────────────────────────
+// Theme changes are controlled via the controls bar only.
 
 function PresetSwatch({
   preset,
   isActive,
-  onClick,
 }: {
   preset:   (typeof ACCENT_PRESETS)[0];
   isActive: boolean;
-  onClick:  () => void;
 }) {
-  const [hov, setHov] = useState(false);
-
   return (
     <div
       style={{
@@ -157,13 +154,10 @@ function PresetSwatch({
         flexDirection: "column",
         alignItems:    "center",
         gap:           "10px",
-        cursor:        "pointer",
+        cursor:        "default",
         flexShrink:    0,
         width:         "72px",
       }}
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
     >
       <div
         style={{
@@ -171,19 +165,17 @@ function PresetSwatch({
           height:          "56px",
           borderRadius:    "14px",
           backgroundColor: preset.hex,
-          transform:       hov || isActive ? "scale(1.08)" : "scale(1)",
+          transform:       isActive ? "scale(1.08)" : "scale(1)",
           boxShadow:       isActive
             ? `0 0 0 2px var(--sh-bg), 0 0 0 4px ${preset.hex}, 0 8px 28px ${preset.hex}70`
-            : hov
-            ? `0 4px 18px ${preset.hex}65`
             : `0 2px 8px ${preset.hex}35`,
           transition: "transform 160ms ease, box-shadow 200ms ease",
         }}
       />
       <span
         style={{
-          fontSize:   "9px",
-          fontFamily: MONO,
+          fontSize:   "10px",
+          fontFamily: "var(--font-mono)",
           color:      isActive ? "var(--sh-accent)" : "var(--sh-text-faint)",
           textAlign:  "center",
           lineHeight: 1.4,
@@ -201,11 +193,33 @@ function PresetSwatch({
 // ─── ColorTokensCanvas ────────────────────────────────────────────────────────
 
 export function ColorTokensCanvas() {
-  const [hexValues, setHexValues]     = useState<Record<string, string>>({});
-  const [activePresetId, setActivePresetId] = useState<string>(() => {
-    if (typeof window === "undefined") return "chartreuse";
-    return localStorage.getItem("pf-accent") ?? "chartreuse";
-  });
+  const [hexValues, setHexValues] = useState<Record<string, string>>({});
+  const { theme, setTheme, accentId, setAccent } = useTheme();
+  const { controlValues, setControlValue } = useAppStore();
+  const cv = controlValues["pds-color-tokens"] ?? {};
+
+  // ── Derive displayed accent/mode from controls (fall back to live theme) ─────
+  const controlAccent = (cv.accent as string) || accentId;
+  const controlMode   = (cv.mode   as string) || theme;
+
+  // ── One-time init: seed controls from current live theme state ────────────────
+  useEffect(() => {
+    setControlValue("pds-color-tokens", "accent", accentId);
+    setControlValue("pds-color-tokens", "mode",   theme);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Controls → theme: apply when control value changes ───────────────────────
+  useEffect(() => {
+    if (controlAccent && controlAccent !== accentId) {
+      setAccent(controlAccent);
+    }
+  }, [controlAccent]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if ((controlMode === "dark" || controlMode === "light") && controlMode !== theme) {
+      setTheme(controlMode as "dark" | "light");
+    }
+  }, [controlMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Read all live CSS var hex values ─────────────────────────────────────────
   const refreshHex = useCallback(() => {
@@ -225,17 +239,7 @@ export function ColorTokensCanvas() {
 
   useEffect(() => {
     refreshHex();
-  }, [refreshHex]);
-
-  // ── Preset selection — changes global accent, no ripple ───────────────────────
-  const handlePresetClick = useCallback(
-    (preset: (typeof ACCENT_PRESETS)[0]) => {
-      applyAccentPreset(preset);
-      setActivePresetId(preset.id);
-      setTimeout(() => refreshHex(), 0);
-    },
-    [refreshHex]
-  );
+  }, [refreshHex, accentId, theme]);
 
   const hex = (varName: string) => hexValues[varName] || "";
 
@@ -266,8 +270,8 @@ export function ColorTokensCanvas() {
           </h1>
           <p
             style={{
-              fontSize:   "12px",
-              fontFamily: MONO,
+              fontSize:   "14px",
+              fontFamily: "var(--font-mono)",
               color:      "var(--sh-text-faint)",
               margin:     0,
             }}
@@ -281,21 +285,20 @@ export function ColorTokensCanvas() {
           <SectionHeader label="Accent Presets" />
           <p
             style={{
-              fontSize:     "11px",
+              fontSize:     "12px",
               color:        "var(--sh-text-faint)",
               marginBottom: "28px",
               lineHeight:   1.6,
             }}
           >
-            Click a preset to change the global accent across the entire interface.
+            Use the Theme control below to change the global accent color.
           </p>
           <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
             {ACCENT_PRESETS.map((preset) => (
               <PresetSwatch
                 key={preset.id}
                 preset={preset}
-                isActive={preset.id === activePresetId}
-                onClick={() => handlePresetClick(preset)}
+                isActive={preset.id === controlAccent}
               />
             ))}
           </div>

@@ -55,7 +55,7 @@ function CanvasHeader() {
 
   return (
     <div
-      className="shrink-0 flex items-center gap-3 px-4 h-[42px]"
+      className="shrink-0 flex items-center gap-3 px-4 h-[44px]"
       style={{ borderBottom: "1px solid var(--sh-border-sub)", backgroundColor: "var(--sh-panel)" }}
     >
       {/* Zoom controls */}
@@ -88,7 +88,7 @@ function CanvasHeader() {
             <path d="M2 5h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         </button>
-        <span className="text-[11px] px-1.5 min-w-[40px] text-center" style={{ color: "var(--sh-text-muted)" }}>
+        <span className="text-[12px] px-1.5 min-w-[40px] text-center" style={{ color: "var(--sh-text-muted)" }}>
           100%
         </span>
       </div>
@@ -98,14 +98,14 @@ function CanvasHeader() {
 
       {/* Breadcrumb */}
       <div
-        className="flex items-center gap-1.5 text-[11px] flex-1 min-w-0"
+        className="flex items-center gap-1.5 text-[12px] flex-1 min-w-0"
         style={introStyle(D_BREADCRUMB, launched)}
       >
         {activeSection && entry ? (
           /* Section Name / Component Name */
           <>
             <span style={{ color: "var(--sh-text-faint)" }}>{activeSection.title}</span>
-            <span style={{ color: "var(--sh-border)", fontSize: "11px" }}>/</span>
+            <span style={{ color: "var(--sh-border)", fontSize: "12px" }}>/</span>
             <span className="font-medium truncate" style={{ color: "var(--sh-text)" }}>
               {entry.name}
             </span>
@@ -156,7 +156,7 @@ function CanvasHeader() {
       <div className="flex items-center gap-2" style={introStyle(D_THEME, launched)}>
         <span
           className="font-mono select-none"
-          style={{ fontSize: "10px", color: "var(--sh-text-faint)", letterSpacing: "0.02em" }}
+          style={{ fontSize: "12px", color: "var(--sh-text-faint)", letterSpacing: "0.02em" }}
         >
           --mode:&nbsp;{theme}
         </span>

@@ -17,7 +17,6 @@ import { navSections } from "@/data/navigation";
 import { COMPONENT_RENDERERS, COMPONENT_REGISTRY } from "@/lib/registry";
 import type { ComponentEntry } from "@/lib/types";
 
-const MONO = "ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace";
 
 // ─── Placeholder preview (unregistered components) ───────────────────────────
 // Renders a skeleton mock so every tile has visual presence even for placeholders.
@@ -132,8 +131,8 @@ function ComponentTile({ entry, isSelected, tileIndex, onClick }: TileProps) {
       >
         <span
           style={{
-            fontFamily:    MONO,
-            fontSize:      "11px",
+            fontFamily:    "var(--font-mono)",
+            fontSize:      "12px",
             color:         labelColor,
             transition:    "color 150ms ease",
             whiteSpace:    "nowrap",
@@ -149,8 +148,8 @@ function ComponentTile({ entry, isSelected, tileIndex, onClick }: TileProps) {
           <span
             style={{
               marginLeft:    "auto",
-              fontFamily:    MONO,
-              fontSize:      "9px",
+              fontFamily:    "var(--font-mono)",
+              fontSize:      "10px",
               color:         "var(--sh-text-faint)",
               opacity:       0.5,
               flexShrink:    0,
@@ -188,8 +187,8 @@ export function SectionGridCanvas({ sectionId }: { sectionId: string }) {
       <div style={{ marginBottom: "28px" }}>
         <h2
           style={{
-            fontSize:      "11px",
-            fontFamily:    MONO,
+            fontSize:      "12px",
+            fontFamily:    "var(--font-mono)",
             fontWeight:    600,
             color:         "var(--sh-text-muted)",
             letterSpacing: "0.07em",
@@ -201,10 +200,10 @@ export function SectionGridCanvas({ sectionId }: { sectionId: string }) {
         </h2>
         <p
           style={{
-            fontSize:  "11px",
+            fontSize:  "12px",
             color:     "var(--sh-text-faint)",
             margin:    "6px 0 0",
-            fontFamily: MONO,
+            fontFamily: "var(--font-mono)",
           }}
         >
           {registeredCount} live

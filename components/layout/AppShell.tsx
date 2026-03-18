@@ -26,10 +26,10 @@ function MobileView() {
             style={{ backgroundColor: "var(--sh-panel)" }}
           >
             <div
-              className="shrink-0 px-4 h-[42px] flex items-center"
+              className="shrink-0 px-4 h-[44px] flex items-center"
               style={{ borderBottom: "1px solid var(--sh-border-sub)" }}
             >
-              <span className="text-[12px] font-semibold" style={{ color: "var(--sh-text)" }}>
+              <span className="text-[14px] font-semibold" style={{ color: "var(--sh-text)" }}>
                 Components
               </span>
             </div>
@@ -45,10 +45,10 @@ function MobileView() {
             style={{ backgroundColor: "var(--sh-panel)" }}
           >
             <div
-              className="shrink-0 px-4 h-[42px] flex items-center"
+              className="shrink-0 px-4 h-[44px] flex items-center"
               style={{ borderBottom: "1px solid var(--sh-border-sub)" }}
             >
-              <span className="text-[12px] font-semibold" style={{ color: "var(--sh-text)" }}>
+              <span className="text-[14px] font-semibold" style={{ color: "var(--sh-text)" }}>
                 Inspect
               </span>
             </div>

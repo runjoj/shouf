@@ -44,7 +44,7 @@ function LogoMark() {
             <rect x="6.5" y="6.5" width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.75" />
           </svg>
         </div>
-        <span className="text-[13px] font-bold tracking-tight" style={{ color: "var(--sh-text)" }}>
+        <span className="text-[14px] font-bold tracking-tight" style={{ color: "var(--sh-text)" }}>
           helloitsjo
         </span>
       </div>
@@ -77,11 +77,11 @@ function SearchBar() {
           <circle cx="5.5" cy="5.5" r="3.5" stroke="var(--sh-text-faint)" strokeWidth="1.5" />
           <path d="M8.5 8.5L11 11" stroke="var(--sh-text-faint)" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
-        <span className="text-[11px]" style={{ color: "var(--sh-text-faint)" }}>
+        <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
           Search components…
         </span>
         <span
-          className="ml-auto text-[9px] px-1 py-px rounded"
+          className="ml-auto text-[12px] px-1 py-px rounded"
           style={{ backgroundColor: "var(--sh-border)", color: "var(--sh-text-faint)" }}
         >
           ⌘K
@@ -106,7 +106,7 @@ export function LeftPanel() {
     >
       {/* Top bar with logo */}
       <div
-        className="shrink-0 flex items-center px-4 h-[42px]"
+        className="shrink-0 flex items-center px-4 h-[44px]"
         style={{ borderBottom: "1px solid var(--sh-border-sub)" }}
       >
         <LogoMark />
@@ -124,7 +124,7 @@ export function LeftPanel() {
         style={{ borderTop: "1px solid var(--sh-border-sub)" }}
       >
         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "var(--sh-accent-sage)" }} />
-        <span className="text-[10px]" style={{ color: "var(--sh-text-faint)" }}>
+        <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
           v1.0.0-shell
         </span>
       </div>
