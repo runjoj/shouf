@@ -298,11 +298,41 @@ TokenRow category dots use fixed accent colors regardless of the active accent p
 
 | ID | Name | Status | Notes |
 |---|---|---|---|
+| `rc-global-nav` | Global Nav | ✅ **Built** | BambooHR-style collapsible sidebar + top header. Three responsive breakpoints, accordion sub-nav, flyout on hover, portal-based dropdowns. See architecture notes below. |
 | `rc-navbar` | Navbar | 🔲 Placeholder | Needs responsive nav with mobile hamburger |
 | `rc-hero` | Hero Section | 🔲 Placeholder | Needs full-width hero with headline + CTA |
 | `rc-card` | Card | 🔲 Placeholder | Needs card component with image/content/actions |
 | `rc-grid` | Grid Layout | 🔲 Placeholder | Needs responsive grid demonstration |
 | `rc-footer` | Footer | 🔲 Placeholder | Needs footer layout component |
+
+### rc-global-nav Architecture
+
+**File:** `components/canvas/RcGlobalNavCanvas.tsx` — single self-contained file, `"use client"`.
+
+**Icon library:** Font Awesome Free (`@fortawesome/react-fontawesome`, `@fortawesome/free-solid-svg-icons`). This component is the exception to the zero-dependency rule — FA is already installed. Eucalyptus components use Phosphor Icons if/when icon libraries are needed.
+
+**Responsive breakpoints** (canvas width, not window width — driven by `ResizeObserver` on the simulated browser frame):
+- `BP_TABLET = 720` — sidebar hides, hamburger shows, overlay drawer for nav
+- `BP_MOBILE = 500` — same as tablet + compact avatar, expandable drawer sub-items, account panel from avatar tap
+- `BP_MIN = 320` — minimum resizable frame width
+
+**Portal pattern:** The flyout panel and search dropdown both use `createPortal(…, document.body)` with `position: fixed` + `getBoundingClientRect()` for positioning. This avoids `overflow: hidden` clipping inside the canvas frame. Use this same pattern for any other absolutely-positioned overlays in canvas components.
+
+**Accordion sub-items with dividers:**
+```tsx
+type SubEntry = { id: string; label: string; count?: number; icon: IconDefinition };
+type SubItem  = SubEntry | "divider";
+```
+The `"divider"` string sentinel is checked with `if (sub === "divider") return <hr …>` in both the desktop sidebar and the drawer. The `NavFlyout` sub-component does **not** yet handle dividers — adding divider sub-items to flyout-only rows will produce a TypeScript warning and a blank button.
+
+**Left border line on open accordions:**
+- Container: `marginLeft: "19-20px"`, `borderLeft: "1.5px solid #F0F1F3"`, `paddingLeft: "11-12px"`
+- Sub-item buttons: `marginLeft: "8px"` (creates visual gap between line and highlight)
+- Group dividers: `<hr style={{ borderTop: "1px solid #F0F1F3" }}>` — same color as the vertical line
+
+**BambooHR color palette** is defined as module-level constants (`const C = { … }`) inside the file — not CSS tokens. This is intentional: the component simulates a third-party product and must not inherit the portfolio shell's theme.
+
+**Expressive craft moment:** Sidebar expand stagger — nav labels slide in 10ms apart per item, creating a fan-opening effect. Labels vanish instantly on collapse so the animation only rewards the reveal direction.
 
 ### Eucalyptus
 
@@ -368,6 +398,7 @@ All five Eucalyptus components need to be built from screenshots and design refe
 
 ### Responsive Components
 
+- `rc-global-nav` — ✅ Built. BambooHR-style global nav; accordion sub-nav, flyout, drawer, responsive simulation via drag handle.
 - `rc-navbar` — Fully responsive nav with logo, links, mobile hamburger and drawer. Should actually resize/respond when the canvas viewport controls are used.
 - `rc-hero`, `rc-card`, `rc-grid`, `rc-footer` — Full implementations demonstrating responsive behavior.
 
