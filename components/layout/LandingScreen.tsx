@@ -383,12 +383,12 @@ export function LandingScreen() {
         aria-hidden="true"
         style={{
           position:      "absolute",
-          bottom:        32,
+          bottom:        96,
           left:          "50%",
           transform:     "translateX(-50%)",
           zIndex:        5,
           pointerEvents: "none",
-          opacity:       hintVisible ? 0.22 : 0,
+          opacity:       hintVisible ? 0.7 : 0,
           transition:    "opacity 500ms ease",
           whiteSpace:    "nowrap",
           fontSize:      "12px",
