@@ -348,11 +348,9 @@ export function PdsGuideCanvas() {
             >
               Token Prefixes
             </div>
-            <TokenRow prefix="--shouf-*"          description="Shell — surfaces, text, borders, states, skeleton" />
-            <TokenRow prefix="--shouf-accent*"    description="Accent — 6 runtime-switchable presets, WCAG AA in both themes" />
-            <TokenRow prefix="--shouf-btn-*"     description="PDS Button — all interactive states including disabled" />
-            <TokenRow prefix="--shouf-input-*"   description="PDS Input — focus ring, error, placeholder" />
-            <TokenRow prefix="--eu-*"          description="Eucalyptus — component tokens scoped to the Eucalyptus system" />
+            <TokenRow prefix="--shouf-*"  description="Shouf — surfaces, text, borders, accent, interactive states, and component tokens" />
+            <TokenRow prefix="--bhr-*"    description="BambooHR — brand palette, surfaces, and interactive states for the Global Navigation component" />
+            <TokenRow prefix="--eu-*"     description="Eucalyptus — component tokens scoped to the Eucalyptus design system" />
           </div>
 
           <Body>
