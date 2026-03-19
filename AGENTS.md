@@ -291,8 +291,7 @@ TokenRow category dots use fixed accent colors regardless of the active accent p
 | `pds-typography` | Typography Scale | 🔲 Placeholder | Needs type ramp display — scale steps, font size, weight, line-height |
 | `pds-spacing` | Spacing System | 🔲 Placeholder | Needs spacing scale visualization |
 | `pds-button` | Button | ✅ **Built** | Primary/Secondary/Ghost variants, sm/md/lg sizes, Disabled/Loading/Full Width/Icon Only toggles. Fully wired: live canvas, reactive controls, live inspect panel tokens. |
-| `pds-input` | Input | 🔲 Placeholder | Needs full implementation |
-| `pds-badge` | Badge | 🔲 Placeholder | Needs full implementation |
+| `pds-input` | Input | ✅ **Built** | Search input. forwardRef, controlled mode, kbd badge, fullWidth. Used in shell search bar and canvas demo — single source of truth for both. |
 
 ### Responsive Components
 
@@ -365,7 +364,7 @@ The shell UI uses the same components it documents:
 - Nav selected states use `--sh-accent-sel` (the same token used in component selected states)
 - The font scale, spacing, and border radius in the shell reference the same token scale documented in the PDS section
 
-When the PDS Input, Badge, and other components are built, they should be used in the shell where appropriate — not separate ad-hoc implementations.
+When new PDS components are built, they should be used in the shell where appropriate — not separate ad-hoc implementations.
 
 ### Definition/Renderer Split
 `definition.ts` is pure data (no React, no JSX). `ComponentFile.tsx` is the component (React, styles). This keeps type definitions importable from server contexts and prevents accidental entanglement of data and rendering concerns.
@@ -382,11 +381,7 @@ Nav items and toolbar elements use `animationPlayState: launched ? "running" : "
 
 ### Highest Priority — Core Portfolio Content
 
-1. **PDS Input** — Text input with label, placeholder, error state, disabled. Controls: type (text/email/password), size (sm/md/lg), state (default/error/disabled), with/without icon. Full inspect panel token output.
-
-2. **PDS Badge** — Status badge / label chip. Controls: variant (default/success/warning/error/info), size (sm/md). Inspect panel tokens.
-
-3. **PDS Color Tokens display** — Visual canvas showing the full `--sh-*` token palette. Swatches in a grid with token name, hex value, and role label. Not a list — a designed visual artifact.
+1. **PDS Color Tokens display** — Visual canvas showing the full `--sh-*` token palette. Swatches in a grid with token name, hex value, and role label. Not a list — a designed visual artifact.
 
 4. **PDS Typography Scale display** — Type ramp showing each scale step (11px through 32px or whatever the actual scale is), with font-size, weight, line-height, and example text. Should look like a Figma type styles panel.
 

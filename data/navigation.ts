@@ -10,7 +10,6 @@ export const navSections: NavSection[] = [
       { id: "pds-spacing", name: "Spacing System", sectionId: "portfolio-design-system" },
       { id: "pds-button", name: "Button", sectionId: "portfolio-design-system" },
       { id: "pds-input", name: "Input", sectionId: "portfolio-design-system" },
-      { id: "pds-badge", name: "Badge", sectionId: "portfolio-design-system" },
     ],
   },
   {
