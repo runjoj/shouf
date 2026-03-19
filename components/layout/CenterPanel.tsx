@@ -180,8 +180,14 @@ function CanvasHeader() {
 }
 
 // ─── CenterPanel ─────────────────────────────────────────────────────────────
+// showControls — true only when an interactive component (with a renderer) is
+// selected. Controls bar slides up into view; slides back down for guide/welcome
+// pages so the canvas can use the full height.
 
-export function CenterPanel() {
+// Measured height of the controls bar (header ~32px + row ~50px + 1px border).
+const CONTROLS_H = 88;
+
+export function CenterPanel({ showControls = false }: { showControls?: boolean }) {
   return (
     <main
       className="flex flex-col flex-1 h-full overflow-hidden"
@@ -189,7 +195,18 @@ export function CenterPanel() {
     >
       <CanvasHeader />
       <ComponentRenderer />
-      <ControlsBar />
+
+      {/* Controls bar — slides up from the bottom when showControls becomes true */}
+      <div
+        style={{
+          maxHeight:  showControls ? CONTROLS_H : 0,
+          overflow:   "hidden",
+          flexShrink: 0,
+          transition: "max-height 300ms cubic-bezier(0.25, 0, 0, 1)",
+        }}
+      >
+        <ControlsBar />
+      </div>
     </main>
   );
 }

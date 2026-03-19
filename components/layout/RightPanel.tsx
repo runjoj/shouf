@@ -11,7 +11,6 @@ export function RightPanel() {
         backgroundColor: "var(--sh-panel)",
         borderLeft: "1px solid var(--sh-border-sub)",
         width: "280px",
-        minWidth: "280px",
       }}
     >
       <InspectPanel />

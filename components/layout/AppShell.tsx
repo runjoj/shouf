@@ -1,6 +1,7 @@
 "use client";
 
 import { useAppStore } from "@/lib/store";
+import { hasRenderer } from "@/lib/registry";
 import { LeftPanel } from "./LeftPanel";
 import { CenterPanel } from "./CenterPanel";
 import { RightPanel } from "./RightPanel";
@@ -62,7 +63,16 @@ function MobileView() {
 
 // ─── Desktop three-panel view ─────────────────────────────────────────────────
 
+// Width of the right panel in px — must match RightPanel's own width style.
+const RIGHT_PANEL_W = 280;
+
 function DesktopView() {
+  const { selectedComponentId } = useAppStore();
+
+  // Show the right panel and controls bar only for components that have an
+  // interactive renderer. Welcome, About, and all guide pages are excluded.
+  const showPanels = !!selectedComponentId && hasRenderer(selectedComponentId);
+
   return (
     <div
       className="hidden lg:flex h-full"
@@ -76,10 +86,20 @@ function DesktopView() {
       <LeftPanel />
 
       {/* ── Center panel ─────────────────────────────────────────────────────── */}
-      <CenterPanel />
+      <CenterPanel showControls={showPanels} />
 
-      {/* ── Right panel ──────────────────────────────────────────────────────── */}
-      <RightPanel />
+      {/* ── Right panel — slides in from right when a controllable component
+           is selected, slides back out when returning to a guide/welcome page. */}
+      <div
+        style={{
+          width:      showPanels ? RIGHT_PANEL_W : 0,
+          flexShrink: 0,
+          overflow:   "hidden",
+          transition: "width 300ms cubic-bezier(0.25, 0, 0, 1)",
+        }}
+      >
+        <RightPanel />
+      </div>
 
       {/* ── Intro animation overlay ───────────────────────────────────────────── */}
       {/* Covers everything during typing + border-draw phase, then fades out.    */}

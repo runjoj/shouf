@@ -47,3 +47,9 @@ export function isRegistered(id: string): boolean {
 export function getRegistration(id: string): ComponentRegistration | undefined {
   return COMPONENT_REGISTRY[id];
 }
+
+// True only for components that have an interactive renderer (controls + inspect).
+// Used to decide whether the right panel and controls bar should be visible.
+export function hasRenderer(id: string): boolean {
+  return id in COMPONENT_RENDERERS;
+}
