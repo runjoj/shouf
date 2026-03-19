@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
+import { useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { useTheme } from "@/lib/theme";
 import { navSections } from "@/data/navigation";
@@ -8,6 +9,11 @@ import { ComponentRenderer } from "@/components/canvas/ComponentRenderer";
 import { ControlsBar } from "@/components/canvas/ControlsBar";
 import { PdsToggle } from "@/components/ui/PdsToggle";
 import { AccentPicker } from "@/components/ui/AccentPicker";
+
+// ─── Zoom constants ────────────────────────────────────────────────────────────
+const ZOOM_MIN  = 50;
+const ZOOM_MAX  = 200;
+const ZOOM_STEP = 10;
 
 // ─── Toolbar element intro delays (ms after launch) ───────────────────────────
 // Elements pop in left → right to reinforce the assembly narrative.
@@ -30,7 +36,15 @@ function introStyle(delay: number, launched: boolean): CSSProperties {
 
 // ─── Breadcrumb bar ──────────────────────────────────────────────────────────
 
-function CanvasHeader() {
+function CanvasHeader({
+  zoom,
+  onZoomIn,
+  onZoomOut,
+}: {
+  zoom: number;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
+}) {
   const { selectedComponentId, selectedSectionId, launched } = useAppStore();
   const { theme, toggleTheme } = useTheme();
 
@@ -61,35 +75,33 @@ function CanvasHeader() {
       {/* Zoom controls */}
       <div className="flex items-center gap-1" style={introStyle(D_ZOOM, launched)}>
         <button
+          onClick={onZoomIn}
+          disabled={zoom >= ZOOM_MAX}
+          title="Zoom in"
           className="flex items-center justify-center w-6 h-6 rounded transition-colors"
-          style={{ color: "var(--shouf-text-muted)" }}
-          onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)")
-          }
-          onMouseLeave={(e) =>
-            ((e.currentTarget as HTMLElement).style.backgroundColor = "transparent")
-          }
+          style={{ color: zoom >= ZOOM_MAX ? "var(--shouf-text-faint)" : "var(--shouf-text-muted)", cursor: zoom >= ZOOM_MAX ? "default" : "pointer" }}
+          onMouseEnter={(e) => { if (zoom < ZOOM_MAX) (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"; }}
         >
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
             <path d="M2 5h6M5 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         </button>
         <button
+          onClick={onZoomOut}
+          disabled={zoom <= ZOOM_MIN}
+          title="Zoom out"
           className="flex items-center justify-center w-6 h-6 rounded transition-colors"
-          style={{ color: "var(--shouf-text-muted)" }}
-          onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)")
-          }
-          onMouseLeave={(e) =>
-            ((e.currentTarget as HTMLElement).style.backgroundColor = "transparent")
-          }
+          style={{ color: zoom <= ZOOM_MIN ? "var(--shouf-text-faint)" : "var(--shouf-text-muted)", cursor: zoom <= ZOOM_MIN ? "default" : "pointer" }}
+          onMouseEnter={(e) => { if (zoom > ZOOM_MIN) (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"; }}
         >
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
             <path d="M2 5h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         </button>
         <span className="text-[12px] px-1.5 min-w-[40px] text-center" style={{ color: "var(--shouf-text-muted)" }}>
-          100%
+          {zoom}%
         </span>
       </div>
 
@@ -188,13 +200,36 @@ function CanvasHeader() {
 const CONTROLS_H = 88;
 
 export function CenterPanel({ showControls = false }: { showControls?: boolean }) {
+  const [zoom, setZoom] = useState(100);
+
+  const zoomIn  = () => setZoom((z) => Math.min(ZOOM_MAX, z + ZOOM_STEP));
+  const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, z - ZOOM_STEP));
+
+  const scale = zoom / 100;
+
   return (
     <main
       className="flex flex-col flex-1 h-full overflow-hidden"
       style={{ backgroundColor: "var(--shouf-bg)", minWidth: 0 }}
     >
-      <CanvasHeader />
-      <ComponentRenderer />
+      <CanvasHeader zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} />
+
+      {/* Canvas area — two-layer approach:
+          1. Outer: flex:1 block provides height; position:relative anchors inner.
+          2. Inner: position:absolute inset:0 gives the scroll container an explicit
+             pixel height so min-height:100% on the zoom wrapper always resolves.
+          CSS zoom is layout-aware:
+          - zoom > 1 → layout box grows beyond scroll viewport → scrolls ✓
+          - zoom < 1 → layout box shrinks from top-left → no drift ✓
+          flex column on zoom wrapper lets ComponentRenderer's flex:1 fill height,
+          restoring vertical centering on Welcome and full-canvas stretch elsewhere. */}
+      <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
+        <div style={{ position: "absolute", inset: 0, overflow: "auto" }}>
+          <div style={{ zoom: scale, width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
+            <ComponentRenderer />
+          </div>
+        </div>
+      </div>
 
       {/* Controls bar — slides up from the bottom when showControls becomes true */}
       <div

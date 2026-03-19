@@ -39,6 +39,8 @@ import {
   faChevronLeft,
   faChevronDown,
   faChevronRight,
+  faAnglesLeft,
+  faAnglesRight,
   faMagnifyingGlass,
   faInbox,
   faWandMagicSparkles,
@@ -171,26 +173,26 @@ const ALL_RESULTS: SearchResult[] = [
 // ─── BambooHR palette ─────────────────────────────────────────────────────────
 
 const C = {
-  sidebarBg:      "var(--bhr-bg)",
-  headerBg:       "var(--bhr-bg)",
-  border:         "var(--bhr-border)",
-  activeBg:       "var(--bhr-active-bg)",
-  activeText:     "var(--bhr-green)",
-  activeIcon:     "var(--bhr-green)",
-  navText:        "var(--bhr-nav-text)",
-  navIcon:        "var(--bhr-nav-icon)",
-  contentBg:      "var(--bhr-content-bg)",
-  divider:        "var(--bhr-divider)",
-  avatarBorder:   "var(--bhr-avatar-border)",
-  askBg:          "var(--bhr-green)",
-  askBgHover:     "var(--bhr-green-hover)",
-  askText:        "var(--bhr-bg)",
-  searchFocus:    "var(--bhr-green)",
-  dropdownBg:     "var(--bhr-bg)",
+  sidebarBg:      "#FFFFFF",
+  headerBg:       "#FFFFFF",
+  border:         "#E5E7EB",
+  activeBg:       "#F5F4F1",
+  activeText:     "#3D7A30",
+  activeIcon:     "#3D7A30",
+  navText:        "#374151",
+  navIcon:        "#6B7280",
+  contentBg:      "#F0EFEB",
+  divider:        "#E9EAEC",
+  avatarBorder:   "#D5D5D5",
+  askBg:          "#3D7A30",
+  askBgHover:     "#2E5E24",
+  askText:        "#FFFFFF",
+  searchFocus:    "#3D7A30",
+  dropdownBg:     "#FFFFFF",
   dropdownShadow: "0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06)",
-  handleBg:       "var(--bhr-handle)",
-  handleHover:    "var(--bhr-green)",
-  subItemText:    "var(--bhr-nav-icon)",
+  handleBg:       "#D1D5DB",
+  handleHover:    "#3D7A30",
+  subItemText:    "#6B7280",
 };
 
 // ─── Canvas ───────────────────────────────────────────────────────────────────
@@ -336,7 +338,7 @@ export function RcGlobalNavCanvas() {
           <span style={{ color: "var(--shouf-text-muted)" }}>«</span> toggle to interact
         </span>
         {showBadge ? (
-          <span style={{ fontSize: "10px", fontFamily: "var(--font-mono)", padding: "2px 8px", borderRadius: "4px", background: isMobile ? "rgba(200,160,0,0.12)" : isTablet ? "var(--bhr-green-ring)" : "var(--shouf-hover)", color: isMobile ? "#9B6F00" : isTablet ? "#3D7A30" : "var(--shouf-text-muted)", border: `1px solid ${isMobile ? "rgba(200,160,0,0.25)" : isTablet ? "rgba(61,122,48,0.25)" : "var(--shouf-border)"}`, whiteSpace: "nowrap" }}>
+          <span style={{ fontSize: "10px", fontFamily: "var(--font-mono)", padding: "2px 8px", borderRadius: "4px", background: isMobile ? "rgba(200,160,0,0.12)" : isTablet ? "rgba(61, 122, 48, 0.12)" : "var(--shouf-hover)", color: isMobile ? "#9B6F00" : isTablet ? "#3D7A30" : "var(--shouf-text-muted)", border: `1px solid ${isMobile ? "rgba(200,160,0,0.25)" : isTablet ? "rgba(61,122,48,0.25)" : "var(--shouf-border)"}`, whiteSpace: "nowrap" }}>
             {frameWidth !== null ? `${frameWidth}px` : `${measuredWidth}px`}
             {isMobile ? " · mobile" : isTablet ? " · tablet" : " · desktop"}
           </span>
@@ -382,25 +384,25 @@ export function RcGlobalNavCanvas() {
                         />
                         {/* Inline accordion when expanded (desktop non-collapsed) */}
                         {hasSubItems && isExpanded && (
-                          <div style={{ marginLeft: "19px", borderLeft: "1.5px solid var(--bhr-sub-divider)", paddingLeft: "11px", paddingBottom: "4px" }}>
+                          <div style={{ marginLeft: "19px", borderLeft: "1.5px solid #F0F1F3", paddingLeft: "11px", paddingBottom: "4px" }}>
                             {NAV_SUB_ITEMS[row.id].map((sub, si) => {
-                              if (sub === "divider") return <hr key={`sd-${si}`} style={{ border: "none", borderTop: "1px solid var(--bhr-sub-divider)", margin: "3px 0" }} />;
+                              if (sub === "divider") return <hr key={`sd-${si}`} style={{ border: "none", borderTop: "1px solid #F0F1F3", margin: "3px 0" }} />;
                               return (
                                 <button
                                   key={sub.id}
                                   onClick={() => setActiveId(sub.id)}
                                   style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", height: "34px", padding: "0 8px 0 0", marginLeft: "8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease", animation: "rc-nav-label-in 160ms cubic-bezier(0.2,0,0,1) both" }}
-                                  onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }}
+                                  onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
                                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
                                 >
                                   <span style={{ width: "16px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                    <FontAwesomeIcon icon={sub.icon} style={{ width: 11, height: 11, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
+                                    <FontAwesomeIcon icon={sub.icon} style={{ width: 15, height: 15, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
                                   </span>
                                   <span style={{ fontSize: "12px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                     {sub.label}
                                   </span>
                                   {sub.count != null && (
-                                    <span style={{ fontSize: "10px", color: "var(--bhr-muted)", flexShrink: 0 }}>({sub.count})</span>
+                                    <span style={{ fontSize: "10px", color: "#9CA3AF", flexShrink: 0 }}>({sub.count})</span>
                                   )}
                                 </button>
                               );
@@ -411,9 +413,18 @@ export function RcGlobalNavCanvas() {
                     );
                   })}
                 </nav>
-                <div style={{ padding: "10px 8px 14px", borderTop: `1px solid ${C.border}`, display: "flex", flexDirection: "column", alignItems: collapsed ? "center" : "flex-start", gap: "6px", flexShrink: 0 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="https://i.pravatar.cc/64?u=joann" alt="User avatar" width={32} height={32} style={{ width: "32px", height: "32px", borderRadius: "50%", border: `2px solid ${C.avatarBorder}`, objectFit: "cover", flexShrink: 0, display: "block" }} />
+                <div style={{ padding: "10px 8px 14px", borderTop: `1px solid ${C.border}`, display: "flex", flexDirection: "column", alignItems: collapsed ? "center" : "stretch", gap: "6px", flexShrink: 0 }}>
+                  {/* Avatar row — shows name when expanded */}
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: collapsed ? 0 : "0 4px" }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="https://i.pravatar.cc/64?u=joann" alt="User avatar" width={32} height={32} style={{ width: "32px", height: "32px", borderRadius: "50%", border: `2px solid ${C.avatarBorder}`, objectFit: "cover", flexShrink: 0, display: "block" }} />
+                    {!collapsed && (
+                      <div style={{ overflow: "hidden" }}>
+                        <div style={{ fontSize: "13px", fontWeight: 600, color: C.navText, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Jessica Cordovoa</div>
+                        <div style={{ fontSize: "11px", color: "#9CA3AF", whiteSpace: "nowrap" }}>jessica@acme.com</div>
+                      </div>
+                    )}
+                  </div>
                   <CollapseButton collapsed={collapsed} onClick={toggleCollapse} />
                 </div>
               </aside>
@@ -437,14 +448,11 @@ export function RcGlobalNavCanvas() {
                     <>
                       {/* Drawer header */}
                       <div style={{ display: "flex", alignItems: "center", padding: "16px 16px 10px", borderBottom: `1px solid ${C.border}`, flexShrink: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px", flex: 1 }}>
-                          <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-                            <path d="M7 18C7 18 7 10 11 7C11 7 11 12 15 10C15 10 13 16 7 18Z" fill="var(--bhr-green)" />
-                            <path d="M11 7C11 7 9 4 6 4C6 4 6 8 11 7Z" fill="var(--bhr-green-light)" />
-                          </svg>
-                          <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--bhr-green)", letterSpacing: "-0.02em" }}>bambooHR</span>
+                        <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src="/desktop.png" alt="bambooHR" style={{ height: "17px", width: "auto", display: "block" }} />
                         </div>
-                        <button onClick={() => setDrawerOpen(false)} style={{ width: "30px", height: "30px", borderRadius: "6px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: C.navIcon, flexShrink: 0 }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+                        <button onClick={() => setDrawerOpen(false)} style={{ width: "30px", height: "30px", borderRadius: "6px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: C.navIcon, flexShrink: 0 }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
                           <FontAwesomeIcon icon={faXmark} style={{ width: 14, height: 14 }} />
                         </button>
                       </div>
@@ -476,25 +484,25 @@ export function RcGlobalNavCanvas() {
                               />
                               {/* Sub-items (expanded) */}
                               {hasSubItems && isExpanded && (
-                                <div style={{ marginLeft: "20px", borderLeft: "1.5px solid var(--bhr-sub-divider)", paddingLeft: "12px", paddingBottom: "4px" }}>
+                                <div style={{ marginLeft: "20px", borderLeft: "1.5px solid #F0F1F3", paddingLeft: "12px", paddingBottom: "4px" }}>
                                   {NAV_SUB_ITEMS[row.id].map((sub, si) => {
-                                    if (sub === "divider") return <hr key={`dsd-${si}`} style={{ border: "none", borderTop: "1px solid var(--bhr-sub-divider)", margin: "4px 0" }} />;
+                                    if (sub === "divider") return <hr key={`dsd-${si}`} style={{ border: "none", borderTop: "1px solid #F0F1F3", margin: "4px 0" }} />;
                                     return (
                                       <button
                                         key={sub.id}
                                         onClick={() => { setActiveId(sub.id); setDrawerOpen(false); }}
                                         style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", height: "38px", padding: "0 10px 0 0", marginLeft: "8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
-                                        onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }}
+                                        onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
                                         onMouseLeave={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
                                       >
                                         <span style={{ width: "18px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                          <FontAwesomeIcon icon={sub.icon} style={{ width: 12, height: 12, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
+                                          <FontAwesomeIcon icon={sub.icon} style={{ width: 15, height: 15, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
                                         </span>
                                         <span style={{ fontSize: "13px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                           {sub.label}
                                         </span>
                                         {sub.count != null && (
-                                          <span style={{ fontSize: "11px", color: "var(--bhr-muted)", flexShrink: 0 }}>
+                                          <span style={{ fontSize: "11px", color: "#9CA3AF", flexShrink: 0 }}>
                                             ({sub.count})
                                           </span>
                                         )}
@@ -512,7 +520,7 @@ export function RcGlobalNavCanvas() {
                       <button
                         onClick={isMobile ? () => setAccountOpen(true) : undefined}
                         style={{ padding: "12px 16px 16px", display: "flex", alignItems: "center", gap: "10px", flexShrink: 0, background: "transparent", border: "none", borderTop: `1px solid ${C.border}`, cursor: isMobile ? "pointer" : "default", width: "100%", textAlign: "left", transition: "background 80ms ease" }}
-                        onMouseEnter={(e) => { if (isMobile) (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }}
+                        onMouseEnter={(e) => { if (isMobile) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
                         onMouseLeave={(e) => { if (isMobile) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -521,7 +529,7 @@ export function RcGlobalNavCanvas() {
                           Jessica Cordovoa
                         </span>
                         {isMobile && (
-                          <FontAwesomeIcon icon={faChevronRight} style={{ width: 11, height: 11, color: "var(--bhr-muted)", flexShrink: 0 }} />
+                          <FontAwesomeIcon icon={faChevronRight} style={{ width: 11, height: 11, color: "#9CA3AF", flexShrink: 0 }} />
                         )}
                       </button>
                     </>
@@ -536,15 +544,12 @@ export function RcGlobalNavCanvas() {
               {/* Desktop header */}
               {!isTablet && (
                 <header style={{ height: "60px", minHeight: "60px", background: C.headerBg, borderBottom: `1px solid ${C.border}`, display: "flex", alignItems: "center", padding: "0 20px", gap: "10px", flexShrink: 0, position: "relative", zIndex: 10 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "7px", marginRight: "auto", flexShrink: 0 }}>
-                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                      <path d="M7 18C7 18 7 10 11 7C11 7 11 12 15 10C15 10 13 16 7 18Z" fill="var(--bhr-green)" />
-                      <path d="M11 7C11 7 9 4 6 4C6 4 6 8 11 7Z" fill="var(--bhr-green-light)" />
-                    </svg>
-                    <span style={{ fontSize: "15px", fontWeight: 700, color: "var(--bhr-green)", letterSpacing: "-0.02em" }}>bambooHR</span>
+                  <div style={{ display: "flex", alignItems: "center", marginRight: "auto", flexShrink: 0 }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/desktop.png" alt="bambooHR" style={{ height: "18px", width: "auto", display: "block" }} />
                   </div>
                   <SearchBar />
-                  <button style={{ width: "34px", height: "34px", borderRadius: "50%", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 100ms ease" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+                  <button style={{ width: "34px", height: "34px", borderRadius: "50%", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 100ms ease" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
                     <FontAwesomeIcon icon={faInbox} style={{ width: 16, height: 16, color: C.navIcon }} />
                   </button>
                   <AskButton />
@@ -561,9 +566,9 @@ export function RcGlobalNavCanvas() {
               )}
 
               {/* Content */}
-              <div style={{ flex: 1, padding: "16px", overflow: "auto", background: "var(--bhr-content-wrap)" }}>
+              <div style={{ flex: 1, padding: "16px", overflow: "auto", background: "#FAFAFA" }}>
                 <div style={{ width: "100%", height: "100%", minHeight: "180px", borderRadius: "14px", background: C.contentBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: "12px", fontFamily: "var(--font-mono)", color: "var(--bhr-placeholder)", letterSpacing: "0.03em" }}>
+                  <span style={{ fontSize: "12px", fontFamily: "var(--font-mono)", color: "#B5AFA7", letterSpacing: "0.03em" }}>
                     {activeEntry?.label ?? "Content area"}
                   </span>
                 </div>
@@ -595,14 +600,14 @@ export function RcGlobalNavCanvas() {
         <div
           onMouseDown={onHandleMouseDown}
           title="Drag to resize"
-          style={{ position: "absolute", left: frameWidth !== null ? `calc(${frameWidth}px - 4px)` : "calc(100% - 4px)", top: "50%", transform: "translateY(-50%)", width: "8px", height: "40px", borderRadius: "4px", background: isDragging ? C.handleHover : C.handleBg, cursor: "col-resize", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "center", transition: isDragging ? "none" : "background 150ms ease", boxShadow: isDragging ? `0 0 0 3px var(--bhr-green-glow)` : "none" }}
+          style={{ position: "absolute", left: frameWidth !== null ? `calc(${frameWidth}px - 4px)` : "calc(100% - 4px)", top: "50%", transform: "translateY(-50%)", width: "8px", height: "40px", borderRadius: "4px", background: isDragging ? C.handleHover : C.handleBg, cursor: "col-resize", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "center", transition: isDragging ? "none" : "background 150ms ease", boxShadow: isDragging ? `0 0 0 3px rgba(61, 122, 48, 0.20)` : "none" }}
           onMouseEnter={(e) => { if (!isDragging) (e.currentTarget as HTMLElement).style.background = C.handleHover; }}
           onMouseLeave={(e) => { if (!isDragging) (e.currentTarget as HTMLElement).style.background = C.handleBg; }}
         >
           <svg width="4" height="20" viewBox="0 0 4 20" fill="none">
-            <circle cx="2" cy="5"  r="1.5" fill={isDragging ? "#fff" : "var(--bhr-muted)"} />
-            <circle cx="2" cy="10" r="1.5" fill={isDragging ? "#fff" : "var(--bhr-muted)"} />
-            <circle cx="2" cy="15" r="1.5" fill={isDragging ? "#fff" : "var(--bhr-muted)"} />
+            <circle cx="2" cy="5"  r="1.5" fill={isDragging ? "#fff" : "#9CA3AF"} />
+            <circle cx="2" cy="10" r="1.5" fill={isDragging ? "#fff" : "#9CA3AF"} />
+            <circle cx="2" cy="15" r="1.5" fill={isDragging ? "#fff" : "#9CA3AF"} />
           </svg>
         </div>
       </div>
@@ -623,7 +628,7 @@ function AccountPanel({ onClose }: { onClose: () => void }) {
         <span style={{ fontSize: "14px", fontWeight: 600, color: C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           Jessica Cordovoa
         </span>
-        <button onClick={onClose} style={{ width: "30px", height: "30px", borderRadius: "6px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: C.navIcon, flexShrink: 0 }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+        <button onClick={onClose} style={{ width: "30px", height: "30px", borderRadius: "6px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: C.navIcon, flexShrink: 0 }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
           <FontAwesomeIcon icon={faXmark} style={{ width: 14, height: 14 }} />
         </button>
       </div>
@@ -635,8 +640,8 @@ function AccountPanel({ onClose }: { onClose: () => void }) {
           return (
             <button
               key={item.id}
-              style={{ display: "block", width: "100%", padding: "11px 20px", border: "none", background: "transparent", cursor: "pointer", textAlign: "left", fontSize: "14px", color: item.id === "logout" ? "var(--bhr-danger)" : C.navText, transition: "background 60ms ease" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }}
+              style={{ display: "block", width: "100%", padding: "11px 20px", border: "none", background: "transparent", cursor: "pointer", textAlign: "left", fontSize: "14px", color: item.id === "logout" ? "#DC2626" : C.navText, transition: "background 60ms ease" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
             >
               {item.label}
@@ -715,7 +720,7 @@ function ResponsiveHeader({
     >
       {groups.map(({ category, items }) => (
         <div key={category}>
-          <div style={{ padding: "8px 16px 4px", fontSize: "10px", fontWeight: 600, color: "var(--bhr-muted)", textTransform: "uppercase", letterSpacing: "0.07em" }}>{category}</div>
+          <div style={{ padding: "8px 16px 4px", fontSize: "10px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em" }}>{category}</div>
           {items.map((result) => (
             <SearchResultRow key={result.id} result={result} isHovered={hovered === result.id} onHover={setHovered} onSelect={closeSearch} />
           ))}
@@ -729,11 +734,11 @@ function ResponsiveHeader({
       {searchOpen ? (
         // Search takeover mode
         <>
-          <div ref={wrapperRef} style={{ flex: 1, display: "flex", alignItems: "center", gap: "8px", border: `1.5px solid ${C.searchFocus}`, borderRadius: "20px", padding: "0 14px", height: "36px", background: "#FFFFFF", boxShadow: `0 0 0 3px var(--bhr-green-ring)` }}>
+          <div ref={wrapperRef} style={{ flex: 1, display: "flex", alignItems: "center", gap: "8px", border: `1.5px solid ${C.searchFocus}`, borderRadius: "20px", padding: "0 14px", height: "36px", background: "#FFFFFF", boxShadow: `0 0 0 3px rgba(61, 122, 48, 0.12)` }}>
             <FontAwesomeIcon icon={faMagnifyingGlass} style={{ width: 13, height: 13, color: C.searchFocus, flexShrink: 0 }} />
-            <input ref={searchInputRef} value={query} onChange={(e) => { setQuery(e.target.value); updateRect(); }} placeholder="Search..." style={{ border: "none", outline: "none", background: "transparent", fontSize: "14px", color: "var(--bhr-nav-text)", width: "100%", fontFamily: "inherit" }} />
+            <input ref={searchInputRef} value={query} onChange={(e) => { setQuery(e.target.value); updateRect(); }} placeholder="Search..." style={{ border: "none", outline: "none", background: "transparent", fontSize: "14px", color: "#374151", width: "100%", fontFamily: "inherit" }} />
           </div>
-          <button onClick={closeSearch} style={{ width: "34px", height: "34px", borderRadius: "6px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: C.navIcon }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+          <button onClick={closeSearch} style={{ width: "34px", height: "34px", borderRadius: "6px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: C.navIcon }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
             <FontAwesomeIcon icon={faXmark} style={{ width: 15, height: 15 }} />
           </button>
           {typeof document !== "undefined" && dropdown ? createPortal(dropdown, document.body) : null}
@@ -742,38 +747,30 @@ function ResponsiveHeader({
         // Default header
         <>
           {/* Hamburger */}
-          <button onClick={onToggleDrawer} style={{ width: "36px", height: "36px", borderRadius: "7px", border: "none", background: drawerOpen ? C.activeBg : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: drawerOpen ? C.activeIcon : C.navIcon, transition: "background 100ms ease" }} onMouseEnter={(e) => { if (!drawerOpen) (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }} onMouseLeave={(e) => { if (!drawerOpen) (e.currentTarget as HTMLElement).style.background = drawerOpen ? C.activeBg : "transparent"; }}>
+          <button onClick={onToggleDrawer} style={{ width: "36px", height: "36px", borderRadius: "7px", border: "none", background: drawerOpen ? C.activeBg : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: drawerOpen ? C.activeIcon : C.navIcon, transition: "background 100ms ease" }} onMouseEnter={(e) => { if (!drawerOpen) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { if (!drawerOpen) (e.currentTarget as HTMLElement).style.background = drawerOpen ? C.activeBg : "transparent"; }}>
             <FontAwesomeIcon icon={faBars} style={{ width: 16, height: 16 }} />
           </button>
 
           {/* Logo — wordmark on tablet, compact leaf-circle on mobile */}
           {isMobile ? (
-            // Compact bamboo-leaf circle (space-efficient for narrow frames)
-            <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: "var(--bhr-green)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginLeft: "2px" }}>
-              <svg width="14" height="14" viewBox="0 0 22 22" fill="none">
-                <path d="M7 18C7 18 7 10 11 7C11 7 11 12 15 10C15 10 13 16 7 18Z" fill="var(--bhr-bg)" />
-                <path d="M11 7C11 7 9 4 6 4C6 4 6 8 11 7Z" fill="rgba(255,255,255,0.7)" />
-              </svg>
-            </div>
+            // Compact mobile logo (32×32)
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src="/mobile.png" alt="bambooHR" style={{ width: "32px", height: "32px", display: "block", flexShrink: 0, marginLeft: "2px" }} />
           ) : (
-            <div style={{ display: "flex", alignItems: "center", gap: "6px", paddingLeft: "4px" }}>
-              <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-                <path d="M7 18C7 18 7 10 11 7C11 7 11 12 15 10C15 10 13 16 7 18Z" fill="var(--bhr-green)" />
-                <path d="M11 7C11 7 9 4 6 4C6 4 6 8 11 7Z" fill="var(--bhr-green-light)" />
-              </svg>
-              <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--bhr-green)", letterSpacing: "-0.02em" }}>bambooHR</span>
-            </div>
+            // Tablet: wordmark
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src="/desktop.png" alt="bambooHR" style={{ height: "17px", width: "auto", display: "block", paddingLeft: "4px" }} />
           )}
 
           <div style={{ flex: 1 }} />
 
           {/* Search icon */}
-          <button onClick={openSearch} style={{ width: "36px", height: "36px", borderRadius: "50%", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 100ms ease" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+          <button onClick={openSearch} style={{ width: "36px", height: "36px", borderRadius: "50%", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 100ms ease" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
             <FontAwesomeIcon icon={faMagnifyingGlass} style={{ width: 15, height: 15, color: C.navIcon }} />
           </button>
 
           {/* Inbox */}
-          <button style={{ width: "36px", height: "36px", borderRadius: "50%", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 100ms ease" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+          <button style={{ width: "36px", height: "36px", borderRadius: "50%", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 100ms ease" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
             <FontAwesomeIcon icon={faInbox} style={{ width: 15, height: 15, color: C.navIcon }} />
           </button>
 
@@ -807,7 +804,7 @@ function DrawerNavButton({
     <button
       onClick={onClick}
       style={{ display: "flex", alignItems: "center", gap: "12px", height: "44px", padding: "0 10px", borderRadius: "7px", border: "none", cursor: "pointer", width: "100%", textAlign: "left", background: isActive ? C.activeBg : "transparent", color: isActive ? C.activeText : C.navText, transition: "background 80ms ease", flexShrink: 0, animation: `rc-nav-label-in 200ms cubic-bezier(0.2,0,0,1) ${labelIndex * 8}ms both` }}
-      onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }}
+      onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
       onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
     >
       <span style={{ width: "18px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: isActive ? C.activeIcon : C.navIcon }}>
@@ -815,12 +812,12 @@ function DrawerNavButton({
       </span>
       <span style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
         <span style={{ fontSize: "13px", fontWeight: isActive ? 500 : 400, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{row.label}</span>
-        {row.sublabel && <span style={{ fontSize: "10px", color: "var(--bhr-muted)", lineHeight: 1.3 }}>{row.sublabel}</span>}
+        {row.sublabel && <span style={{ fontSize: "10px", color: "#9CA3AF", lineHeight: 1.3 }}>{row.sublabel}</span>}
       </span>
       {hasSubItems && (
         <FontAwesomeIcon
           icon={faChevronDown}
-          style={{ width: 10, height: 10, color: "var(--bhr-muted)", flexShrink: 0, transform: isExpanded ? "rotate(180deg)" : "none", transition: "transform 200ms ease" }}
+          style={{ width: 10, height: 10, color: "#9CA3AF", flexShrink: 0, transform: isExpanded ? "rotate(180deg)" : "none", transition: "transform 200ms ease" }}
         />
       )}
     </button>
@@ -872,17 +869,17 @@ function SearchBar() {
   const dropdown = open && dropRect ? (
     <div ref={dropdownRef} className="rc-nav-scroll" style={{ position: "fixed", top: dropRect.top, left: dropRect.left, width: "340px", background: C.dropdownBg, borderRadius: "10px", border: `1px solid ${C.border}`, boxShadow: C.dropdownShadow, zIndex: 9999, overflowY: "auto", maxHeight: "360px", animation: "rc-search-in 140ms cubic-bezier(0.2,0,0,1) both" }}>
       {groups.length === 0 ? (
-        <div style={{ padding: "20px 16px", textAlign: "center", fontSize: "13px", color: "var(--bhr-muted)" }}>No results for &ldquo;{query}&rdquo;</div>
+        <div style={{ padding: "20px 16px", textAlign: "center", fontSize: "13px", color: "#9CA3AF" }}>No results for &ldquo;{query}&rdquo;</div>
       ) : (
         groups.map(({ category, items }) => (
           <div key={category}>
-            <div style={{ padding: "10px 16px 4px", fontSize: "10px", fontWeight: 600, color: "var(--bhr-muted)", textTransform: "uppercase", letterSpacing: "0.07em" }}>{category}</div>
+            <div style={{ padding: "10px 16px 4px", fontSize: "10px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.07em" }}>{category}</div>
             {items.map((result) => <SearchResultRow key={result.id} result={result} isHovered={hovered === result.id} onHover={setHovered} onSelect={() => { setFocused(false); setQuery(""); }} />)}
           </div>
         ))
       )}
       {groups.length > 0 && (
-        <div style={{ padding: "8px 16px", borderTop: `1px solid ${C.divider}`, display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", color: "var(--bhr-muted)", cursor: "pointer" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+        <div style={{ padding: "8px 16px", borderTop: `1px solid ${C.divider}`, display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", color: "#9CA3AF", cursor: "pointer" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
           <FontAwesomeIcon icon={faMagnifyingGlass} style={{ width: 10, height: 10 }} />
           <span>Search all results{query ? ` for "${query}"` : ""}</span>
           <FontAwesomeIcon icon={faArrowRight} style={{ width: 9, height: 9, marginLeft: "auto" }} />
@@ -894,11 +891,11 @@ function SearchBar() {
   return (
     <>
       <div ref={wrapperRef} style={{ position: "relative", flexShrink: 0, width: "260px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", border: `1.5px solid ${focused ? C.searchFocus : C.border}`, borderRadius: "20px", padding: "0 14px", height: "34px", width: "100%", background: focused ? "#FFFFFF" : "var(--bhr-hover)", transition: "border-color 120ms ease, background 120ms ease, box-shadow 120ms ease", cursor: "text", boxShadow: focused ? `0 0 0 3px var(--bhr-green-ring)` : "none" }} onClick={() => { setFocused(true); updateRect(); }}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} style={{ width: 12, height: 12, color: focused ? C.searchFocus : "var(--bhr-muted)", flexShrink: 0, transition: "color 120ms ease" }} />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => { setFocused(true); updateRect(); }} placeholder="Search..." style={{ border: "none", outline: "none", background: "transparent", fontSize: "13px", color: "var(--bhr-nav-text)", width: "100%", fontFamily: "inherit" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", border: `1.5px solid ${focused ? C.searchFocus : C.border}`, borderRadius: "20px", padding: "0 14px", height: "34px", width: "100%", background: focused ? "#FFFFFF" : "#F3F4F6", transition: "border-color 120ms ease, background 120ms ease, box-shadow 120ms ease", cursor: "text", boxShadow: focused ? `0 0 0 3px rgba(61, 122, 48, 0.12)` : "none" }} onClick={() => { setFocused(true); updateRect(); }}>
+          <FontAwesomeIcon icon={faMagnifyingGlass} style={{ width: 12, height: 12, color: focused ? C.searchFocus : "#9CA3AF", flexShrink: 0, transition: "color 120ms ease" }} />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => { setFocused(true); updateRect(); }} placeholder="Search..." style={{ border: "none", outline: "none", background: "transparent", fontSize: "13px", color: "#374151", width: "100%", fontFamily: "inherit" }} />
           {query && (
-            <button onMouseDown={(e) => { e.preventDefault(); setQuery(""); }} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", padding: 0, flexShrink: 0, color: "var(--bhr-muted)" }}>
+            <button onMouseDown={(e) => { e.preventDefault(); setQuery(""); }} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", padding: 0, flexShrink: 0, color: "#9CA3AF" }}>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
             </button>
           )}
@@ -914,12 +911,12 @@ function SearchBar() {
 function SearchResultRow({ result, isHovered, onHover, onSelect }: { result: SearchResult; isHovered: boolean; onHover: (id: string | null) => void; onSelect: () => void; }) {
   return (
     <button onMouseEnter={() => onHover(result.id)} onMouseLeave={() => onHover(null)} onClick={onSelect} style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", padding: "8px 16px", border: "none", cursor: "pointer", background: isHovered ? C.activeBg : "transparent", textAlign: "left", transition: "background 60ms ease" }}>
-      <span style={{ width: "28px", height: "28px", borderRadius: "6px", background: isHovered ? "var(--bhr-green-ring)" : "var(--bhr-hover)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 60ms ease" }}>
-        <FontAwesomeIcon icon={result.icon} style={{ width: 12, height: 12, color: isHovered ? C.activeIcon : "var(--bhr-nav-icon)" }} />
+      <span style={{ width: "28px", height: "28px", borderRadius: "6px", background: isHovered ? "rgba(61, 122, 48, 0.12)" : "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 60ms ease" }}>
+        <FontAwesomeIcon icon={result.icon} style={{ width: 12, height: 12, color: isHovered ? C.activeIcon : "#6B7280" }} />
       </span>
       <span style={{ display: "flex", flexDirection: "column", gap: "1px", overflow: "hidden" }}>
-        <span style={{ fontSize: "13px", fontWeight: 400, color: "var(--bhr-text-strong)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{result.label}</span>
-        <span style={{ fontSize: "11px", color: "var(--bhr-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{result.sublabel}</span>
+        <span style={{ fontSize: "13px", fontWeight: 400, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{result.label}</span>
+        <span style={{ fontSize: "11px", color: "#9CA3AF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{result.sublabel}</span>
       </span>
     </button>
   );
@@ -944,6 +941,7 @@ function NavButton({
   onHideFlyout?: () => void;
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
+  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
 
   const handleClick = () => {
     if (!collapsed && hasSubItems) { onToggleSub?.(); }
@@ -951,23 +949,50 @@ function NavButton({
   };
 
   const handleMouseEnter = () => {
-    if (collapsed && hasSubItems && btnRef.current) {
-      const r = btnRef.current.getBoundingClientRect();
+    if (!collapsed || !btnRef.current) return;
+    const r = btnRef.current.getBoundingClientRect();
+    if (hasSubItems) {
       onShowFlyout?.(r.right + 6, r.top);
+    } else {
+      setTooltipPos({ x: r.right + 8, y: r.top + r.height / 2 });
     }
   };
 
   const handleMouseLeave = () => {
     if (collapsed && hasSubItems) onHideFlyout?.();
+    setTooltipPos(null);
   };
 
   return (
+    <>
+    {/* Custom tooltip for collapsed items without a flyout */}
+    {tooltipPos && typeof document !== "undefined" && createPortal(
+      <div style={{
+        position:      "fixed",
+        top:           tooltipPos.y,
+        left:          tooltipPos.x,
+        transform:     "translateY(-50%)",
+        background:    "#1F2937",
+        color:         "#F9FAFB",
+        fontSize:      "12px",
+        fontWeight:    500,
+        padding:       "5px 10px",
+        borderRadius:  "6px",
+        whiteSpace:    "nowrap",
+        pointerEvents: "none",
+        zIndex:        9999,
+        boxShadow:     "0 2px 8px rgba(0,0,0,0.20)",
+        letterSpacing: "-0.01em",
+      }}>
+        {row.label}
+      </div>,
+      document.body
+    )}
     <button
       ref={btnRef}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      title={collapsed ? row.label : undefined}
       style={{ display: "flex", alignItems: "center", gap: "12px", height: "42px", padding: collapsed ? "0" : "0 10px", borderRadius: "7px", border: "none", cursor: "pointer", width: "100%", textAlign: "left", background: (!collapsed && (isActive || isExpanded)) ? C.activeBg : "transparent", color: isActive ? C.activeText : C.navText, justifyContent: collapsed ? "center" : "flex-start", transition: "background 80ms ease", flexShrink: 0 }}
     >
       <span style={{ width: collapsed ? "40px" : "18px", height: collapsed ? "40px" : "auto", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: isActive ? C.activeIcon : C.navIcon, transition: "color 80ms ease", borderRadius: (collapsed && isActive) ? "8px" : "0", background: (collapsed && isActive) ? C.activeBg : "transparent" }}>
@@ -977,17 +1002,18 @@ function NavButton({
         <>
           <span style={{ display: "flex", flexDirection: "column", overflow: "hidden", whiteSpace: "nowrap", flex: 1, animation: "rc-nav-label-in 200ms cubic-bezier(0.2,0,0,1) both", animationDelay: `${labelIndex * 10}ms` }}>
             <span style={{ fontSize: "13px", fontWeight: isActive ? 500 : 400, lineHeight: 1.3 }}>{row.label}</span>
-            {row.sublabel && <span style={{ fontSize: "10px", color: "var(--bhr-muted)", lineHeight: 1.3 }}>{row.sublabel}</span>}
+            {row.sublabel && <span style={{ fontSize: "10px", color: "#9CA3AF", lineHeight: 1.3 }}>{row.sublabel}</span>}
           </span>
           {hasSubItems && (
             <FontAwesomeIcon
               icon={faChevronDown}
-              style={{ width: 9, height: 9, color: "var(--bhr-muted)", flexShrink: 0, transform: isExpanded ? "rotate(180deg)" : "none", transition: "transform 200ms ease" }}
+              style={{ width: 9, height: 9, color: "#9CA3AF", flexShrink: 0, transform: isExpanded ? "rotate(180deg)" : "none", transition: "transform 200ms ease" }}
             />
           )}
         </>
       )}
     </button>
+    </>
   );
 }
 
@@ -1016,7 +1042,7 @@ function NavFlyout({
         top:          position.y,
         left:         position.x,
         minWidth:     "210px",
-        background:   "var(--bhr-bg)",
+        background:   "#FFFFFF",
         borderRadius: "10px",
         border:       `1px solid ${C.border}`,
         boxShadow:    "0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06)",
@@ -1026,7 +1052,7 @@ function NavFlyout({
       }}
     >
       {/* Category header */}
-      <div style={{ padding: "10px 14px 6px", fontSize: "10px", fontWeight: 600, color: "var(--bhr-muted)", textTransform: "uppercase", letterSpacing: "0.06em", borderBottom: `1px solid ${C.divider}` }}>
+      <div style={{ padding: "10px 14px 6px", fontSize: "10px", fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", borderBottom: `1px solid ${C.divider}` }}>
         {entry.label}
       </div>
       {subItems.map((sub, si) => {
@@ -1036,14 +1062,14 @@ function NavFlyout({
             key={sub.id}
             onClick={() => onSelect(sub.id)}
             style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", padding: "9px 14px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
-            onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }}
+            onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
           >
             <span style={{ width: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <FontAwesomeIcon icon={sub.icon} style={{ width: 13, height: 13, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
             </span>
             <span style={{ fontSize: "13px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1 }}>{sub.label}</span>
-            {sub.count != null && <span style={{ fontSize: "11px", color: "var(--bhr-muted)", flexShrink: 0 }}>({sub.count})</span>}
+            {sub.count != null && <span style={{ fontSize: "11px", color: "#9CA3AF", flexShrink: 0 }}>({sub.count})</span>}
           </button>
         );
       })}
@@ -1056,9 +1082,15 @@ function NavFlyout({
 
 function CollapseButton({ collapsed, onClick }: { collapsed: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} title={collapsed ? "Expand sidebar" : "Collapse sidebar"} style={{ width: collapsed ? "40px" : "100%", height: "32px", borderRadius: "6px", border: `1px solid ${C.border}`, background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 100ms ease, width 220ms cubic-bezier(0.4,0,0.2,1)", gap: "2px", color: C.navIcon }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bhr-hover)"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
-      <FontAwesomeIcon icon={faChevronLeft} style={{ width: 9, height: 9, color: "currentColor", opacity: collapsed ? 0.35 : 1, transition: "opacity 220ms ease" }} />
-      <FontAwesomeIcon icon={faChevronLeft} style={{ width: 9, height: 9, color: "currentColor", transform: collapsed ? "rotate(180deg)" : "none", transition: "transform 220ms ease" }} />
+    <button
+      onClick={onClick}
+      title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+      style={{ width: collapsed ? "40px" : "100%", height: "32px", borderRadius: "6px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start", flexShrink: 0, transition: "background 100ms ease, width 220ms cubic-bezier(0.4,0,0.2,1)", gap: "8px", color: C.navIcon, padding: collapsed ? 0 : "0 10px" }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+    >
+      <FontAwesomeIcon icon={collapsed ? faAnglesRight : faAnglesLeft} style={{ width: 12, height: 12, flexShrink: 0 }} />
+      {!collapsed && <span style={{ fontSize: "12px", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden" }}>Collapse</span>}
     </button>
   );
 }
@@ -1067,8 +1099,13 @@ function CollapseButton({ collapsed, onClick }: { collapsed: boolean; onClick: (
 
 function AskButton() {
   return (
-    <button style={{ display: "flex", alignItems: "center", gap: "7px", background: C.askBg, color: C.askText, border: "none", borderRadius: "20px", padding: "0 16px", height: "34px", fontSize: "13px", fontWeight: 500, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", transition: "background 100ms ease" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = C.askBgHover; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = C.askBg; }}>
-      <FontAwesomeIcon icon={faWandMagicSparkles} style={{ width: 12, height: 12, color: "rgba(255,255,255,0.9)" }} />
+    <button
+      style={{ display: "flex", alignItems: "center", gap: "7px", background: "#FFFFFF", color: "#3D7A30", border: "1.5px solid #3D7A30", borderRadius: "20px", padding: "0 16px", height: "34px", fontSize: "13px", fontWeight: 500, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", transition: "background 100ms ease, color 100ms ease" }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(61,122,48,0.06)"; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "#FFFFFF"; }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/icon.png" alt="" aria-hidden="true" style={{ width: "13px", height: "13px", display: "block", flexShrink: 0 }} />
       Ask
     </button>
   );
