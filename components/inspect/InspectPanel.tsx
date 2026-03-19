@@ -1,14 +1,13 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useState } from "react";
 import { useAppStore } from "@/lib/store";
 import { isRegistered, getRegistration } from "@/lib/registry";
 import { TokenRow } from "./TokenRow";
 import type { TokenRow as TokenRowType } from "@/lib/types";
 
 // ─── Intro stagger delays for right panel (ms after launch) ───────────────────
-const D_TABS    = 300;
+const D_HEADER  = 300;
 const D_CONTENT = 470;
 
 function rIntroStyle(delay: number, launched: boolean): CSSProperties {
@@ -58,7 +57,7 @@ function EmptyInspect() {
   );
 }
 
-// ─── Placeholder inspect (non-registered) ────────────────────────────────────
+// ─── Placeholder inspect (non-registered component) ──────────────────────────
 
 function PlaceholderInspect() {
   return (
@@ -101,19 +100,15 @@ function SpacingSection({ tokens }: { tokens: TokenRowType[] }) {
             }}
           >
             <div style={{ height: "22px", width: "52px", backgroundColor: "var(--sh-box-inner)", borderRadius: "3px" }} />
-            {/* top-left: height */}
             <span className="absolute text-[12px] font-mono left-1.5 top-1" style={{ color: "var(--sh-accent)", opacity: 0.8 }}>
               h: {height}
             </span>
-            {/* top-right: width */}
             <span className="absolute text-[12px] font-mono right-1.5 top-1" style={{ color: "var(--sh-accent)", opacity: 0.8 }}>
               w: {width}
             </span>
-            {/* bottom-left: padding */}
             <span className="absolute text-[12px] font-mono left-1.5 bottom-1" style={{ color: "var(--sh-accent-rose)", opacity: 0.8 }}>
               p: {px}
             </span>
-            {/* bottom-right: gap */}
             <span className="absolute text-[12px] font-mono right-1.5 bottom-1" style={{ color: "var(--sh-accent-rose)", opacity: 0.8 }}>
               gap: {gap}
             </span>
@@ -170,9 +165,7 @@ function LiveInspect({ componentId }: { componentId: string }) {
         </div>
       )}
 
-      {hasSize && (
-        <SpacingSection tokens={sizeTokens} />
-      )}
+      {hasSize && <SpacingSection tokens={sizeTokens} />}
 
       {!hasColor && !hasType && !hasSize && (
         <div className="flex flex-col flex-1 items-center justify-center gap-2 px-4 py-8 select-none">
@@ -185,7 +178,7 @@ function LiveInspect({ componentId }: { componentId: string }) {
   );
 }
 
-// ─── Variant chip (reads store, must be its own component) ───────────────────
+// ─── Variant chip ─────────────────────────────────────────────────────────────
 
 function VariantChip({ componentId }: { componentId: string }) {
   const { controlValues } = useAppStore();
@@ -193,11 +186,11 @@ function VariantChip({ componentId }: { componentId: string }) {
   if (!variant) return null;
   return (
     <span
-      className="ml-auto text-[12px] font-medium px-2 py-0.5 rounded mr-1 shrink-0"
+      className="text-[12px] font-medium px-2 py-0.5 rounded shrink-0"
       style={{
         backgroundColor: "var(--sh-accent-sel)",
-        color: "var(--sh-accent)",
-        border: "1px solid var(--sh-accent-ring)",
+        color:           "var(--sh-accent)",
+        border:          "1px solid var(--sh-accent-ring)",
       }}
     >
       {variant}
@@ -207,73 +200,35 @@ function VariantChip({ componentId }: { componentId: string }) {
 
 // ─── InspectPanel ─────────────────────────────────────────────────────────────
 
-const TABS = ["Inspect", "Properties", "Docs"] as const;
-type Tab = (typeof TABS)[number];
-
 export function InspectPanel() {
   const { selectedComponentId, launched } = useAppStore();
-  const [activeTab, setActiveTab] = useState<Tab>("Inspect");
   const registered = selectedComponentId ? isRegistered(selectedComponentId) : false;
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      {/* Tab bar — animates in first */}
+      {/* Header — 44px, aligns with the top toolbar height across all panels.
+          No tabs. Shows variant chip when a component with variants is selected. */}
       <div
-        className="shrink-0 flex items-center px-2 gap-px"
+        className="shrink-0 flex items-center px-3 gap-2"
         style={{
           borderBottom: "1px solid var(--sh-border-sub)",
           height: "44px",
-          ...rIntroStyle(D_TABS, launched),
+          ...rIntroStyle(D_HEADER, launched),
         }}
       >
-        {TABS.map((tab) => {
-          const isActive = tab === activeTab;
-          return (
-            <button key={tab} onClick={() => setActiveTab(tab)}
-              className="px-3 h-full text-[12px] font-medium relative"
-              style={{ color: isActive ? "var(--sh-text)" : "var(--sh-text-muted)" }}
-            >
-              {tab}
-              {isActive && (
-                <span className="absolute bottom-0 left-2 right-2 h-[2px] rounded-t"
-                  style={{ backgroundColor: "var(--sh-accent)" }} />
-              )}
-            </button>
-          );
-        })}
         {selectedComponentId && registered && (
           <VariantChip componentId={selectedComponentId} />
         )}
       </div>
 
-      {/* Content — animates in slightly after tabs */}
+      {/* Inspect content */}
       <div
         className="flex flex-col flex-1 overflow-hidden"
         style={rIntroStyle(D_CONTENT, launched)}
       >
-        {activeTab === "Inspect" && (
-          <>
-            {!selectedComponentId && <EmptyInspect />}
-            {selectedComponentId && !registered && <PlaceholderInspect />}
-            {selectedComponentId && registered && <LiveInspect componentId={selectedComponentId} />}
-          </>
-        )}
-        {activeTab === "Properties" && (
-          <div className="flex flex-col flex-1 items-center justify-center gap-2 px-4 select-none">
-            <p className="text-xs font-medium" style={{ color: "var(--sh-text-muted)" }}>Properties</p>
-            <p className="text-[12px] text-center" style={{ color: "var(--sh-text-faint)" }}>
-              Component props and API reference will appear here
-            </p>
-          </div>
-        )}
-        {activeTab === "Docs" && (
-          <div className="flex flex-col flex-1 items-center justify-center gap-2 px-4 select-none">
-            <p className="text-xs font-medium" style={{ color: "var(--sh-text-muted)" }}>Documentation</p>
-            <p className="text-[12px] text-center" style={{ color: "var(--sh-text-faint)" }}>
-              Usage guidelines and examples will appear here
-            </p>
-          </div>
-        )}
+        {!selectedComponentId && <EmptyInspect />}
+        {selectedComponentId && !registered  && <PlaceholderInspect />}
+        {selectedComponentId &&  registered  && <LiveInspect componentId={selectedComponentId} />}
       </div>
     </div>
   );
