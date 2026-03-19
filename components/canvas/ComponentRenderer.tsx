@@ -361,6 +361,10 @@ export function ComponentRenderer() {
           display:        "flex",
           alignItems:     isFullCanvas ? "stretch"    : "center",
           justifyContent: isFullCanvas ? "flex-start" : "center",
+          // Shift the flex centre-point leftward by half the left-panel width
+          // so WelcomeCanvas lands at the true viewport centre, not the
+          // centre of the narrower content area.  Only active during welcome.
+          paddingRight:   showWelcome ? "260px" : 0,
         }}
       >
         {showWelcome && <WelcomeCanvas />}

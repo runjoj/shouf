@@ -80,12 +80,19 @@ app/
 
 components/
   canvas/
-    ComponentRenderer.tsx   — Routes to WelcomeCanvas / LiveComponentCanvas / PlaceholderState
+    ComponentRenderer.tsx   — Routes to WelcomeCanvas / LiveComponentCanvas / PlaceholderState. Welcome centering: content div has paddingRight: showWelcome ? "260px" : 0 to shift flex center to viewport midpoint.
     ControlsBar.tsx         — Bottom bar, reads registry controls, drives controlValues
+    SectionGridCanvas.tsx   — Section overview grid. Tiles show live renderers OR custom previews (CUSTOM_TILE_PREVIEWS map) for full-canvas components (Color Tokens, Typography, Spacing, Nav, Guides).
+    AboutCanvas.tsx         — About page content rendered as a canvas state (not a separate route). Scroll container owns overflowY:auto. All SVG hover animations live here.
+    ColorTokensCanvas.tsx   — Full-canvas color token documentation, swatches + accent presets
+    TypographyCanvas.tsx    — Full-canvas type scale documentation
+    SpacingCanvas.tsx       — Full-canvas spacing scale documentation
+    EuGuideCanvas.tsx       — Eucalyptus guide (no controls/inspect panels)
+    RcGlobalNavCanvas.tsx   — rc-global-nav, single self-contained file
     EmptyCanvas.tsx         — (Legacy — may not be in active use)
     HeroCanvas.tsx          — (Legacy — predates current intro animation)
   inspect/
-    InspectPanel.tsx        — Inspect / Properties / Docs tabs + token display
+    InspectPanel.tsx        — Inspect content only. Tabs (Properties/Docs) were removed — no tab bar, no tab switching.
     TokenRow.tsx            — Single token row with color swatch
     VariantToggle.tsx       — Toggle row used in inspect panel
   layout/
@@ -287,9 +294,9 @@ TokenRow category dots use fixed accent colors regardless of the active accent p
 
 | ID | Name | Status | Notes |
 |---|---|---|---|
-| `pds-color-tokens` | Color Tokens | 🔲 Placeholder | Needs visual color token display — swatches, token names, hex values |
-| `pds-typography` | Typography Scale | 🔲 Placeholder | Needs type ramp display — scale steps, font size, weight, line-height |
-| `pds-spacing` | Spacing System | 🔲 Placeholder | Needs spacing scale visualization |
+| `pds-color-tokens` | Color Tokens | ✅ **Built** | Full-canvas swatch grid — accent presets, surface, border, text, accent scale. No renderer (full canvas only). |
+| `pds-typography` | Typography Scale | ✅ **Built** | Full-canvas type ramp. No renderer (full canvas only). |
+| `pds-spacing` | Spacing System | ✅ **Built** | Full-canvas spacing scale. No renderer (full canvas only). |
 | `pds-button` | Button | ✅ **Built** | Primary/Secondary/Ghost variants, sm/md/lg sizes, Disabled/Loading/Full Width/Icon Only toggles. Fully wired: live canvas, reactive controls, live inspect panel tokens. |
 | `pds-input` | Input | ✅ **Built** | Search input. forwardRef, controlled mode, kbd badge, fullWidth. Used in shell search bar and canvas demo — single source of truth for both. |
 
@@ -372,20 +379,38 @@ When new PDS components are built, they should be used in the shell where approp
 ### Inline Styles for Shell Tokens
 Shell chrome uses `style={{ color: "var(--sh-text)" }}` rather than Tailwind utilities for theme-aware values. Tailwind utilities are acceptable for layout (`flex`, `items-center`, `gap-2`, etc.) and non-token properties.
 
+### Panel Visibility System
+
+`AppShell.tsx` controls whether the right inspect panel and controls bar are visible based on which component is selected.
+
+```ts
+const NO_PANELS = new Set(["welcome", "about", "rc-guide", "eu-guide"]);
+const showPanels = !!selectedComponentId && !NO_PANELS.has(selectedComponentId);
+```
+
+- Right panel: wrapped in a clip div with `width: showPanels ? 280 : 0`, `overflow: "hidden"`, `transition: "width 300ms cubic-bezier(0.25, 0, 0, 1)"`. `RightPanel`'s aside has no `minWidth` so it collapses cleanly.
+- Controls bar: `maxHeight: showPanels ? 88 : 0` transition (avoids `height: auto` animation limitation). `CONTROLS_H = 88` is the measured height.
+- Add new "no panels" pages to `NO_PANELS` — do not add a special case in `CenterPanel`.
+
+### About Page (In-Shell)
+
+About is a canvas state, not a Next.js route. `selectedComponentId === "about"` renders `AboutCanvas` inside `ComponentRenderer`. The standalone `/about` route still exists but is superseded. `AboutNavItem` in `AccordionNav.tsx` calls `selectComponent("about")` — not `router.push`.
+
 ### Animation Play State Pattern
-Nav items and toolbar elements use `animationPlayState: launched ? "running" : "paused"` with `animationFillMode: "both"` to hold at opacity 0 before the intro completes. This lets all stagger delays be computed once at module load time without a coordination mechanism.
+Nav items (`NavItem.tsx`) only apply the intro stagger animation when `!launched`. After launch, re-mounting items (e.g., reopening an accordion) appear instantly with no delay. The pattern:
+```tsx
+...(launched ? {} : {
+  animationName: "intro-reveal",
+  animationFillMode: "both",
+  animationDelay: `${introDelay}ms`,
+  animationPlayState: "paused",
+})
+```
+Toolbar elements and section headers still use the older always-applied pattern (they don't unmount/remount so it's not an issue).
 
 ---
 
 ## WHAT STILL NEEDS BUILDING
-
-### Highest Priority — Core Portfolio Content
-
-1. **PDS Color Tokens display** — Visual canvas showing the full `--sh-*` token palette. Swatches in a grid with token name, hex value, and role label. Not a list — a designed visual artifact.
-
-4. **PDS Typography Scale display** — Type ramp showing each scale step (11px through 32px or whatever the actual scale is), with font-size, weight, line-height, and example text. Should look like a Figma type styles panel.
-
-5. **PDS Spacing System display** — Visual spacing scale, similar to how Figma shows spacing tokens.
 
 ### Eucalyptus Components
 
@@ -396,10 +421,6 @@ All five Eucalyptus components need to be built from screenshots and design refe
 - `rc-global-nav` — ✅ Built. BambooHR-style global nav; accordion sub-nav, flyout, drawer, responsive simulation via drag handle.
 - `rc-navbar` — Fully responsive nav with logo, links, mobile hamburger and drawer. Should actually resize/respond when the canvas viewport controls are used.
 - `rc-hero`, `rc-card`, `rc-grid`, `rc-footer` — Full implementations demonstrating responsive behavior.
-
-### Inspect Panel — Properties and Docs Tabs
-
-Both tabs currently show placeholder text. For each built component, the **Properties tab** should show a prop/API reference table, and the **Docs tab** should show usage guidelines, do/don't examples, and design rationale. These are high-value hiring signal — they show Jo thinks in documentation.
 
 ### Responsive Canvas Viewport
 

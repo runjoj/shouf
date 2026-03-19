@@ -31,13 +31,16 @@ export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
       style={{
         backgroundColor: isSelected ? "var(--sh-accent-sel)" : "transparent",
         color:           isSelected ? "var(--sh-accent)" : "var(--sh-text-muted)",
-        // Intro stagger — paused until launched, then animates in with delay
-        animationName:       "intro-reveal",
-        animationDuration:   "220ms",
-        animationTimingFunction: "ease",
-        animationFillMode:   "both",
-        animationDelay:      `${introDelay}ms`,
-        animationPlayState:  launched ? "running" : "paused",
+        // Intro stagger only — once the intro has played, items appear instantly
+        // so reopening an accordion feels snappy rather than sluggish.
+        ...(launched ? {} : {
+          animationName:           "intro-reveal",
+          animationDuration:       "220ms",
+          animationTimingFunction: "ease",
+          animationFillMode:       "both",
+          animationDelay:          `${introDelay}ms`,
+          animationPlayState:      "paused",
+        }),
       }}
       onMouseEnter={(e) => {
         if (!isSelected)

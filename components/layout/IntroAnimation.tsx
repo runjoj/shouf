@@ -164,11 +164,11 @@ export function IntroAnimation() {
         }}
       />
 
-      {/* ── Skip hint — bottom center ─────────────────────────────────────────── */}
+      {/* ── Skip hint — just below the vertically-centered welcome text ─────────── */}
       <div
         style={{
           position:      "absolute",
-          bottom:        96,
+          top:           "calc(50% + 88px)",
           left:          "50%",
           transform:     "translateX(-50%)",
           opacity:       hintVisible ? 0.7 : 0,
