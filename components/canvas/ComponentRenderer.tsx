@@ -10,6 +10,7 @@ import { TypographyCanvas }    from "./TypographyCanvas";
 import { SpacingCanvas }       from "./SpacingCanvas";
 import { EuGuideCanvas }       from "./EuGuideCanvas";
 import { RcGlobalNavCanvas }   from "./RcGlobalNavCanvas";
+import { AboutCanvas }         from "./AboutCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
 // These timing values must stay in sync with IntroAnimation.tsx.
@@ -319,6 +320,7 @@ export function ComponentRenderer() {
     selectedComponentId === "pds-spacing"      ||
     selectedComponentId === "eu-guide"         ||
     selectedComponentId === "rc-global-nav"    ||
+    selectedComponentId === "about"            ||
     isGridCanvas
   );
 
@@ -387,6 +389,9 @@ export function ComponentRenderer() {
         {!showWelcome && !isGridCanvas && selectedComponentId === "rc-global-nav" && (
           <RcGlobalNavCanvas />
         )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "about" && (
+          <AboutCanvas />
+        )}
 
         {/* ── Registered components via LiveComponentCanvas ─────────────── */}
         {!showWelcome && !isGridCanvas && selectedComponentId &&
@@ -406,6 +411,7 @@ export function ComponentRenderer() {
           selectedComponentId !== "pds-spacing"      &&
           selectedComponentId !== "eu-guide"         &&
           selectedComponentId !== "rc-global-nav"    &&
+          selectedComponentId !== "about"            &&
           !isRegistered(selectedComponentId) && (
           <PlaceholderState componentId={selectedComponentId} />
         )}

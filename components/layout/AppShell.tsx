@@ -1,7 +1,6 @@
 "use client";
 
 import { useAppStore } from "@/lib/store";
-import { hasRenderer } from "@/lib/registry";
 import { LeftPanel } from "./LeftPanel";
 import { CenterPanel } from "./CenterPanel";
 import { RightPanel } from "./RightPanel";
@@ -66,12 +65,15 @@ function MobileView() {
 // Width of the right panel in px — must match RightPanel's own width style.
 const RIGHT_PANEL_W = 280;
 
+// Pages that should NOT show the right panel or controls bar.
+// Everything else (component canvases with inspect/controls) shows both panels.
+const NO_PANELS = new Set(["welcome", "about", "rc-guide", "eu-guide"]);
+
 function DesktopView() {
   const { selectedComponentId } = useAppStore();
 
-  // Show the right panel and controls bar only for components that have an
-  // interactive renderer. Welcome, About, and all guide pages are excluded.
-  const showPanels = !!selectedComponentId && hasRenderer(selectedComponentId);
+  // Hide panels on landing/about/guide pages; show for all component canvases.
+  const showPanels = !!selectedComponentId && !NO_PANELS.has(selectedComponentId);
 
   return (
     <div

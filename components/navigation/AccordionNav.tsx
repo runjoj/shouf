@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { navSections } from "@/data/navigation";
 import { AccordionSection } from "./AccordionSection";
 import { useAppStore } from "@/lib/store";
@@ -87,16 +86,17 @@ function WelcomeNavItem({ delay }: { delay: number }) {
 // ─── About nav item ───────────────────────────────────────────────────────────
 
 function AboutNavItem({ delay }: { delay: number }) {
-  const { launched } = useAppStore();
-  const router = useRouter();
+  const { selectedComponentId, selectComponent, selectSection, setActiveMobilePanel, launched } =
+    useAppStore();
+  const isSelected = selectedComponentId === "about";
 
   return (
     <button
-      onClick={() => router.push("/about")}
+      onClick={() => { selectSection(null); selectComponent("about"); setActiveMobilePanel("canvas"); }}
       className="w-full flex items-center gap-2 px-3 py-[5px] text-left rounded-sm transition-colors cursor-default"
       style={{
-        backgroundColor: "transparent",
-        color:           "var(--sh-text-muted)",
+        backgroundColor: isSelected ? "var(--sh-accent-sel)" : "transparent",
+        color:           isSelected ? "var(--sh-accent)"     : "var(--sh-text-muted)",
         animationName:           "intro-reveal",
         animationDuration:       "220ms",
         animationTimingFunction: "ease",
@@ -105,10 +105,12 @@ function AboutNavItem({ delay }: { delay: number }) {
         animationPlayState:      launched ? "running" : "paused",
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.backgroundColor = "var(--sh-hover)";
+        if (!isSelected)
+          (e.currentTarget as HTMLElement).style.backgroundColor = "var(--sh-hover)";
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+        if (!isSelected)
+          (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
       }}
     >
       {/* Person icon */}
@@ -118,7 +120,7 @@ function AboutNavItem({ delay }: { delay: number }) {
         viewBox="0 0 12 12"
         fill="none"
         className="shrink-0"
-        style={{ color: "var(--sh-text-faint)" }}
+        style={{ color: isSelected ? "var(--sh-accent)" : "var(--sh-text-faint)" }}
       >
         <circle cx="6" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.4" />
         <path d="M1.5 11C1.5 8.5 3.5 7 6 7s4.5 1.5 4.5 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
