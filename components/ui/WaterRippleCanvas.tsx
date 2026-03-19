@@ -19,7 +19,7 @@ function easeOut(t: number): number {
 }
 
 // ─── Accent var resolver ───────────────────────────────────────────────────────
-// Maps each --sh-accent-* var name to its concrete colour value for a given
+// Maps each --shouf-accent-* var name to its concrete colour value for a given
 // preset so we can set explicit property values on each cascade target.
 
 // fg* = theme-correct foreground (dark in light-mode, bright in dark-mode)
@@ -31,14 +31,14 @@ function resolveVar(
   hexH: string, hexA: string,
 ): string {
   switch (varName.trim()) {
-    case "--sh-accent":      return `rgb(${fgR},${fgG},${fgB})`;
-    case "--sh-accent-h":    return hexH;
-    case "--sh-accent-a":    return hexA;
-    case "--sh-accent-sel":  return `rgba(${bgR},${bgG},${bgB},0.15)`;
-    case "--sh-accent-ring": return `rgba(${bgR},${bgG},${bgB},0.30)`;
-    case "--sh-box-border":  return `rgba(${fgR},${fgG},${fgB},0.28)`;
-    case "--sh-box-bg":      return `rgba(${bgR},${bgG},${bgB},0.06)`;
-    case "--sh-box-inner":   return `rgba(${bgR},${bgG},${bgB},0.18)`;
+    case "--shouf-accent":      return `rgb(${fgR},${fgG},${fgB})`;
+    case "--shouf-accent-h":    return hexH;
+    case "--shouf-accent-a":    return hexA;
+    case "--shouf-accent-sel":  return `rgba(${bgR},${bgG},${bgB},0.15)`;
+    case "--shouf-accent-ring": return `rgba(${bgR},${bgG},${bgB},0.30)`;
+    case "--shouf-box-border":  return `rgba(${fgR},${fgG},${fgB},0.28)`;
+    case "--shouf-box-bg":      return `rgba(${bgR},${bgG},${bgB},0.06)`;
+    case "--shouf-box-inner":   return `rgba(${bgR},${bgG},${bgB},0.18)`;
     default:                 return `rgb(${fgR},${fgG},${fgB})`;
   }
 }
@@ -46,15 +46,15 @@ function resolveVar(
 // ─── DOM helpers ───────────────────────────────────────────────────────────────
 
 // Only cascade these vars — they are all derived from the dynamic accent colour.
-// Fixed palette vars like --sh-accent-sage/rose/blue are intentionally excluded.
+// Fixed palette vars like --shouf-accent-sage/rose/blue are intentionally excluded.
 const CASCADE_VARS = new Set([
-  "--sh-accent", "--sh-accent-h", "--sh-accent-a",
-  "--sh-accent-sel", "--sh-accent-ring",
-  "--sh-box-border", "--sh-box-bg", "--sh-box-inner",
+  "--shouf-accent", "--shouf-accent-h", "--shouf-accent-a",
+  "--shouf-accent-sel", "--shouf-accent-ring",
+  "--shouf-box-border", "--shouf-box-bg", "--shouf-box-inner",
 ]);
 
 // Parse every CSS property in an element's inline style that references a
-// cascadeable --sh-accent var (e.g. "background-color: var(--sh-accent-sel)").
+// cascadeable --shouf-accent var (e.g. "background-color: var(--shouf-accent-sel)").
 function getAccentEntries(el: HTMLElement): Array<{ prop: string; varName: string }> {
   const attr = el.getAttribute("style") ?? "";
   const result: Array<{ prop: string; varName: string }> = [];
@@ -63,7 +63,7 @@ function getAccentEntries(el: HTMLElement): Array<{ prop: string; varName: strin
     if (ci < 0) continue;
     const prop  = rule.slice(0, ci).trim();
     const value = rule.slice(ci + 1).trim();
-    const m     = value.match(/var\((--sh-accent[^)]*)\)/);
+    const m     = value.match(/var\((--shouf-accent[^)]*)\)/);
     if (m && CASCADE_VARS.has(m[1])) result.push({ prop, varName: m[1] });
   }
   return result;
@@ -82,14 +82,14 @@ interface CascadeTarget {
   entries:  Array<{ prop: string; varName: string }>;
 }
 
-// Query all elements whose inline style uses any --sh-accent var, compute their
+// Query all elements whose inline style uses any --shouf-accent var, compute their
 // distance from the ripple origin, and freeze them at their current computed
 // colours so they don't immediately respond when setAccent updates :root.
 // (AccentPicker fires the ripple event BEFORE calling setAccent, so we get
 // the old colour here and the freeze holds until we individually reveal each
 // element as the ring reaches its distance threshold.)
 function buildTargets(originX: number, originY: number): CascadeTarget[] {
-  const els     = document.querySelectorAll<HTMLElement>("[style*='--sh-accent']");
+  const els     = document.querySelectorAll<HTMLElement>("[style*='--shouf-accent']");
   const targets: CascadeTarget[] = [];
 
   for (const el of els) {
@@ -124,7 +124,7 @@ function buildTargets(originX: number, originY: number): CascadeTarget[] {
 // Transition this element from its frozen colour to the new accent colour,
 // then restore the CSS var reference so the element stays in sync with :root.
 // We MUST NOT removeProperty — React set these via its style prop as
-// var(--sh-accent-*), so removing the property leaves no source for the colour
+// var(--shouf-accent-*), so removing the property leaves no source for the colour
 // and the element goes transparent. Instead we restore the CSS var expression;
 // :root already holds the new accent (setAccent ran after the ripple fired),
 // so the var resolves to the correct new colour immediately.
@@ -169,7 +169,7 @@ interface ActiveRipple {
 //   stroke  200px wide + 20px blur = broad, diffuse wash of colour
 //
 // As the ring expands it acts as a colour wave: every UI element whose inline
-// style uses a --sh-accent var is frozen at the old colour at click time.
+// style uses a --shouf-accent var is frozen at the old colour at click time.
 // When the ring radius crosses that element's distance from the origin, the
 // element transitions to the new accent colour over 200ms ease.
 // Elements closest to the swatch change first; distant elements change last.
@@ -234,7 +234,7 @@ export function WaterRippleCanvas() {
 
     // ── Subscribe to accent click events ──────────────────────────────────────
     // AccentPicker fires this event BEFORE calling setAccent(), so at this
-    // point :root --sh-accent still holds the previous colour — exactly when
+    // point :root --shouf-accent still holds the previous colour — exactly when
     // we need to freeze targets at the old computed values.
     const unsub = onWaterRipple((x, y, hex) => {
       // Match preset by hex (always the bright/dark-mode swatch colour).

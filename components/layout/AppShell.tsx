@@ -16,20 +16,20 @@ function MobileView() {
   const { activeMobilePanel } = useAppStore();
 
   return (
-    <div className="flex flex-col h-full lg:hidden" style={{ backgroundColor: "var(--sh-bg)" }}>
+    <div className="flex flex-col h-full lg:hidden" style={{ backgroundColor: "var(--shouf-bg)" }}>
       <MobileTabBar />
 
       <div className="flex-1 overflow-hidden">
         {activeMobilePanel === "navigator" && (
           <div
             className="flex flex-col h-full overflow-hidden"
-            style={{ backgroundColor: "var(--sh-panel)" }}
+            style={{ backgroundColor: "var(--shouf-panel)" }}
           >
             <div
               className="shrink-0 px-4 h-[44px] flex items-center"
-              style={{ borderBottom: "1px solid var(--sh-border-sub)" }}
+              style={{ borderBottom: "1px solid var(--shouf-border-sub)" }}
             >
-              <span className="text-[14px] font-semibold" style={{ color: "var(--sh-text)" }}>
+              <span className="text-[14px] font-semibold" style={{ color: "var(--shouf-text)" }}>
                 Components
               </span>
             </div>
@@ -42,13 +42,13 @@ function MobileView() {
         {activeMobilePanel === "inspect" && (
           <div
             className="flex flex-col h-full overflow-hidden"
-            style={{ backgroundColor: "var(--sh-panel)" }}
+            style={{ backgroundColor: "var(--shouf-panel)" }}
           >
             <div
               className="shrink-0 px-4 h-[44px] flex items-center"
-              style={{ borderBottom: "1px solid var(--sh-border-sub)" }}
+              style={{ borderBottom: "1px solid var(--shouf-border-sub)" }}
             >
-              <span className="text-[14px] font-semibold" style={{ color: "var(--sh-text)" }}>
+              <span className="text-[14px] font-semibold" style={{ color: "var(--shouf-text)" }}>
                 Inspect
               </span>
             </div>
@@ -67,7 +67,7 @@ const RIGHT_PANEL_W = 280;
 
 // Pages that should NOT show the right panel or controls bar.
 // Everything else (component canvases with inspect/controls) shows both panels.
-const NO_PANELS = new Set(["welcome", "about", "rc-guide", "eu-guide"]);
+const NO_PANELS = new Set(["welcome", "about", "pds-guide", "rc-guide", "eu-guide"]);
 
 function DesktopView() {
   const { selectedComponentId } = useAppStore();
@@ -81,7 +81,7 @@ function DesktopView() {
       style={{
         position:        "relative",
         overflow:        "hidden",
-        backgroundColor: "var(--sh-bg)",
+        backgroundColor: "var(--shouf-bg)",
       }}
     >
       {/* ── Left panel ───────────────────────────────────────────────────────── */}

@@ -42,8 +42,8 @@ function WelcomeNavItem({ delay }: { delay: number }) {
       onClick={() => { selectSection(null); selectComponent("welcome"); setActiveMobilePanel("canvas"); }}
       className="w-full flex items-center gap-2 px-3 py-[5px] text-left rounded-sm transition-colors cursor-default"
       style={{
-        backgroundColor: isSelected ? "var(--sh-accent-sel)" : "transparent",
-        color:           isSelected ? "var(--sh-accent)" : "var(--sh-text-muted)",
+        backgroundColor: isSelected ? "var(--shouf-accent-sel)" : "transparent",
+        color:           isSelected ? "var(--shouf-accent)" : "var(--shouf-text-muted)",
         // Intro stagger
         animationName:           "intro-reveal",
         animationDuration:       "220ms",
@@ -54,7 +54,7 @@ function WelcomeNavItem({ delay }: { delay: number }) {
       }}
       onMouseEnter={(e) => {
         if (!isSelected)
-          (e.currentTarget as HTMLElement).style.backgroundColor = "var(--sh-hover)";
+          (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover)";
       }}
       onMouseLeave={(e) => {
         if (!isSelected)
@@ -68,7 +68,7 @@ function WelcomeNavItem({ delay }: { delay: number }) {
         viewBox="0 0 12 12"
         fill="none"
         className="shrink-0"
-        style={{ color: isSelected ? "var(--sh-accent)" : "var(--sh-text-faint)" }}
+        style={{ color: isSelected ? "var(--shouf-accent)" : "var(--shouf-text-faint)" }}
       >
         <path
           d="M1 5.5L6 1L11 5.5V11H8V8H4V11H1V5.5Z"
@@ -95,8 +95,8 @@ function AboutNavItem({ delay }: { delay: number }) {
       onClick={() => { selectSection(null); selectComponent("about"); setActiveMobilePanel("canvas"); }}
       className="w-full flex items-center gap-2 px-3 py-[5px] text-left rounded-sm transition-colors cursor-default"
       style={{
-        backgroundColor: isSelected ? "var(--sh-accent-sel)" : "transparent",
-        color:           isSelected ? "var(--sh-accent)"     : "var(--sh-text-muted)",
+        backgroundColor: isSelected ? "var(--shouf-accent-sel)" : "transparent",
+        color:           isSelected ? "var(--shouf-accent)"     : "var(--shouf-text-muted)",
         animationName:           "intro-reveal",
         animationDuration:       "220ms",
         animationTimingFunction: "ease",
@@ -106,7 +106,7 @@ function AboutNavItem({ delay }: { delay: number }) {
       }}
       onMouseEnter={(e) => {
         if (!isSelected)
-          (e.currentTarget as HTMLElement).style.backgroundColor = "var(--sh-hover)";
+          (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover)";
       }}
       onMouseLeave={(e) => {
         if (!isSelected)
@@ -120,7 +120,7 @@ function AboutNavItem({ delay }: { delay: number }) {
         viewBox="0 0 12 12"
         fill="none"
         className="shrink-0"
-        style={{ color: isSelected ? "var(--sh-accent)" : "var(--sh-text-faint)" }}
+        style={{ color: isSelected ? "var(--shouf-accent)" : "var(--shouf-text-faint)" }}
       >
         <circle cx="6" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.4" />
         <path d="M1.5 11C1.5 8.5 3.5 7 6 7s4.5 1.5 4.5 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
@@ -142,7 +142,7 @@ export function AccordionNav() {
       {/* Thin divider between special items and the first section */}
       <div
         className="mx-3 my-1"
-        style={{ height: "1px", backgroundColor: "var(--sh-border-sub)" }}
+        style={{ height: "1px", backgroundColor: "var(--shouf-border-sub)" }}
       />
 
       {/* Accordion sections with staggered delays */}
@@ -158,7 +158,7 @@ export function AccordionNav() {
             {index < navSections.length - 1 && (
               <div
                 className="mx-3 my-1"
-                style={{ height: "1px", backgroundColor: "var(--sh-border-sub)" }}
+                style={{ height: "1px", backgroundColor: "var(--shouf-border-sub)" }}
               />
             )}
           </div>

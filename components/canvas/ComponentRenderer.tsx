@@ -9,6 +9,7 @@ import { SectionGridCanvas }   from "./SectionGridCanvas";
 import { TypographyCanvas }    from "./TypographyCanvas";
 import { SpacingCanvas }       from "./SpacingCanvas";
 import { EuGuideCanvas }       from "./EuGuideCanvas";
+import { PdsGuideCanvas }      from "./PdsGuideCanvas";
 import { RcGlobalNavCanvas }   from "./RcGlobalNavCanvas";
 import { AboutCanvas }         from "./AboutCanvas";
 
@@ -63,7 +64,7 @@ function WelcomeCanvas() {
   // near-white text so it reads in light mode too.  Once launched the canvas
   // background fades in and we switch back to the theme token with a matching
   // transition so the colour change is invisible.
-  const headlineColor      = launched ? "var(--sh-text)" : "#F5F5F5";
+  const headlineColor      = launched ? "var(--shouf-text)" : "#F5F5F5";
   const headlineTransition = launched ? "color 700ms ease"  : "none";
 
   return (
@@ -77,7 +78,7 @@ function WelcomeCanvas() {
           width:           "44px",
           height:          "44px",
           borderRadius:    "12px",
-          backgroundColor: "var(--sh-accent)",
+          backgroundColor: "var(--shouf-accent)",
           display:         "flex",
           alignItems:      "center",
           justifyContent:  "center",
@@ -119,7 +120,7 @@ function WelcomeCanvas() {
               style={{
                 display:    "inline-block",
                 marginLeft: "2px",
-                color:      "var(--sh-accent)",
+                color:      "var(--shouf-accent)",
                 animation:  "ls-cursor-blink 0.7s step-end infinite",
                 fontWeight: 300,
               }}
@@ -134,7 +135,7 @@ function WelcomeCanvas() {
           style={{
             fontSize:   "14px",
             lineHeight: 1.7,
-            color:      "var(--sh-text-muted)",
+            color:      "var(--shouf-text-muted)",
             margin:     0,
             opacity:    launched ? 1 : 0,
             transition: launched ? "opacity 400ms ease 100ms" : "none",
@@ -149,7 +150,7 @@ function WelcomeCanvas() {
             fontSize:      "12px",
             fontFamily:    "var(--font-mono)",
             letterSpacing: "0.05em",
-            color:         "var(--sh-text-faint)",
+            color:         "var(--shouf-text-faint)",
             margin:        "4px 0 0",
             opacity:       launched ? 1 : 0,
             transition:    launched ? "opacity 400ms ease 150ms" : "none",
@@ -165,7 +166,7 @@ function WelcomeCanvas() {
           fontSize:      "12px",
           fontFamily:    "var(--font-mono)",
           letterSpacing: "0.02em",
-          color:         "var(--sh-text-faint)",
+          color:         "var(--shouf-text-faint)",
           margin:        0,
           opacity:       launched ? 1 : 0,
           transition:    launched ? "opacity 400ms ease 200ms" : "none",
@@ -184,18 +185,18 @@ function NoSelectionState() {
     <div className="flex flex-col items-center justify-center gap-4 select-none">
       <div
         className="flex items-center justify-center w-14 h-14 rounded-xl"
-        style={{ backgroundColor: "var(--sh-hover)", border: "1px solid var(--sh-border)" }}
+        style={{ backgroundColor: "var(--shouf-hover)", border: "1px solid var(--shouf-border)" }}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--sh-text-faint)" strokeWidth="1.5" />
-          <path d="M3 9h18M9 3v18" stroke="var(--sh-text-faint)" strokeWidth="1.5" strokeLinecap="round" />
+          <rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--shouf-text-faint)" strokeWidth="1.5" />
+          <path d="M3 9h18M9 3v18" stroke="var(--shouf-text-faint)" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       </div>
       <div className="flex flex-col items-center gap-1.5 text-center">
-        <p className="text-sm font-medium" style={{ color: "var(--sh-text-muted)" }}>
+        <p className="text-sm font-medium" style={{ color: "var(--shouf-text-muted)" }}>
           No component selected
         </p>
-        <p className="text-xs" style={{ color: "var(--sh-text-faint)" }}>
+        <p className="text-xs" style={{ color: "var(--shouf-text-faint)" }}>
           Choose a component from the navigator to preview it here
         </p>
       </div>
@@ -212,26 +213,26 @@ function PlaceholderState({ componentId }: { componentId: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-5 select-none">
       {entry && section && (
-        <div className="flex items-center gap-1.5 text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
+        <div className="flex items-center gap-1.5 text-[12px]" style={{ color: "var(--shouf-text-faint)" }}>
           <span>{section.title}</span>
           <span>/</span>
-          <span style={{ color: "var(--sh-text-muted)" }}>{entry.name}</span>
+          <span style={{ color: "var(--shouf-text-muted)" }}>{entry.name}</span>
         </div>
       )}
       <div
         className="flex flex-col items-center justify-center gap-3 w-64 h-36 rounded-xl"
-        style={{ backgroundColor: "var(--sh-panel)", border: "1px solid var(--sh-border)" }}
+        style={{ backgroundColor: "var(--shouf-panel)", border: "1px solid var(--shouf-border)" }}
       >
         <div className="flex flex-col gap-2 w-40">
-          <div className="h-2.5 rounded-full" style={{ backgroundColor: "var(--sh-skeleton)", width: "75%" }} />
-          <div className="h-2 rounded-full"   style={{ backgroundColor: "var(--sh-skeleton-alt)", width: "55%" }} />
-          <div className="h-2 rounded-full"   style={{ backgroundColor: "var(--sh-skeleton-alt)", width: "65%" }} />
+          <div className="h-2.5 rounded-full" style={{ backgroundColor: "var(--shouf-skeleton)", width: "75%" }} />
+          <div className="h-2 rounded-full"   style={{ backgroundColor: "var(--shouf-skeleton-alt)", width: "55%" }} />
+          <div className="h-2 rounded-full"   style={{ backgroundColor: "var(--shouf-skeleton-alt)", width: "65%" }} />
         </div>
-        <div className="h-7 rounded-md" style={{ backgroundColor: "var(--sh-skeleton)", width: "88px" }} />
+        <div className="h-7 rounded-md" style={{ backgroundColor: "var(--shouf-skeleton)", width: "88px" }} />
       </div>
       {entry && (
-        <p className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
-          <span style={{ color: "var(--sh-accent)" }}>{entry.name}</span>
+        <p className="text-[12px]" style={{ color: "var(--shouf-text-faint)" }}>
+          <span style={{ color: "var(--shouf-accent)" }}>{entry.name}</span>
           {" "}— coming soon
         </p>
       )}
@@ -266,11 +267,11 @@ function LiveComponentCanvas({ componentId }: { componentId: string }) {
       <div className="flex items-center gap-2 select-none">
         {entry && section && (
           <>
-            <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
+            <span className="text-[12px]" style={{ color: "var(--shouf-text-faint)" }}>
               {section.title}
             </span>
-            <span style={{ color: "var(--sh-border)", fontSize: "12px" }}>/</span>
-            <span className="text-[12px] font-medium" style={{ color: "var(--sh-text-muted)" }}>
+            <span style={{ color: "var(--shouf-border)", fontSize: "12px" }}>/</span>
+            <span className="text-[12px] font-medium" style={{ color: "var(--shouf-text-muted)" }}>
               {entry.name}
             </span>
           </>
@@ -279,14 +280,14 @@ function LiveComponentCanvas({ componentId }: { componentId: string }) {
           <>
             <span
               className="text-[12px] px-1.5 py-px rounded"
-              style={{ backgroundColor: "var(--sh-accent-sel)", color: "var(--sh-accent)" }}
+              style={{ backgroundColor: "var(--shouf-accent-sel)", color: "var(--shouf-accent)" }}
             >
               {variant}
             </span>
             {size && (
               <span
                 className="text-[12px] px-1.5 py-px rounded"
-                style={{ backgroundColor: "var(--sh-hover)", color: "var(--sh-text-faint)" }}
+                style={{ backgroundColor: "var(--shouf-hover)", color: "var(--shouf-text-faint)" }}
               >
                 {size}
               </span>
@@ -315,6 +316,7 @@ export function ComponentRenderer() {
   // layout as ColorTokensCanvas so it can own its own scrolling.
   const isGridCanvas  = !showWelcome && selectedSectionId !== null;
   const isFullCanvas  = !showWelcome && (
+    selectedComponentId === "pds-guide"        ||
     selectedComponentId === "pds-color-tokens" ||
     selectedComponentId === "pds-typography"   ||
     selectedComponentId === "pds-spacing"      ||
@@ -378,6 +380,9 @@ export function ComponentRenderer() {
         )}
 
         {/* ── Individual component canvases — only when NOT in grid mode ───── */}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "pds-guide" && (
+          <PdsGuideCanvas />
+        )}
         {!showWelcome && !isGridCanvas && selectedComponentId === "pds-color-tokens" && (
           <ColorTokensCanvas />
         )}
@@ -399,6 +404,7 @@ export function ComponentRenderer() {
 
         {/* ── Registered components via LiveComponentCanvas ─────────────── */}
         {!showWelcome && !isGridCanvas && selectedComponentId &&
+          selectedComponentId !== "pds-guide"        &&
           selectedComponentId !== "pds-color-tokens" &&
           selectedComponentId !== "pds-typography"   &&
           selectedComponentId !== "pds-spacing"      &&
@@ -410,6 +416,7 @@ export function ComponentRenderer() {
 
         {/* ── Placeholder for unbuilt components ────────────────────────── */}
         {!showWelcome && !isGridCanvas && selectedComponentId &&
+          selectedComponentId !== "pds-guide"        &&
           selectedComponentId !== "pds-color-tokens" &&
           selectedComponentId !== "pds-typography"   &&
           selectedComponentId !== "pds-spacing"      &&

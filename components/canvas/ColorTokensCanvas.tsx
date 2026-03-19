@@ -9,33 +9,33 @@ import { useAppStore } from "@/lib/store";
 // ─── Token group definitions ──────────────────────────────────────────────────
 
 const SURFACE_TOKENS = [
-  { varName: "--sh-bg",        desc: "App background",  hasBorder: true },
-  { varName: "--sh-canvas",    desc: "Center canvas",   hasBorder: true },
-  { varName: "--sh-panel",     desc: "Side panels",     hasBorder: true },
-  { varName: "--sh-panel-alt", desc: "Nested surfaces", hasBorder: true },
+  { varName: "--shouf-bg",        desc: "App background",  hasBorder: true },
+  { varName: "--shouf-canvas",    desc: "Center canvas",   hasBorder: true },
+  { varName: "--shouf-panel",     desc: "Side panels",     hasBorder: true },
+  { varName: "--shouf-panel-alt", desc: "Nested surfaces", hasBorder: true },
 ];
 
 const BORDER_TOKENS = [
-  { varName: "--sh-border",     desc: "Default border",  hasBorder: true },
-  { varName: "--sh-border-sub", desc: "Hairline divider", hasBorder: true },
+  { varName: "--shouf-border",     desc: "Default border",  hasBorder: true },
+  { varName: "--shouf-border-sub", desc: "Hairline divider", hasBorder: true },
 ];
 
 const TEXT_TOKENS = [
-  { varName: "--sh-text",       desc: "Headings & body",  hasBorder: false },
-  { varName: "--sh-text-muted", desc: "Secondary labels", hasBorder: false },
-  { varName: "--sh-text-faint", desc: "Placeholders",     hasBorder: false },
+  { varName: "--shouf-text",       desc: "Headings & body",  hasBorder: false },
+  { varName: "--shouf-text-muted", desc: "Secondary labels", hasBorder: false },
+  { varName: "--shouf-text-faint", desc: "Placeholders",     hasBorder: false },
 ];
 
 const ACCENT_PRIMARY_TOKENS = [
-  { varName: "--sh-accent",   desc: "Primary brand" },
-  { varName: "--sh-accent-h", desc: "Hover state"   },
-  { varName: "--sh-accent-a", desc: "Active state"  },
+  { varName: "--shouf-accent",   desc: "Primary brand" },
+  { varName: "--shouf-accent-h", desc: "Hover state"   },
+  { varName: "--shouf-accent-a", desc: "Active state"  },
 ];
 
 const ACCENT_SECONDARY_TOKENS = [
-  { varName: "--sh-accent-rose", desc: "Rose secondary" },
-  { varName: "--sh-accent-blue", desc: "Blue secondary" },
-  { varName: "--sh-accent-sage", desc: "Sage secondary" },
+  { varName: "--shouf-accent-rose", desc: "Rose secondary" },
+  { varName: "--shouf-accent-blue", desc: "Blue secondary" },
+  { varName: "--shouf-accent-sage", desc: "Sage secondary" },
 ];
 
 // ─── CSS var reader ───────────────────────────────────────────────────────────
@@ -55,7 +55,7 @@ function SectionHeader({ label }: { label: string }) {
           fontSize:      "10px",
           fontFamily:    "var(--font-mono)",
           letterSpacing: "0.14em",
-          color:         "var(--sh-text-faint)",
+          color:         "var(--shouf-text-faint)",
           textTransform: "uppercase",
           flexShrink:    0,
           userSelect:    "none",
@@ -63,7 +63,7 @@ function SectionHeader({ label }: { label: string }) {
       >
         {label}
       </span>
-      <div style={{ flex: 1, height: "1px", backgroundColor: "var(--sh-border-sub)" }} />
+      <div style={{ flex: 1, height: "1px", backgroundColor: "var(--shouf-border-sub)" }} />
     </div>
   );
 }
@@ -96,7 +96,7 @@ function ColorSwatch({
           height:          "64px",
           borderRadius:    "10px",
           backgroundColor: `var(${varName})`,
-          border:          hasBorder ? "1px solid var(--sh-border)" : undefined,
+          border:          hasBorder ? "1px solid var(--shouf-border)" : undefined,
           transform:       hov ? "scale(1.06) translateY(-3px)" : "scale(1) translateY(0)",
           boxShadow:       hov ? "0 8px 24px rgba(0,0,0,0.13)" : "0 1px 4px rgba(0,0,0,0.06)",
           transition:      "transform 160ms ease, box-shadow 160ms ease",
@@ -108,7 +108,7 @@ function ColorSwatch({
           style={{
             fontSize:   "10px",
             fontFamily: "var(--font-mono)",
-            color:      "var(--sh-text-muted)",
+            color:      "var(--shouf-text-muted)",
             lineHeight: 1.3,
           }}
         >
@@ -118,7 +118,7 @@ function ColorSwatch({
           style={{
             fontSize:   "10px",
             fontFamily: "var(--font-mono)",
-            color:      "var(--sh-text-faint)",
+            color:      "var(--shouf-text-faint)",
           }}
         >
           {hex || "—"}
@@ -126,7 +126,7 @@ function ColorSwatch({
         <span
           style={{
             fontSize:   "10px",
-            color:      "var(--sh-text-faint)",
+            color:      "var(--shouf-text-faint)",
             lineHeight: 1.4,
           }}
         >
@@ -167,7 +167,7 @@ function PresetSwatch({
           backgroundColor: preset.hex,
           transform:       isActive ? "scale(1.08)" : "scale(1)",
           boxShadow:       isActive
-            ? `0 0 0 2px var(--sh-bg), 0 0 0 4px ${preset.hex}, 0 8px 28px ${preset.hex}70`
+            ? `0 0 0 2px var(--shouf-bg), 0 0 0 4px ${preset.hex}, 0 8px 28px ${preset.hex}70`
             : `0 2px 8px ${preset.hex}35`,
           transition: "transform 160ms ease, box-shadow 200ms ease",
         }}
@@ -176,7 +176,7 @@ function PresetSwatch({
         style={{
           fontSize:   "10px",
           fontFamily: "var(--font-mono)",
-          color:      isActive ? "var(--sh-accent)" : "var(--sh-text-faint)",
+          color:      isActive ? "var(--shouf-accent)" : "var(--shouf-text-faint)",
           textAlign:  "center",
           lineHeight: 1.4,
           fontWeight: isActive ? 600 : 400,
@@ -261,7 +261,7 @@ export function ColorTokensCanvas() {
             style={{
               fontSize:      "22px",
               fontWeight:    600,
-              color:         "var(--sh-text)",
+              color:         "var(--shouf-text)",
               margin:        "0 0 6px",
               letterSpacing: "-0.02em",
             }}
@@ -272,7 +272,7 @@ export function ColorTokensCanvas() {
             style={{
               fontSize:   "14px",
               fontFamily: "var(--font-mono)",
-              color:      "var(--sh-text-faint)",
+              color:      "var(--shouf-text-faint)",
               margin:     0,
             }}
           >
@@ -286,7 +286,7 @@ export function ColorTokensCanvas() {
           <p
             style={{
               fontSize:     "12px",
-              color:        "var(--sh-text-faint)",
+              color:        "var(--shouf-text-faint)",
               marginBottom: "28px",
               lineHeight:   1.6,
             }}
@@ -371,7 +371,7 @@ export function ColorTokensCanvas() {
           {/* Secondaries — rose / blue / sage */}
           <div
             style={{
-              borderTop:  "1px solid var(--sh-border-sub)",
+              borderTop:  "1px solid var(--shouf-border-sub)",
               paddingTop: "24px",
               display:    "flex",
               gap:        "20px",

@@ -29,7 +29,7 @@ export function AccordionSection({
         onClick={() => { toggleSection(section.id); selectSection(section.id); }}
         className="group w-full flex items-center gap-1.5 px-3 py-2 text-left transition-colors"
         style={{
-          color: "var(--sh-text)",
+          color: "var(--shouf-text)",
           // Intro stagger — header fades in with its delay
           animationName:           "intro-reveal",
           animationDuration:       "220ms",
@@ -39,7 +39,7 @@ export function AccordionSection({
           animationPlayState:      launched ? "running" : "paused",
         }}
         onMouseEnter={(e) =>
-          ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--sh-hover)")
+          ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover)")
         }
         onMouseLeave={(e) =>
           ((e.currentTarget as HTMLElement).style.backgroundColor = "transparent")
@@ -54,7 +54,7 @@ export function AccordionSection({
           className="shrink-0 transition-transform duration-150"
           style={{
             transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
-            color: "var(--sh-text-muted)",
+            color: "var(--shouf-text-muted)",
           }}
         >
           <path
@@ -68,7 +68,7 @@ export function AccordionSection({
 
         <span
           className="text-[12px] font-semibold uppercase tracking-wider truncate"
-          style={{ color: "var(--sh-text-muted)", letterSpacing: "0.06em" }}
+          style={{ color: "var(--shouf-text-muted)", letterSpacing: "0.06em" }}
         >
           {section.title}
         </span>
@@ -77,8 +77,8 @@ export function AccordionSection({
         <span
           className="ml-auto shrink-0 text-[12px] font-medium px-1.5 py-0.5 rounded"
           style={{
-            backgroundColor: "var(--sh-badge-bg)",
-            color: "var(--sh-text-faint)",
+            backgroundColor: "var(--shouf-badge-bg)",
+            color: "var(--shouf-text-faint)",
           }}
         >
           {section.entries.length}

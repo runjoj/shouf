@@ -51,14 +51,14 @@ const FONT_FAMILIES = [
 // ─── Type scale data ──────────────────────────────────────────────────────────
 
 const TYPE_SCALE = [
-  { id: "type-8",  token: "--pds-type-8",  px: "8px",  usedFor: "Box model labels",           familyId: "mono"  },
-  { id: "type-9",  token: "--pds-type-9",  px: "9px",  usedFor: "Keyboard shortcut hints",    familyId: "inter" },
-  { id: "type-10", token: "--pds-type-10", px: "10px", usedFor: "Meta labels, token values",  familyId: "inter" },
-  { id: "type-11", token: "--pds-type-11", px: "11px", usedFor: "Nav headers, control labels",familyId: "inter" },
-  { id: "type-12", token: "--pds-type-12", px: "12px", usedFor: "Nav items, status badges",   familyId: "inter" },
-  { id: "type-13", token: "--pds-type-13", px: "13px", usedFor: "Body text, subheadings",     familyId: "inter" },
-  { id: "type-15", token: "--pds-type-15", px: "15px", usedFor: "Button label (large)",       familyId: "inter" },
-  { id: "type-18", token: "--pds-type-18", px: "18px", usedFor: "Welcome headline",           familyId: "mono"  },
+  { id: "type-8",  token: "--shouf-type-8",  px: "8px",  usedFor: "Box model labels",           familyId: "mono"  },
+  { id: "type-9",  token: "--shouf-type-9",  px: "9px",  usedFor: "Keyboard shortcut hints",    familyId: "inter" },
+  { id: "type-10", token: "--shouf-type-10", px: "10px", usedFor: "Meta labels, token values",  familyId: "inter" },
+  { id: "type-11", token: "--shouf-type-11", px: "11px", usedFor: "Nav headers, control labels",familyId: "inter" },
+  { id: "type-12", token: "--shouf-type-12", px: "12px", usedFor: "Nav items, status badges",   familyId: "inter" },
+  { id: "type-13", token: "--shouf-type-13", px: "13px", usedFor: "Body text, subheadings",     familyId: "inter" },
+  { id: "type-15", token: "--shouf-type-15", px: "15px", usedFor: "Button label (large)",       familyId: "inter" },
+  { id: "type-18", token: "--shouf-type-18", px: "18px", usedFor: "Welcome headline",           familyId: "mono"  },
 ];
 
 // ─── Stagger animation helper ─────────────────────────────────────────────────
@@ -96,7 +96,7 @@ function ByFontView({
               ...revealStyle(index),
               cursor:        "pointer",
               paddingLeft:   isSelected ? "16px" : "0",
-              borderLeft:    isSelected ? "2px solid var(--sh-accent)" : "2px solid transparent",
+              borderLeft:    isSelected ? "2px solid var(--shouf-accent)" : "2px solid transparent",
               transition:    "padding-left 160ms ease, border-color 160ms ease",
             }}
           >
@@ -107,7 +107,7 @@ function ByFontView({
                 fontFamily:    "var(--font-mono)",
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
-                color:         "var(--sh-text-faint)",
+                color:         "var(--shouf-text-faint)",
                 marginBottom:  "16px",
                 userSelect:    "none",
               }}
@@ -122,7 +122,7 @@ function ByFontView({
                 fontFamily:   family.stack,
                 fontWeight:   400,
                 lineHeight:   1,
-                color:        "var(--sh-text)",
+                color:        "var(--shouf-text)",
                 marginBottom: "20px",
                 letterSpacing: family.id === "mono" ? "-0.02em" : "-0.01em",
               }}
@@ -137,7 +137,7 @@ function ByFontView({
                 fontFamily:   family.stack,
                 fontWeight:   400,
                 lineHeight:   1.55,
-                color:        "var(--sh-text-muted)",
+                color:        "var(--shouf-text-muted)",
                 marginBottom: "28px",
               }}
             >
@@ -156,7 +156,7 @@ function ByFontView({
                       fontSize:   "16px",
                       fontFamily: family.stack,
                       fontWeight: weight,
-                      color:      "var(--sh-text)",
+                      color:      "var(--shouf-text)",
                       lineHeight: 1,
                     }}
                   >
@@ -166,7 +166,7 @@ function ByFontView({
                     style={{
                       fontSize:   "10px",
                       fontFamily: "var(--font-mono)",
-                      color:      "var(--sh-text-faint)",
+                      color:      "var(--shouf-text-faint)",
                       lineHeight: 1.4,
                     }}
                   >
@@ -208,9 +208,9 @@ function ByScaleView({
               alignItems:    "baseline",
               gap:           "24px",
               padding:       "14px 0",
-              borderBottom:  "1px solid var(--sh-border-sub)",
+              borderBottom:  "1px solid var(--shouf-border-sub)",
               cursor:        "pointer",
-              backgroundColor: isSelected ? "var(--sh-hover)" : "transparent",
+              backgroundColor: isSelected ? "var(--shouf-hover)" : "transparent",
               paddingLeft:   isSelected ? "12px" : "0",
               paddingRight:  isSelected ? "12px" : "0",
               marginLeft:    isSelected ? "-12px" : "0",
@@ -224,7 +224,7 @@ function ByScaleView({
                 fontSize:   step.px,
                 fontFamily: family.stack,
                 fontWeight: 400,
-                color:      "var(--sh-text)",
+                color:      "var(--shouf-text)",
                 lineHeight: 1,
                 flex:       1,
                 minWidth:   0,
@@ -241,7 +241,7 @@ function ByScaleView({
               style={{
                 fontSize:   "12px",
                 fontFamily: "var(--font-mono)",
-                color:      "var(--sh-text-muted)",
+                color:      "var(--shouf-text-muted)",
                 flexShrink: 0,
                 minWidth:   "120px",
               }}
@@ -254,7 +254,7 @@ function ByScaleView({
               style={{
                 fontSize:   "12px",
                 fontFamily: "var(--font-mono)",
-                color:      "var(--sh-text-faint)",
+                color:      "var(--shouf-text-faint)",
                 flexShrink: 0,
                 minWidth:   "32px",
                 textAlign:  "right",
@@ -270,7 +270,7 @@ function ByScaleView({
                 fontFamily:    "var(--font-mono)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color:         "var(--sh-text-faint)",
+                color:         "var(--shouf-text-faint)",
                 flexShrink:    0,
                 minWidth:      "60px",
                 textAlign:     "right",
@@ -317,7 +317,7 @@ export function TypographyCanvas() {
             style={{
               fontSize:      "22px",
               fontWeight:    600,
-              color:         "var(--sh-text)",
+              color:         "var(--shouf-text)",
               margin:        "0 0 6px",
               letterSpacing: "-0.02em",
             }}
@@ -328,7 +328,7 @@ export function TypographyCanvas() {
             style={{
               fontSize:   "14px",
               fontFamily: "var(--font-mono)",
-              color:      "var(--sh-text-faint)",
+              color:      "var(--shouf-text-faint)",
               margin:     0,
             }}
           >

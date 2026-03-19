@@ -16,24 +16,24 @@ function SelectWidget({ control, value, onChange }: WidgetProps) {
   return (
     <div
       className="relative"
-      style={{ border: "1px solid var(--sh-border)", borderRadius: "5px", backgroundColor: "var(--sh-input-bg)" }}
+      style={{ border: "1px solid var(--shouf-border)", borderRadius: "5px", backgroundColor: "var(--shouf-input-bg)" }}
     >
       <select
         value={String(value)}
         onChange={(e) => onChange(e.target.value)}
         className="appearance-none text-[12px] font-medium pl-2.5 pr-7 py-[5px] bg-transparent outline-none cursor-pointer"
-        style={{ color: "var(--sh-text)" }}
+        style={{ color: "var(--shouf-text)" }}
       >
         {control.options?.map((opt) => (
           <option key={opt.value} value={opt.value}
-            style={{ backgroundColor: "var(--sh-option-bg)", color: "var(--sh-text)" }}>
+            style={{ backgroundColor: "var(--shouf-option-bg)", color: "var(--shouf-text)" }}>
             {opt.label}
           </option>
         ))}
       </select>
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none"
         className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
-        <path d="M2 3.5L5 6.5L8 3.5" stroke="var(--sh-text-muted)" strokeWidth="1.5"
+        <path d="M2 3.5L5 6.5L8 3.5" stroke="var(--shouf-text-muted)" strokeWidth="1.5"
           strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </div>
@@ -48,7 +48,7 @@ function BooleanWidget({ value, onChange }: WidgetProps) {
       aria-checked={isOn}
       onClick={() => onChange(!isOn)}
       className="w-8 h-[18px] rounded-full flex items-center transition-colors cursor-pointer shrink-0"
-      style={{ backgroundColor: isOn ? "var(--sh-accent)" : "var(--sh-switch-off)", padding: "2px" }}
+      style={{ backgroundColor: isOn ? "var(--shouf-accent)" : "var(--shouf-switch-off)", padding: "2px" }}
     >
       <span
         className="block w-[14px] h-[14px] rounded-full bg-white transition-transform duration-150"
@@ -65,9 +65,9 @@ function TextWidget({ value, onChange }: WidgetProps) {
       value={String(value)}
       onChange={(e) => onChange(e.target.value)}
       className="text-[12px] font-medium px-2.5 py-[5px] rounded outline-none"
-      style={{ backgroundColor: "var(--sh-input-bg)", border: "1px solid var(--sh-border)", color: "var(--sh-text)", width: "110px" }}
-      onFocus={(e) => ((e.target as HTMLInputElement).style.borderColor = "var(--sh-accent)")}
-      onBlur={(e)  => ((e.target as HTMLInputElement).style.borderColor = "var(--sh-border)")}
+      style={{ backgroundColor: "var(--shouf-input-bg)", border: "1px solid var(--shouf-border)", color: "var(--shouf-text)", width: "110px" }}
+      onFocus={(e) => ((e.target as HTMLInputElement).style.borderColor = "var(--shouf-accent)")}
+      onBlur={(e)  => ((e.target as HTMLInputElement).style.borderColor = "var(--shouf-border)")}
     />
   );
 }
@@ -88,7 +88,7 @@ function ControlRow({
 
   return (
     <div className="flex items-center gap-2.5 shrink-0">
-      <span className="text-[12px] font-medium shrink-0" style={{ color: "var(--sh-text-muted)", minWidth: "60px" }}>
+      <span className="text-[12px] font-medium shrink-0" style={{ color: "var(--shouf-text-muted)", minWidth: "60px" }}>
         {control.label}
       </span>
       {control.type === "select"  && <SelectWidget  {...props} />}
@@ -99,7 +99,7 @@ function ControlRow({
 }
 
 function Divider() {
-  return <div className="w-px self-stretch mx-1 shrink-0" style={{ backgroundColor: "var(--sh-border-sub)" }} />;
+  return <div className="w-px self-stretch mx-1 shrink-0" style={{ backgroundColor: "var(--shouf-border-sub)" }} />;
 }
 
 // ─── ControlsBar ─────────────────────────────────────────────────────────────
@@ -122,33 +122,33 @@ export function ControlsBar() {
   return (
     <div
       className="shrink-0 flex flex-col"
-      style={{ borderTop: "1px solid var(--sh-border)", backgroundColor: "var(--sh-panel)" }}
+      style={{ borderTop: "1px solid var(--shouf-border)", backgroundColor: "var(--shouf-panel)" }}
     >
       {/* Header */}
       <div
         className="flex items-center gap-2 px-4 py-2 shrink-0"
-        style={{ borderBottom: "1px solid var(--sh-border-sub)" }}
+        style={{ borderBottom: "1px solid var(--shouf-border-sub)" }}
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <rect x="1" y="1" width="4" height="4" rx="1" fill="var(--sh-text-faint)" />
-          <rect x="7" y="1" width="4" height="4" rx="1" fill="var(--sh-text-faint)" />
-          <rect x="1" y="7" width="4" height="4" rx="1" fill="var(--sh-text-faint)" />
-          <rect x="7" y="7" width="4" height="4" rx="1" fill="var(--sh-text-faint)" />
+          <rect x="1" y="1" width="4" height="4" rx="1" fill="var(--shouf-text-faint)" />
+          <rect x="7" y="1" width="4" height="4" rx="1" fill="var(--shouf-text-faint)" />
+          <rect x="1" y="7" width="4" height="4" rx="1" fill="var(--shouf-text-faint)" />
+          <rect x="7" y="7" width="4" height="4" rx="1" fill="var(--shouf-text-faint)" />
         </svg>
         <span className="text-[12px] font-semibold uppercase tracking-wider"
-          style={{ color: "var(--sh-text-muted)", letterSpacing: "0.06em" }}>
+          style={{ color: "var(--shouf-text-muted)", letterSpacing: "0.06em" }}>
           Controls
         </span>
 
         <div className="ml-auto flex items-center gap-3">
           {/* Status hint */}
           {!selectedComponentId && (
-            <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
+            <span className="text-[12px]" style={{ color: "var(--shouf-text-faint)" }}>
               Select a component to enable
             </span>
           )}
           {selectedComponentId && !registration && (
-            <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
+            <span className="text-[12px]" style={{ color: "var(--shouf-text-faint)" }}>
               No controls for this component yet
             </span>
           )}
@@ -158,14 +158,14 @@ export function ControlsBar() {
             <button
               onClick={handleReset}
               className="text-[12px] px-2 py-0.5 rounded transition-colors"
-              style={{ color: "var(--sh-text-muted)", border: "1px solid var(--sh-border)" }}
+              style={{ color: "var(--shouf-text-muted)", border: "1px solid var(--shouf-border)" }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.color = "var(--sh-text)";
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--sh-border-sub)";
+                (e.currentTarget as HTMLElement).style.color = "var(--shouf-text)";
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--shouf-border-sub)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.color = "var(--sh-text-muted)";
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--sh-border)";
+                (e.currentTarget as HTMLElement).style.color = "var(--shouf-text-muted)";
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--shouf-border)";
               }}
             >
               Reset
@@ -194,8 +194,8 @@ export function ControlsBar() {
           /* Dimmed skeleton */
           [80, 60, 32, 32, 32, 32].map((w, i) => (
             <div key={i} className="flex items-center gap-2.5 opacity-20 shrink-0">
-              <div className="h-2 rounded" style={{ width: "48px", backgroundColor: "var(--sh-skeleton)" }} />
-              <div className="h-[26px] rounded" style={{ width: `${w}px`, backgroundColor: "var(--sh-skeleton)" }} />
+              <div className="h-2 rounded" style={{ width: "48px", backgroundColor: "var(--shouf-skeleton)" }} />
+              <div className="h-[26px] rounded" style={{ width: `${w}px`, backgroundColor: "var(--shouf-skeleton)" }} />
             </div>
           ))
         )}

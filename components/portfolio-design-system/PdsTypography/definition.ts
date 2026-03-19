@@ -32,35 +32,35 @@ const FAMILY_TOKENS: Record<string, TokenRow[]> = {
 
 const SCALE_TOKENS: Record<string, TokenRow[]> = {
   "type-8":  [
-    { id: "fs",  property: "font-size", cssValue: "8px",  tokenName: "--pds-type-8",  category: "typography" },
+    { id: "fs",  property: "font-size", cssValue: "8px",  tokenName: "--shouf-type-8",  category: "typography" },
     { id: "use", property: "used for",  cssValue: "Box model labels",          tokenName: "—", category: "typography" },
   ],
   "type-9":  [
-    { id: "fs",  property: "font-size", cssValue: "9px",  tokenName: "--pds-type-9",  category: "typography" },
+    { id: "fs",  property: "font-size", cssValue: "9px",  tokenName: "--shouf-type-9",  category: "typography" },
     { id: "use", property: "used for",  cssValue: "Keyboard shortcut hints",   tokenName: "—", category: "typography" },
   ],
   "type-10": [
-    { id: "fs",  property: "font-size", cssValue: "10px", tokenName: "--pds-type-10", category: "typography" },
+    { id: "fs",  property: "font-size", cssValue: "10px", tokenName: "--shouf-type-10", category: "typography" },
     { id: "use", property: "used for",  cssValue: "Meta labels, token values", tokenName: "—", category: "typography" },
   ],
   "type-11": [
-    { id: "fs",  property: "font-size", cssValue: "11px", tokenName: "--pds-type-11", category: "typography" },
+    { id: "fs",  property: "font-size", cssValue: "11px", tokenName: "--shouf-type-11", category: "typography" },
     { id: "use", property: "used for",  cssValue: "Nav headers, control labels", tokenName: "—", category: "typography" },
   ],
   "type-12": [
-    { id: "fs",  property: "font-size", cssValue: "12px", tokenName: "--pds-type-12", category: "typography" },
+    { id: "fs",  property: "font-size", cssValue: "12px", tokenName: "--shouf-type-12", category: "typography" },
     { id: "use", property: "used for",  cssValue: "Nav items, status badges",  tokenName: "—", category: "typography" },
   ],
   "type-13": [
-    { id: "fs",  property: "font-size", cssValue: "13px", tokenName: "--pds-type-13", category: "typography" },
+    { id: "fs",  property: "font-size", cssValue: "13px", tokenName: "--shouf-type-13", category: "typography" },
     { id: "use", property: "used for",  cssValue: "Body text, subheadings",    tokenName: "—", category: "typography" },
   ],
   "type-15": [
-    { id: "fs",  property: "font-size", cssValue: "15px", tokenName: "--pds-type-15", category: "typography" },
+    { id: "fs",  property: "font-size", cssValue: "15px", tokenName: "--shouf-type-15", category: "typography" },
     { id: "use", property: "used for",  cssValue: "Button label (large)",      tokenName: "—", category: "typography" },
   ],
   "type-18": [
-    { id: "fs",  property: "font-size", cssValue: "18px", tokenName: "--pds-type-18", category: "typography" },
+    { id: "fs",  property: "font-size", cssValue: "18px", tokenName: "--shouf-type-18", category: "typography" },
     { id: "use", property: "used for",  cssValue: "Welcome headline",          tokenName: "—", category: "typography" },
   ],
 };

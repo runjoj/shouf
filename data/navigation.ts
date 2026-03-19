@@ -5,6 +5,7 @@ export const navSections: NavSection[] = [
     id: "portfolio-design-system",
     title: "Shouf Design System",
     entries: [
+      { id: "pds-guide",        name: "Guide",        sectionId: "portfolio-design-system" },
       { id: "pds-color-tokens", name: "Color Tokens", sectionId: "portfolio-design-system" },
       { id: "pds-typography", name: "Typography Scale", sectionId: "portfolio-design-system" },
       { id: "pds-spacing", name: "Spacing System", sectionId: "portfolio-design-system" },

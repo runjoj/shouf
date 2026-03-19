@@ -28,7 +28,7 @@ export function AccentPicker({ size = "sm" }: AccentPickerProps) {
             key={preset.id}
             onClick={(e) => {
               // Fire the ripple event BEFORE setAccent so the canvas can read
-              // --sh-accent while it still holds the previous colour — the
+              // --shouf-accent while it still holds the previous colour — the
               // "from" value for the wave-carried colour transition.
               if (size === "sm") {
                 const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();

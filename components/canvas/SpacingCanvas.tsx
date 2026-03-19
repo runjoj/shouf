@@ -39,13 +39,13 @@ function ScaleRow({
         alignItems:    "center",
         gap:           "20px",
         padding:       "10px 0",
-        borderBottom:  "1px solid var(--sh-border-sub)",
+        borderBottom:  "1px solid var(--shouf-border-sub)",
         cursor:        "pointer",
         paddingLeft:   isSelected ? "12px" : "0",
         marginLeft:    isSelected ? "-12px" : "0",
         paddingRight:  isSelected ? "12px" : "0",
         marginRight:   isSelected ? "-12px" : "0",
-        backgroundColor: isSelected ? "color-mix(in srgb, var(--sh-accent) 6%, transparent)" : "transparent",
+        backgroundColor: isSelected ? "color-mix(in srgb, var(--shouf-accent) 6%, transparent)" : "transparent",
         transition:    "background-color 120ms ease, padding-left 120ms ease, margin-left 120ms ease",
       }}
     >
@@ -54,7 +54,7 @@ function ScaleRow({
         style={{
           fontSize:   "12px",
           fontFamily: "var(--font-mono)",
-          color:      "var(--sh-text-faint)",
+          color:      "var(--shouf-text-faint)",
           minWidth:   "120px",
           flexShrink: 0,
           transition: "color 160ms ease",
@@ -70,9 +70,9 @@ function ScaleRow({
             width:           `${step.px}px`,
             height:          "20px",
             borderRadius:    "3px",
-            backgroundColor: "var(--sh-accent)",
+            backgroundColor: "var(--shouf-accent)",
             opacity:         isActive ? 0.7 : 0.25,
-            border:          "1px solid var(--sh-accent-ring)",
+            border:          "1px solid var(--shouf-accent-ring)",
             transition:      "width 200ms ease, background-color 200ms ease, opacity 200ms ease",
             flexShrink:      0,
           }}
@@ -84,7 +84,7 @@ function ScaleRow({
         style={{
           fontSize:   "12px",
           fontFamily: "var(--font-mono)",
-          color:      "var(--sh-text-faint)",
+          color:      "var(--shouf-text-faint)",
           minWidth:   "32px",
           textAlign:  "right",
           flexShrink: 0,
@@ -116,8 +116,8 @@ function DemoCard({
         gap:             `${gap}px`,
         padding:         `${padding}px`,
         borderRadius:    `${borderRadius}px`,
-        backgroundColor: "var(--sh-panel)",
-        border:          "1px solid var(--sh-border)",
+        backgroundColor: "var(--shouf-panel)",
+        border:          "1px solid var(--shouf-border)",
         boxShadow:       "0 2px 12px rgba(0,0,0,0.08)",
         maxWidth:        "280px",
         transition:      "gap 200ms ease, padding 200ms ease, border-radius 200ms ease",
@@ -129,8 +129,8 @@ function DemoCard({
           width:           "32px",
           height:          "32px",
           borderRadius:    `${Math.max(4, borderRadius - 4)}px`,
-          backgroundColor: "var(--sh-accent-sel)",
-          border:          "1px solid var(--sh-accent-ring)",
+          backgroundColor: "var(--shouf-accent-sel)",
+          border:          "1px solid var(--shouf-accent-ring)",
           display:         "flex",
           alignItems:      "center",
           justifyContent:  "center",
@@ -139,10 +139,10 @@ function DemoCard({
         }}
       >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <rect x="1"   y="1"   width="5" height="5" rx="1" fill="var(--sh-accent)" fillOpacity="0.9" />
-          <rect x="8"   y="1"   width="5" height="5" rx="1" fill="var(--sh-accent)" fillOpacity="0.5" />
-          <rect x="1"   y="8"   width="5" height="5" rx="1" fill="var(--sh-accent)" fillOpacity="0.5" />
-          <rect x="8"   y="8"   width="5" height="5" rx="1" fill="var(--sh-accent)" fillOpacity="0.75" />
+          <rect x="1"   y="1"   width="5" height="5" rx="1" fill="var(--shouf-accent)" fillOpacity="0.9" />
+          <rect x="8"   y="1"   width="5" height="5" rx="1" fill="var(--shouf-accent)" fillOpacity="0.5" />
+          <rect x="1"   y="8"   width="5" height="5" rx="1" fill="var(--shouf-accent)" fillOpacity="0.5" />
+          <rect x="8"   y="8"   width="5" height="5" rx="1" fill="var(--shouf-accent)" fillOpacity="0.75" />
         </svg>
       </div>
 
@@ -152,7 +152,7 @@ function DemoCard({
           style={{
             fontSize:      "14px",
             fontWeight:    600,
-            color:         "var(--sh-text)",
+            color:         "var(--shouf-text)",
             lineHeight:    1.2,
             letterSpacing: "-0.01em",
           }}
@@ -162,7 +162,7 @@ function DemoCard({
         <div
           style={{
             fontSize:   "12px",
-            color:      "var(--sh-text-muted)",
+            color:      "var(--shouf-text-muted)",
             lineHeight: 1.55,
           }}
         >
@@ -177,18 +177,18 @@ function DemoCard({
           alignItems:     "center",
           justifyContent: "space-between",
           paddingTop:     `${Math.round(gap * 0.6)}px`,
-          borderTop:      "1px solid var(--sh-border-sub)",
+          borderTop:      "1px solid var(--shouf-border-sub)",
         }}
       >
         <code
           style={{
             fontSize:   "10px",
             fontFamily: "var(--font-mono)",
-            color:      "var(--sh-accent)",
+            color:      "var(--shouf-accent)",
             letterSpacing: "0.04em",
           }}
         >
-          --pds-space-{padding}
+          --shouf-space-{padding}
         </code>
         <div style={{ display: "flex", gap: "4px" }}>
           {[0.4, 0.65, 1].map((op, i) => (
@@ -198,7 +198,7 @@ function DemoCard({
                 width:           "6px",
                 height:          "6px",
                 borderRadius:    "50%",
-                backgroundColor: "var(--sh-accent)",
+                backgroundColor: "var(--shouf-accent)",
                 opacity:         op,
               }}
             />
@@ -245,7 +245,7 @@ export function SpacingCanvas() {
             style={{
               fontSize:      "22px",
               fontWeight:    600,
-              color:         "var(--sh-text)",
+              color:         "var(--shouf-text)",
               margin:        "0 0 6px",
               letterSpacing: "-0.02em",
             }}
@@ -256,7 +256,7 @@ export function SpacingCanvas() {
             style={{
               fontSize:   "14px",
               fontFamily: "var(--font-mono)",
-              color:      "var(--sh-text-faint)",
+              color:      "var(--shouf-text-faint)",
               margin:     0,
             }}
           >
@@ -286,7 +286,7 @@ export function SpacingCanvas() {
               fontFamily:    "var(--font-mono)",
               letterSpacing: "0.14em",
               textTransform: "uppercase",
-              color:         "var(--sh-text-faint)",
+              color:         "var(--shouf-text-faint)",
               marginBottom:  "24px",
               userSelect:    "none",
             }}
@@ -307,16 +307,16 @@ export function SpacingCanvas() {
             }}
           >
             {[
-              { label: "padding",  value: `${padding}px`,      token: `--pds-space-${padding}`      },
-              { label: "gap",      value: `${gap}px`,          token: `--pds-space-${gap}`          },
-              { label: "radius",   value: `${borderRadius}px`, token: `--pds-space-${borderRadius}` },
+              { label: "padding",  value: `${padding}px`,      token: `--shouf-space-${padding}`      },
+              { label: "gap",      value: `${gap}px`,          token: `--shouf-space-${gap}`          },
+              { label: "radius",   value: `${borderRadius}px`, token: `--shouf-space-${borderRadius}` },
             ].map((item) => (
               <div key={item.label} style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
                 <code
                   style={{
                     fontSize:   "10px",
                     fontFamily: "var(--font-mono)",
-                    color:      "var(--sh-text-faint)",
+                    color:      "var(--shouf-text-faint)",
                     letterSpacing: "0.04em",
                   }}
                 >
@@ -326,7 +326,7 @@ export function SpacingCanvas() {
                   style={{
                     fontSize:   "12px",
                     fontFamily: "var(--font-mono)",
-                    color:      "var(--sh-accent)",
+                    color:      "var(--shouf-accent)",
                   }}
                 >
                   {item.value}
@@ -335,7 +335,7 @@ export function SpacingCanvas() {
                   style={{
                     fontSize:   "10px",
                     fontFamily: "var(--font-mono)",
-                    color:      "var(--sh-text-faint)",
+                    color:      "var(--shouf-text-faint)",
                   }}
                 >
                   {item.token}

@@ -82,49 +82,49 @@ export function PdsButton({
 
   // Resolve background — falls back through hover/active states
   const bg = (() => {
-    if (isDisabled) return `var(--pds-btn-${variant}-bg)`;
-    if (pressed)    return `var(--pds-btn-${variant}-bg-active, var(--pds-btn-${variant}-bg-hover, var(--pds-btn-${variant}-bg)))`;
-    if (hovered)    return `var(--pds-btn-${variant}-bg-hover, var(--pds-btn-${variant}-bg))`;
-    return                  `var(--pds-btn-${variant}-bg)`;
+    if (isDisabled) return `var(--shouf-btn-${variant}-bg)`;
+    if (pressed)    return `var(--shouf-btn-${variant}-bg-active, var(--shouf-btn-${variant}-bg-hover, var(--shouf-btn-${variant}-bg)))`;
+    if (hovered)    return `var(--shouf-btn-${variant}-bg-hover, var(--shouf-btn-${variant}-bg))`;
+    return                  `var(--shouf-btn-${variant}-bg)`;
   })();
 
   // Resolve border color — secondary gets a brighter border on hover
   const borderColor = (() => {
     if (!isDisabled && hovered)
-      return `var(--pds-btn-${variant}-border-hover, var(--pds-btn-${variant}-border))`;
-    return `var(--pds-btn-${variant}-border)`;
+      return `var(--shouf-btn-${variant}-border-hover, var(--shouf-btn-${variant}-border))`;
+    return `var(--shouf-btn-${variant}-border)`;
   })();
 
   // Resolve text color — ghost gets brighter text on hover
   const color = (() => {
     if (variant === "ghost" && !isDisabled && hovered)
-      return "var(--pds-btn-ghost-color-hover)";
-    return `var(--pds-btn-${variant}-color)`;
+      return "var(--shouf-btn-ghost-color-hover)";
+    return `var(--shouf-btn-${variant}-color)`;
   })();
 
   // Resolve shadow
   const shadow = (() => {
     if (isDisabled) return "none";
-    if (hovered)    return `var(--pds-btn-${variant}-shadow-hover, var(--pds-btn-${variant}-shadow))`;
-    return                  `var(--pds-btn-${variant}-shadow)`;
+    if (hovered)    return `var(--shouf-btn-${variant}-shadow-hover, var(--shouf-btn-${variant}-shadow))`;
+    return                  `var(--shouf-btn-${variant}-shadow)`;
   })();
 
   const style: React.CSSProperties = {
     display:         "inline-flex",
     alignItems:      "center",
     justifyContent:  "center",
-    height:          `var(--pds-btn-h-${size})`,
-    width:           iconOnly ? `var(--pds-btn-h-${size})` : fullWidth ? "100%" : "auto",
+    height:          `var(--shouf-btn-h-${size})`,
+    width:           iconOnly ? `var(--shouf-btn-h-${size})` : fullWidth ? "100%" : "auto",
     maxWidth:        fullWidth && !iconOnly ? "320px" : undefined,
-    paddingLeft:     iconOnly ? "0" : `var(--pds-btn-px-${size})`,
-    paddingRight:    iconOnly ? "0" : `var(--pds-btn-px-${size})`,
-    gap:             iconOnly ? "0" : `var(--pds-btn-gap-${size})`,
-    fontSize:        `var(--pds-btn-font-${size})`,
+    paddingLeft:     iconOnly ? "0" : `var(--shouf-btn-px-${size})`,
+    paddingRight:    iconOnly ? "0" : `var(--shouf-btn-px-${size})`,
+    gap:             iconOnly ? "0" : `var(--shouf-btn-gap-${size})`,
+    fontSize:        `var(--shouf-btn-font-${size})`,
     fontWeight:      500,
-    letterSpacing:   "var(--pds-btn-letter-spacing)",
+    letterSpacing:   "var(--shouf-btn-letter-spacing)",
     lineHeight:      1,
     fontFamily:      "inherit",
-    borderRadius:    `var(--pds-btn-radius-${size})`,
+    borderRadius:    `var(--shouf-btn-radius-${size})`,
     backgroundColor: bg,
     color,
     border:          `1px solid ${borderColor}`,

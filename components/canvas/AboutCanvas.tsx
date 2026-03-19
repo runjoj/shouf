@@ -19,24 +19,24 @@ const CSS = `
     display: flex;
     align-items: center;
     padding: 24px 0;
-    border-bottom: 1px solid var(--sh-border);
+    border-bottom: 1px solid var(--shouf-border);
     gap: 32px;
     cursor: default;
   }
-  .ab-fact:first-child { border-top: 1px solid var(--sh-border); }
+  .ab-fact:first-child { border-top: 1px solid var(--shouf-border); }
   .ab-fact-text {
     flex: 1;
     font-size: 17px;
     letter-spacing: -0.015em;
     line-height: 1.4;
-    color: var(--sh-text);
+    color: var(--shouf-text);
     user-select: none;
   }
   .ab-anim {
     opacity: 0;
     transition: opacity 0.2s ease;
     flex-shrink: 0;
-    color: var(--sh-text-muted);
+    color: var(--shouf-text-muted);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -190,16 +190,12 @@ function LeavesSVG() {
 }
 
 const FACTS: { text: string; Anim: () => React.ReactElement }[] = [
-  { text: "Military veteran — medical evacuations",              Anim: HeartbeatSVG },
-  { text: "Search and rescue volunteer for 2 years",            Anim: SonarSVG     },
-  { text: "Crisis text line volunteer for 2 years",             Anim: RadioWaveSVG },
-  { text: "Backpacked solo for 7 months",                       Anim: BackpackSVG  },
-  { text: "Ultra marathon runner",                              Anim: ElevationSVG },
-  { text: "Backcountry skier",                                  Anim: MountainSVG  },
-  { text: "Nationally ranked competitive rower — team captain", Anim: RowingSVG    },
-  { text: "First generation Lebanese American",                 Anim: CedarSVG     },
-  { text: "Avid reader",                                        Anim: PagesSVG     },
-  { text: "Too many plants",                                    Anim: LeavesSVG    },
+  { text: "Military veteran — medical evacuations",  Anim: HeartbeatSVG },
+  { text: "Search and rescue volunteer for 2 years", Anim: SonarSVG     },
+  { text: "Crisis text line volunteer for 2 years",  Anim: RadioWaveSVG },
+  { text: "Backpacked solo for 7 months",            Anim: BackpackSVG  },
+  { text: "Trail runner and backcountry skier",      Anim: ElevationSVG },
+  { text: "First generation Lebanese American",      Anim: CedarSVG     },
 ];
 
 // ─── AboutCanvas ──────────────────────────────────────────────────────────────
@@ -215,7 +211,7 @@ export function AboutCanvas() {
           width:     "100%",
           height:    "100%",
           overflowY: "auto",
-          backgroundColor: "var(--sh-canvas)",
+          backgroundColor: "var(--shouf-canvas)",
         }}
       >
         <main
@@ -230,29 +226,24 @@ export function AboutCanvas() {
             className="ab-hero"
             style={{ display: "flex", gap: "72px", alignItems: "flex-start" }}
           >
-            {/* Photo placeholder */}
+            {/* Photo */}
             <div
               className="ab-photo"
               style={{
-                width:           "260px",
-                minWidth:        "260px",
-                height:          "360px",
-                borderRadius:    "14px",
-                border:          "1px solid var(--sh-border)",
-                backgroundColor: "var(--sh-panel)",
-                display:         "flex",
-                alignItems:      "center",
-                justifyContent:  "center",
-                flexShrink:      0,
-                overflow:        "hidden",
+                width:        "260px",
+                minWidth:     "260px",
+                height:       "360px",
+                borderRadius: "14px",
+                flexShrink:   0,
+                overflow:     "hidden",
               }}
             >
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="0.8" aria-hidden
-                style={{ opacity: 0.18 }}>
-                <circle cx="12" cy="8" r="4" />
-                <path d="M 4,20 C 4,16 7.6,13 12,13 S 20,16 20,20" />
-              </svg>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/about_photo.JPG"
+                alt="Jo Ann Saab"
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+              />
             </div>
 
             {/* Bio */}
@@ -265,7 +256,7 @@ export function AboutCanvas() {
                     fontWeight:    400,
                     lineHeight:    1.75,
                     letterSpacing: "-0.01em",
-                    color:         "var(--sh-text)",
+                    color:         "var(--shouf-text)",
                     margin:        0,
                     marginBottom:  i < BIO_PARAGRAPHS.length - 1 ? "28px" : 0,
                   }}

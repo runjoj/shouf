@@ -66,7 +66,7 @@ export const DEFAULT_ACCENT_ID = "chartreuse";
 
 // ─── Build all CSS vars for a given accent preset + theme ─────────────────────
 //
-// Foreground tokens (--sh-accent*) use light values in light mode so text/
+// Foreground tokens (--shouf-accent*) use light values in light mode so text/
 // indicators meet WCAG 4.5:1 on the white/near-white surfaces.
 // Button backgrounds always use the bright values — #111111 text on a vivid
 // accent passes with room to spare regardless of theme.
@@ -87,27 +87,27 @@ export function buildAccentVars(
 
   return {
     // ── Shell foreground tokens ──────────────────────────────────────────────
-    "--sh-accent":                      fg,
-    "--sh-accent-h":                    fgH,
-    "--sh-accent-a":                    fgA,
+    "--shouf-accent":                      fg,
+    "--shouf-accent-h":                    fgH,
+    "--shouf-accent-a":                    fgA,
     // Decorative tints use bright rgb so the tint looks vibrant not muddy
-    "--sh-accent-sel":                  `rgba(${r},${g},${b},0.15)`,
-    "--sh-accent-ring":                 `rgba(${r},${g},${b},0.30)`,
-    "--sh-box-border":                  `rgba(${fR},${fG},${fB},0.28)`,
-    "--sh-box-bg":                      `rgba(${r},${g},${b},0.06)`,
-    "--sh-box-inner":                   `rgba(${r},${g},${b},0.18)`,
-    "--sh-accent-text":                 "#111111",
+    "--shouf-accent-sel":                  `rgba(${r},${g},${b},0.15)`,
+    "--shouf-accent-ring":                 `rgba(${r},${g},${b},0.30)`,
+    "--shouf-box-border":                  `rgba(${fR},${fG},${fB},0.28)`,
+    "--shouf-box-bg":                      `rgba(${r},${g},${b},0.06)`,
+    "--shouf-box-inner":                   `rgba(${r},${g},${b},0.18)`,
+    "--shouf-accent-text":                 "#111111",
     // ── PDS Button primary — always bright bg + dark label ──────────────────
-    "--pds-btn-primary-bg":             hex,
-    "--pds-btn-primary-bg-hover":       hexH,
-    "--pds-btn-primary-bg-active":      hexA,
-    "--pds-btn-primary-color":          "#111111",
+    "--shouf-btn-primary-bg":             hex,
+    "--shouf-btn-primary-bg-hover":       hexH,
+    "--shouf-btn-primary-bg-active":      hexA,
+    "--shouf-btn-primary-color":          "#111111",
     // ── PDS Button secondary — fg colour used for text/border ───────────────
-    "--pds-btn-secondary-color":              fg,
-    "--pds-btn-secondary-border":             `rgba(${fR},${fG},${fB},0.40)`,
-    "--pds-btn-secondary-border-hover":       `rgba(${fR},${fG},${fB},0.70)`,
-    "--pds-btn-secondary-bg-hover":           `rgba(${fR},${fG},${fB},0.10)`,
-    "--pds-btn-secondary-bg-active":          `rgba(${fR},${fG},${fB},0.16)`,
+    "--shouf-btn-secondary-color":              fg,
+    "--shouf-btn-secondary-border":             `rgba(${fR},${fG},${fB},0.40)`,
+    "--shouf-btn-secondary-border-hover":       `rgba(${fR},${fG},${fB},0.70)`,
+    "--shouf-btn-secondary-bg-hover":           `rgba(${fR},${fG},${fB},0.10)`,
+    "--shouf-btn-secondary-bg-active":          `rgba(${fR},${fG},${fB},0.16)`,
   };
 }
 

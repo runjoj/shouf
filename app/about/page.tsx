@@ -15,30 +15,30 @@ const BIO_PARAGRAPHS = [
 // Injected as a style tag so we can use :hover without JS state.
 
 const CSS = `
-  .ab-back:hover { color: var(--sh-text) !important; }
+  .ab-back:hover { color: var(--shouf-text) !important; }
 
   .ab-fact {
     display: flex;
     align-items: center;
     padding: 24px 0;
-    border-bottom: 1px solid var(--sh-border);
+    border-bottom: 1px solid var(--shouf-border);
     gap: 32px;
     cursor: default;
   }
-  .ab-fact:first-child { border-top: 1px solid var(--sh-border); }
+  .ab-fact:first-child { border-top: 1px solid var(--shouf-border); }
   .ab-fact-text {
     flex: 1;
     font-size: 17px;
     letter-spacing: -0.015em;
     line-height: 1.4;
-    color: var(--sh-text);
+    color: var(--shouf-text);
     user-select: none;
   }
   .ab-anim {
     opacity: 0;
     transition: opacity 0.2s ease;
     flex-shrink: 0;
-    color: var(--sh-text-muted);
+    color: var(--shouf-text-muted);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -370,8 +370,8 @@ export default function AboutPage() {
 
       <div
         style={{
-          backgroundColor: "var(--sh-bg)",
-          color:           "var(--sh-text)",
+          backgroundColor: "var(--shouf-bg)",
+          color:           "var(--shouf-text)",
           height:          "100vh",
           overflowY:       "auto",
         }}
@@ -395,7 +395,7 @@ export default function AboutPage() {
                 fontSize:       "12px",
                 letterSpacing:  "0.06em",
                 textTransform:  "uppercase",
-                color:          "var(--sh-text-faint)",
+                color:          "var(--shouf-text-faint)",
                 textDecoration: "none",
                 transition:     "color 0.2s ease",
                 fontFamily:     "ui-monospace, 'SF Mono', Menlo, monospace",
@@ -425,8 +425,8 @@ export default function AboutPage() {
                 minWidth:        "280px",
                 height:          "380px",
                 borderRadius:    "14px",
-                border:          "1px solid var(--sh-border)",
-                backgroundColor: "var(--sh-panel)",
+                border:          "1px solid var(--shouf-border)",
+                backgroundColor: "var(--shouf-panel)",
                 display:         "flex",
                 alignItems:      "center",
                 justifyContent:  "center",
@@ -459,7 +459,7 @@ export default function AboutPage() {
                     fontWeight:    400,
                     lineHeight:    1.75,
                     letterSpacing: "-0.01em",
-                    color:         "var(--sh-text)",
+                    color:         "var(--shouf-text)",
                     margin:        0,
                     marginBottom:  i < BIO_PARAGRAPHS.length - 1 ? "28px" : 0,
                   }}

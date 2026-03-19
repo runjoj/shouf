@@ -42,7 +42,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
         fontSize:      "10px",
         letterSpacing: "0.14em",
         textTransform: "uppercase",
-        color:         "var(--sh-text-faint)",
+        color:         "var(--shouf-text-faint)",
         marginBottom:  "10px",
       }}
     >
@@ -59,7 +59,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
       style={{
         fontSize:      "20px",
         fontWeight:    600,
-        color:         "var(--sh-text)",
+        color:         "var(--shouf-text)",
         margin:        "0 0 20px",
         letterSpacing: "-0.02em",
         lineHeight:    1.2,
@@ -77,7 +77,7 @@ function Body({ children }: { children: React.ReactNode }) {
     <p
       style={{
         fontSize:   "14px",
-        color:      "var(--sh-text-muted)",
+        color:      "var(--shouf-text-muted)",
         lineHeight: 1.75,
         margin:     "0 0 16px",
       }}
@@ -94,7 +94,7 @@ function Divider() {
     <div
       style={{
         height:          "1px",
-        backgroundColor: "var(--sh-border-sub)",
+        backgroundColor: "var(--shouf-border-sub)",
         margin:          "0 0 48px",
       }}
     />
@@ -172,7 +172,7 @@ export function EuGuideCanvas() {
                 fontSize:      "10px",
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
-                color:         "var(--sh-accent)",
+                color:         "var(--shouf-accent)",
                 marginBottom:  "14px",
               }}
             >
@@ -182,7 +182,7 @@ export function EuGuideCanvas() {
               style={{
                 fontSize:      "28px",
                 fontWeight:    600,
-                color:         "var(--sh-text)",
+                color:         "var(--shouf-text)",
                 margin:        "0 0 20px",
                 letterSpacing: "-0.025em",
                 lineHeight:    1.15,
@@ -201,8 +201,8 @@ export function EuGuideCanvas() {
               display:         "grid",
               gridTemplateColumns: "1fr 1fr",
               gap:             "1px",
-              backgroundColor: "var(--sh-border-sub)",
-              border:          "1px solid var(--sh-border-sub)",
+              backgroundColor: "var(--shouf-border-sub)",
+              border:          "1px solid var(--shouf-border-sub)",
               borderRadius:    "8px",
               overflow:        "hidden",
               marginBottom:    "0",
@@ -215,7 +215,7 @@ export function EuGuideCanvas() {
               <div
                 key={item.label}
                 style={{
-                  backgroundColor: "var(--sh-panel)",
+                  backgroundColor: "var(--shouf-panel)",
                   padding:         "20px 24px",
                 }}
               >
@@ -225,7 +225,7 @@ export function EuGuideCanvas() {
                     fontSize:      "10px",
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
-                    color:         "var(--sh-text-faint)",
+                    color:         "var(--shouf-text-faint)",
                     marginBottom:  "8px",
                   }}
                 >
@@ -235,7 +235,7 @@ export function EuGuideCanvas() {
                   style={{
                     fontSize:   "13px",
                     fontWeight: 500,
-                    color:      "var(--sh-text)",
+                    color:      "var(--shouf-text)",
                     lineHeight: 1.4,
                   }}
                 >
@@ -342,8 +342,8 @@ export function EuGuideCanvas() {
               marginTop:       "40px",
               padding:         "24px",
               borderRadius:    "8px",
-              backgroundColor: "var(--sh-panel)",
-              border:          "1px solid var(--sh-border-sub)",
+              backgroundColor: "var(--shouf-panel)",
+              border:          "1px solid var(--shouf-border-sub)",
             }}
           >
             <div
@@ -352,7 +352,7 @@ export function EuGuideCanvas() {
                 fontSize:      "10px",
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color:         "var(--sh-text-faint)",
+                color:         "var(--shouf-text-faint)",
                 marginBottom:  "12px",
               }}
             >
@@ -361,7 +361,7 @@ export function EuGuideCanvas() {
             <p
               style={{
                 fontSize:   "14px",
-                color:      "var(--sh-text-muted)",
+                color:      "var(--shouf-text-muted)",
                 lineHeight: 1.75,
                 margin:     0,
               }}
@@ -388,7 +388,7 @@ export function EuGuideCanvas() {
             fontSize:      "9px",
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color:         "var(--sh-text-faint)",
+            color:         "var(--shouf-text-faint)",
             marginBottom:  "14px",
           }}
         >
@@ -406,13 +406,13 @@ export function EuGuideCanvas() {
                   display:       "block",
                   fontSize:      "12px",
                   fontWeight:    isActive ? 500 : 400,
-                  color:         isActive ? "var(--sh-text)" : "var(--sh-text-faint)",
+                  color:         isActive ? "var(--shouf-text)" : "var(--shouf-text-faint)",
                   padding:       "5px 10px",
                   borderRadius:  "5px",
                   cursor:        "pointer",
-                  backgroundColor: isActive ? "var(--sh-hover)" : "transparent",
+                  backgroundColor: isActive ? "var(--shouf-hover)" : "transparent",
                   borderLeft:    isActive
-                    ? "2px solid var(--sh-accent)"
+                    ? "2px solid var(--shouf-accent)"
                     : "2px solid transparent",
                   transition:    "color 120ms ease, background-color 120ms ease, border-left-color 120ms ease",
                   whiteSpace:    "nowrap",

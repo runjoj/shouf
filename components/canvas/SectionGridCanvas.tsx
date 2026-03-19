@@ -28,7 +28,7 @@ function ColorTokensPreview() {
   const label = (text: string) => (
     <div style={{
       fontSize: "7px", fontFamily: "var(--font-mono)",
-      color: "var(--sh-text-faint)", letterSpacing: "0.12em",
+      color: "var(--shouf-text-faint)", letterSpacing: "0.12em",
       textTransform: "uppercase" as const, marginBottom: "5px",
       userSelect: "none" as const,
     }}>
@@ -56,14 +56,14 @@ function ColorTokensPreview() {
       </div>
 
       {/* Section divider */}
-      <div style={{ height: "1px", backgroundColor: "var(--sh-border-sub)" }} />
+      <div style={{ height: "1px", backgroundColor: "var(--shouf-border-sub)" }} />
 
       {/* Background surface tokens — bordered so near-white swatches register */}
       <div>
         {label("Background")}
         <div style={{ display: "flex", gap: "4px" }}>
-          {["--sh-bg", "--sh-canvas", "--sh-panel", "--sh-panel-alt"].map((v) => (
-            <div key={v} style={{ flex: 1, height: "20px", borderRadius: "4px", backgroundColor: `var(${v})`, border: "1px solid var(--sh-border)" }} />
+          {["--shouf-bg", "--shouf-canvas", "--shouf-panel", "--shouf-panel-alt"].map((v) => (
+            <div key={v} style={{ flex: 1, height: "20px", borderRadius: "4px", backgroundColor: `var(${v})`, border: "1px solid var(--shouf-border)" }} />
           ))}
         </div>
       </div>
@@ -72,7 +72,7 @@ function ColorTokensPreview() {
       <div>
         {label("Text")}
         <div style={{ display: "flex", gap: "4px" }}>
-          {["--sh-text", "--sh-text-muted", "--sh-text-faint"].map((v) => (
+          {["--shouf-text", "--shouf-text-muted", "--shouf-text-faint"].map((v) => (
             <div key={v} style={{ flex: 1, height: "20px", borderRadius: "4px", backgroundColor: `var(${v})` }} />
           ))}
           {/* Spacer to align with 4-col rows */}
@@ -86,10 +86,10 @@ function ColorTokensPreview() {
 function TypographyPreview() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "5px", width: "100%", maxWidth: "180px", userSelect: "none" }}>
-      <div style={{ fontSize: "22px", fontWeight: 600, lineHeight: 1.1, color: "var(--sh-text)", letterSpacing: "-0.025em" }}>Display</div>
-      <div style={{ fontSize: "15px", fontWeight: 500, lineHeight: 1.25, color: "var(--sh-text)", letterSpacing: "-0.01em" }}>Heading</div>
-      <div style={{ fontSize: "11px", fontWeight: 400, lineHeight: 1.55, color: "var(--sh-text-muted)" }}>Body — regular weight</div>
-      <div style={{ fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--sh-text-faint)", letterSpacing: "0.03em", marginTop: "1px" }}>
+      <div style={{ fontSize: "22px", fontWeight: 600, lineHeight: 1.1, color: "var(--shouf-text)", letterSpacing: "-0.025em" }}>Display</div>
+      <div style={{ fontSize: "15px", fontWeight: 500, lineHeight: 1.25, color: "var(--shouf-text)", letterSpacing: "-0.01em" }}>Heading</div>
+      <div style={{ fontSize: "11px", fontWeight: 400, lineHeight: 1.55, color: "var(--shouf-text-muted)" }}>Body — regular weight</div>
+      <div style={{ fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--shouf-text-faint)", letterSpacing: "0.03em", marginTop: "1px" }}>
         --font-mono · 400
       </div>
     </div>
@@ -105,13 +105,13 @@ function SpacingPreview() {
           <div style={{
             width: "18px", flexShrink: 0, textAlign: "right",
             fontFamily: "var(--font-mono)", fontSize: "8px",
-            color: "var(--sh-text-faint)", lineHeight: 1,
+            color: "var(--shouf-text-faint)", lineHeight: 1,
           }}>
             {px}
           </div>
           <div style={{
             height: "6px", borderRadius: "3px",
-            backgroundColor: "var(--sh-accent)",
+            backgroundColor: "var(--shouf-accent)",
             opacity: 0.55 + (px / 32) * 0.4,
             width: `${px * 2.8}px`,
           }} />
@@ -125,19 +125,19 @@ function GuidePreview() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%", maxWidth: "160px" }}>
       {/* Title line */}
-      <div style={{ height: "9px", borderRadius: "3px", backgroundColor: "var(--sh-skeleton)", width: "60%" }} />
+      <div style={{ height: "9px", borderRadius: "3px", backgroundColor: "var(--shouf-skeleton)", width: "60%" }} />
       {/* Body paragraph */}
       <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
         {[95, 88, 78, 90, 60].map((w, i) => (
-          <div key={i} style={{ height: "4px", borderRadius: "2px", backgroundColor: "var(--sh-skeleton-alt)", width: `${w}%` }} />
+          <div key={i} style={{ height: "4px", borderRadius: "2px", backgroundColor: "var(--shouf-skeleton-alt)", width: `${w}%` }} />
         ))}
       </div>
       {/* Sub-heading */}
-      <div style={{ height: "7px", borderRadius: "3px", backgroundColor: "var(--sh-skeleton)", width: "45%", marginTop: "2px" }} />
+      <div style={{ height: "7px", borderRadius: "3px", backgroundColor: "var(--shouf-skeleton)", width: "45%", marginTop: "2px" }} />
       {/* Second paragraph */}
       <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
         {[82, 95, 70].map((w, i) => (
-          <div key={i} style={{ height: "4px", borderRadius: "2px", backgroundColor: "var(--sh-skeleton-alt)", width: `${w}%` }} />
+          <div key={i} style={{ height: "4px", borderRadius: "2px", backgroundColor: "var(--shouf-skeleton-alt)", width: `${w}%` }} />
         ))}
       </div>
     </div>
@@ -162,7 +162,7 @@ function GlobalNavPreview() {
       {/* Browser frame */}
       <div style={{
         borderRadius: "8px",
-        border: "1px solid var(--sh-border)",
+        border: "1px solid var(--shouf-border)",
         overflow: "hidden",
         boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
       }}>
@@ -258,6 +258,7 @@ function GlobalNavPreview() {
 // ─── Custom preview lookup ────────────────────────────────────────────────────
 
 const CUSTOM_TILE_PREVIEWS: Record<string, () => React.ReactElement> = {
+  "pds-guide":        GuidePreview,
   "pds-color-tokens": ColorTokensPreview,
   "pds-typography":   TypographyPreview,
   "pds-spacing":      SpacingPreview,
@@ -281,10 +282,10 @@ function PlaceholderPreview() {
         opacity:       0.35,
       }}
     >
-      <div style={{ height: "8px",  width: "75%", borderRadius: "3px", backgroundColor: "var(--sh-skeleton)" }} />
-      <div style={{ height: "6px",  width: "55%", borderRadius: "3px", backgroundColor: "var(--sh-skeleton-alt)" }} />
-      <div style={{ height: "6px",  width: "65%", borderRadius: "3px", backgroundColor: "var(--sh-skeleton-alt)" }} />
-      <div style={{ marginTop: "6px", height: "26px", width: "80px", borderRadius: "5px", backgroundColor: "var(--sh-skeleton)" }} />
+      <div style={{ height: "8px",  width: "75%", borderRadius: "3px", backgroundColor: "var(--shouf-skeleton)" }} />
+      <div style={{ height: "6px",  width: "55%", borderRadius: "3px", backgroundColor: "var(--shouf-skeleton-alt)" }} />
+      <div style={{ height: "6px",  width: "65%", borderRadius: "3px", backgroundColor: "var(--shouf-skeleton-alt)" }} />
+      <div style={{ marginTop: "6px", height: "26px", width: "80px", borderRadius: "5px", backgroundColor: "var(--shouf-skeleton)" }} />
     </div>
   );
 }
@@ -308,22 +309,22 @@ function ComponentTile({ entry, isSelected, tileIndex, onClick }: TileProps) {
   const values        = controlValues[entry.id] ?? COMPONENT_REGISTRY[entry.id]?.defaultValues ?? {};
 
   const borderColor = isSelected
-    ? "var(--sh-accent)"
+    ? "var(--shouf-accent)"
     : isHovered
-      ? "var(--sh-border)"
-      : "var(--sh-border-sub)";
+      ? "var(--shouf-border)"
+      : "var(--shouf-border-sub)";
 
   const bgColor = isSelected
-    ? "var(--sh-accent-sel)"
+    ? "var(--shouf-accent-sel)"
     : isHovered
-      ? "var(--sh-hover)"
+      ? "var(--shouf-hover)"
       : "transparent";
 
-  const labelColor = isSelected ? "var(--sh-accent)" : "var(--sh-text-faint)";
+  const labelColor = isSelected ? "var(--shouf-accent)" : "var(--shouf-text-faint)";
 
   const nameSeparatorColor = isSelected
-    ? "var(--sh-accent-ring)"
-    : "var(--sh-border-sub)";
+    ? "var(--shouf-accent-ring)"
+    : "var(--shouf-border-sub)";
 
   return (
     <div
@@ -402,7 +403,7 @@ function ComponentTile({ entry, isSelected, tileIndex, onClick }: TileProps) {
               marginLeft:    "auto",
               fontFamily:    "var(--font-mono)",
               fontSize:      "10px",
-              color:         "var(--sh-text-faint)",
+              color:         "var(--shouf-text-faint)",
               opacity:       0.5,
               flexShrink:    0,
             }}
@@ -442,7 +443,7 @@ export function SectionGridCanvas({ sectionId }: { sectionId: string }) {
             fontSize:      "12px",
             fontFamily:    "var(--font-mono)",
             fontWeight:    600,
-            color:         "var(--sh-text-muted)",
+            color:         "var(--shouf-text-muted)",
             letterSpacing: "0.07em",
             textTransform: "uppercase",
             margin:        0,
@@ -453,7 +454,7 @@ export function SectionGridCanvas({ sectionId }: { sectionId: string }) {
         <p
           style={{
             fontSize:  "12px",
-            color:     "var(--sh-text-faint)",
+            color:     "var(--shouf-text-faint)",
             margin:    "6px 0 0",
             fontFamily: "var(--font-mono)",
           }}

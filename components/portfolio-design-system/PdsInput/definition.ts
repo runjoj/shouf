@@ -8,8 +8,8 @@ const SIZE_TOKENS = {
   lg: { h: "44px", px: "14px", font: "15px",   radius: "10px" },
 } as const;
 
-// State-specific visual tokens — mirrored in globals.css as --pds-inp-* vars.
-// Note: focused border uses var(--sh-accent) so it responds to the accent picker.
+// State-specific visual tokens — mirrored in globals.css as --shouf-inp-* vars.
+// Note: focused border uses var(--shouf-accent) so it responds to the accent picker.
 
 const STATE_TOKENS = {
   default: {
@@ -21,8 +21,8 @@ const STATE_TOKENS = {
   },
   focused: {
     bg:          "#FFFFFF",
-    border:      "var(--sh-accent)",
-    ring:        "0 0 0 3px var(--sh-accent-ring)",
+    border:      "var(--shouf-accent)",
+    ring:        "0 0 0 3px var(--shouf-accent-ring)",
     color:       "#111111",
     placeholder: "#AAAAAA",
   },
@@ -60,28 +60,28 @@ function getTokens(values: ComponentControlValues): TokenRow[] {
       id:        "bg",
       property:  "background",
       cssValue:  st.bg,
-      tokenName: `--pds-inp-bg${tokenSuffix}`,
+      tokenName: `--shouf-inp-bg${tokenSuffix}`,
       category:  "color",
     },
     {
       id:        "border",
       property:  "border-color",
       cssValue:  st.border,
-      tokenName: `--pds-inp-border${tokenSuffix}`,
+      tokenName: `--shouf-inp-border${tokenSuffix}`,
       category:  "color",
     },
     {
       id:        "color",
       property:  "color",
       cssValue:  st.color,
-      tokenName: "--pds-inp-color",
+      tokenName: "--shouf-inp-color",
       category:  "color",
     },
     {
       id:        "placeholder",
       property:  "color (placeholder)",
       cssValue:  st.placeholder,
-      tokenName: "--pds-inp-placeholder",
+      tokenName: "--shouf-inp-placeholder",
       category:  "color",
     },
   ];
@@ -92,7 +92,7 @@ function getTokens(values: ComponentControlValues): TokenRow[] {
       id:        "ring",
       property:  "box-shadow",
       cssValue:  st.ring,
-      tokenName: `--pds-inp-ring${tokenSuffix}`,
+      tokenName: `--shouf-inp-ring${tokenSuffix}`,
       category:  "shadow",
     });
   }
@@ -103,28 +103,28 @@ function getTokens(values: ComponentControlValues): TokenRow[] {
       id:        "height",
       property:  "height",
       cssValue:  sv.h,
-      tokenName: `--pds-inp-h-${size}`,
+      tokenName: `--shouf-inp-h-${size}`,
       category:  "spacing",
     },
     {
       id:        "padding",
       property:  "padding",
       cssValue:  `0 ${sv.px}`,
-      tokenName: `--pds-inp-px-${size}`,
+      tokenName: `--shouf-inp-px-${size}`,
       category:  "spacing",
     },
     {
       id:        "radius",
       property:  "border-radius",
       cssValue:  sv.radius,
-      tokenName: `--pds-inp-radius-${size}`,
+      tokenName: `--shouf-inp-radius-${size}`,
       category:  "radius",
     },
     {
       id:        "font",
       property:  "font-size",
       cssValue:  sv.font,
-      tokenName: `--pds-inp-font-${size}`,
+      tokenName: `--shouf-inp-font-${size}`,
       category:  "typography",
     },
   );

@@ -56,7 +56,7 @@ export function MobileTabBar() {
   return (
     <div
       className="flex items-stretch border-b shrink-0"
-      style={{ borderColor: "var(--sh-border-sub)", backgroundColor: "var(--sh-panel)" }}
+      style={{ borderColor: "var(--shouf-border-sub)", backgroundColor: "var(--shouf-panel)" }}
     >
       {TABS.map((tab) => {
         const isActive = activeMobilePanel === tab.id;
@@ -65,14 +65,14 @@ export function MobileTabBar() {
             key={tab.id}
             onClick={() => setActiveMobilePanel(tab.id)}
             className="flex flex-col items-center justify-center gap-1 flex-1 py-2.5 relative transition-colors"
-            style={{ color: isActive ? "var(--sh-accent)" : "var(--sh-text-muted)" }}
+            style={{ color: isActive ? "var(--shouf-accent)" : "var(--shouf-text-muted)" }}
           >
             {tab.icon}
             <span className="text-[10px] font-medium">{tab.label}</span>
             {isActive && (
               <span
                 className="absolute bottom-0 left-3 right-3 h-[2px] rounded-t"
-                style={{ backgroundColor: "var(--sh-accent)" }}
+                style={{ backgroundColor: "var(--shouf-accent)" }}
               />
             )}
           </button>

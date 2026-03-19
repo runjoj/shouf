@@ -25,9 +25,9 @@ const SEARCH_DELAY = 80;
 // Colors map to shell accent tokens so they work in light + dark mode.
 
 const SECTION_META: Record<string, { short: string; color: string }> = {
-  "portfolio-design-system": { short: "Shouf",      color: "var(--sh-accent)"      },
-  "responsive-components":   { short: "Responsive", color: "var(--sh-accent-blue)" },
-  "eucalyptus":              { short: "Eucalyptus", color: "var(--sh-accent-sage)" },
+  "portfolio-design-system": { short: "Shouf",      color: "var(--shouf-accent)"      },
+  "responsive-components":   { short: "Responsive", color: "var(--shouf-accent-blue)" },
+  "eucalyptus":              { short: "Eucalyptus", color: "var(--shouf-accent-sage)" },
 };
 
 // Flattened list of every nav entry — the search index.
@@ -45,7 +45,7 @@ function HighlightMatch({ text, query }: { text: string; query: string }) {
       {text.slice(0, idx)}
       <mark
         style={{
-          background:   "var(--sh-accent-sel)",
+          background:   "var(--shouf-accent-sel)",
           color:        "inherit",
           borderRadius: "2px",
           padding:      "0 1px",
@@ -101,8 +101,8 @@ function SearchDropdown({
           left,
           width,
           zIndex:          9001,
-          backgroundColor: "var(--sh-panel)",
-          border:          "1px solid var(--sh-border)",
+          backgroundColor: "var(--shouf-panel)",
+          border:          "1px solid var(--shouf-border)",
           borderRadius:    "8px",
           boxShadow:       "0 4px 20px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06)",
           overflow:        "hidden",
@@ -114,7 +114,7 @@ function SearchDropdown({
             style={{
               padding:  "10px 12px",
               fontSize: "12px",
-              color:    "var(--sh-text-faint)",
+              color:    "var(--shouf-text-faint)",
             }}
           >
             No results for &ldquo;{query}&rdquo;
@@ -122,7 +122,7 @@ function SearchDropdown({
         ) : (
           <div style={{ padding: "4px" }}>
             {results.map((entry, i) => {
-              const meta     = SECTION_META[entry.sectionId] ?? { short: entry.sectionId, color: "var(--sh-text-faint)" };
+              const meta     = SECTION_META[entry.sectionId] ?? { short: entry.sectionId, color: "var(--shouf-text-faint)" };
               const isActive = i === activeIndex;
               return (
                 <button
@@ -137,13 +137,13 @@ function SearchDropdown({
                     padding:      "6px 8px",
                     border:       "none",
                     borderRadius: "5px",
-                    background:   isActive ? "var(--sh-accent-sel)" : "transparent",
+                    background:   isActive ? "var(--shouf-accent-sel)" : "transparent",
                     cursor:       "pointer",
                     textAlign:    "left",
                     transition:   "background 60ms ease",
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = "var(--sh-hover)";
+                    if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = "var(--shouf-hover)";
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = "transparent";
@@ -165,7 +165,7 @@ function SearchDropdown({
                     style={{
                       flex:       1,
                       fontSize:   "12px",
-                      color:      "var(--sh-text)",
+                      color:      "var(--shouf-text)",
                       lineHeight: 1.3,
                     }}
                   >
@@ -176,8 +176,8 @@ function SearchDropdown({
                   <span
                     style={{
                       fontSize:        "10px",
-                      color:           "var(--sh-text-faint)",
-                      backgroundColor: "var(--sh-panel-alt)",
+                      color:           "var(--shouf-text-faint)",
+                      backgroundColor: "var(--shouf-panel-alt)",
                       padding:         "2px 5px",
                       borderRadius:    "4px",
                       flexShrink:      0,
@@ -222,7 +222,7 @@ function LogoMark() {
       <div className="flex items-center gap-2">
         <div
           className="w-[22px] h-[22px] rounded-md flex items-center justify-center"
-          style={{ backgroundColor: "var(--sh-accent)" }}
+          style={{ backgroundColor: "var(--shouf-accent)" }}
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <rect x="2"   y="2"   width="3.5" height="3.5" rx="0.75" fill="#111111" />
@@ -231,7 +231,7 @@ function LogoMark() {
             <rect x="6.5" y="6.5" width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.75" />
           </svg>
         </div>
-        <span className="text-[14px] font-bold tracking-tight" style={{ color: "var(--sh-text)" }}>
+        <span className="text-[14px] font-bold tracking-tight" style={{ color: "var(--shouf-text)" }}>
           helloitsjo
         </span>
       </div>
@@ -353,8 +353,8 @@ export function LeftPanel() {
     <aside
       className="flex flex-col h-full overflow-hidden"
       style={{
-        backgroundColor: "var(--sh-panel)",
-        borderRight:     "1px solid var(--sh-border-sub)",
+        backgroundColor: "var(--shouf-panel)",
+        borderRight:     "1px solid var(--shouf-border-sub)",
         width:           "260px",
         minWidth:        "260px",
       }}
@@ -362,7 +362,7 @@ export function LeftPanel() {
       {/* Top bar with logo */}
       <div
         className="shrink-0 flex items-center px-4 h-[44px]"
-        style={{ borderBottom: "1px solid var(--sh-border-sub)" }}
+        style={{ borderBottom: "1px solid var(--shouf-border-sub)" }}
       >
         <LogoMark />
       </div>
@@ -376,10 +376,10 @@ export function LeftPanel() {
       {/* Bottom status bar */}
       <div
         className="shrink-0 flex items-center gap-2 px-3 py-2"
-        style={{ borderTop: "1px solid var(--sh-border-sub)" }}
+        style={{ borderTop: "1px solid var(--shouf-border-sub)" }}
       >
-        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "var(--sh-accent-sage)" }} />
-        <span className="text-[12px]" style={{ color: "var(--sh-text-faint)" }}>
+        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "var(--shouf-accent-sage)" }} />
+        <span className="text-[12px]" style={{ color: "var(--shouf-text-faint)" }}>
           v1.0.0-shell
         </span>
       </div>

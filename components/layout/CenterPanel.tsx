@@ -56,15 +56,15 @@ function CanvasHeader() {
   return (
     <div
       className="shrink-0 flex items-center gap-3 px-4 h-[44px]"
-      style={{ borderBottom: "1px solid var(--sh-border-sub)", backgroundColor: "var(--sh-panel)" }}
+      style={{ borderBottom: "1px solid var(--shouf-border-sub)", backgroundColor: "var(--shouf-panel)" }}
     >
       {/* Zoom controls */}
       <div className="flex items-center gap-1" style={introStyle(D_ZOOM, launched)}>
         <button
           className="flex items-center justify-center w-6 h-6 rounded transition-colors"
-          style={{ color: "var(--sh-text-muted)" }}
+          style={{ color: "var(--shouf-text-muted)" }}
           onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--sh-hover-str)")
+            ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)")
           }
           onMouseLeave={(e) =>
             ((e.currentTarget as HTMLElement).style.backgroundColor = "transparent")
@@ -76,9 +76,9 @@ function CanvasHeader() {
         </button>
         <button
           className="flex items-center justify-center w-6 h-6 rounded transition-colors"
-          style={{ color: "var(--sh-text-muted)" }}
+          style={{ color: "var(--shouf-text-muted)" }}
           onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--sh-hover-str)")
+            ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)")
           }
           onMouseLeave={(e) =>
             ((e.currentTarget as HTMLElement).style.backgroundColor = "transparent")
@@ -88,13 +88,13 @@ function CanvasHeader() {
             <path d="M2 5h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         </button>
-        <span className="text-[12px] px-1.5 min-w-[40px] text-center" style={{ color: "var(--sh-text-muted)" }}>
+        <span className="text-[12px] px-1.5 min-w-[40px] text-center" style={{ color: "var(--shouf-text-muted)" }}>
           100%
         </span>
       </div>
 
       {/* Divider */}
-      <div className="w-px h-4" style={{ backgroundColor: "var(--sh-border)", ...introStyle(D_ZOOM, launched) }} />
+      <div className="w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_ZOOM, launched) }} />
 
       {/* Breadcrumb */}
       <div
@@ -104,19 +104,19 @@ function CanvasHeader() {
         {activeSection && entry ? (
           /* Section Name / Component Name */
           <>
-            <span style={{ color: "var(--sh-text-faint)" }}>{activeSection.title}</span>
-            <span style={{ color: "var(--sh-border)", fontSize: "12px" }}>/</span>
-            <span className="font-medium truncate" style={{ color: "var(--sh-text)" }}>
+            <span style={{ color: "var(--shouf-text-faint)" }}>{activeSection.title}</span>
+            <span style={{ color: "var(--shouf-border)", fontSize: "12px" }}>/</span>
+            <span className="font-medium truncate" style={{ color: "var(--shouf-text)" }}>
               {entry.name}
             </span>
           </>
         ) : activeSection ? (
           /* Grid view — section selected but no component yet */
-          <span style={{ color: "var(--sh-text-faint)" }}>{activeSection.title}</span>
+          <span style={{ color: "var(--shouf-text-faint)" }}>{activeSection.title}</span>
         ) : selectedComponentId === "welcome" ? (
-          <span style={{ color: "var(--sh-text-faint)" }}>Welcome</span>
+          <span style={{ color: "var(--shouf-text-faint)" }}>Welcome</span>
         ) : (
-          <span style={{ color: "var(--sh-text-faint)" }}>Canvas</span>
+          <span style={{ color: "var(--shouf-text-faint)" }}>Canvas</span>
         )}
       </div>
 
@@ -133,9 +133,9 @@ function CanvasHeader() {
               key={label}
               title={label}
               className="flex items-center justify-center w-6 h-6 rounded transition-colors"
-              style={{ color: i === 0 ? "var(--sh-text-muted)" : "var(--sh-text-faint)" }}
+              style={{ color: i === 0 ? "var(--shouf-text-muted)" : "var(--shouf-text-faint)" }}
               onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--sh-hover-str)")
+                ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)")
               }
               onMouseLeave={(e) =>
                 ((e.currentTarget as HTMLElement).style.backgroundColor = "transparent")
@@ -150,13 +150,13 @@ function CanvasHeader() {
       </div>
 
       {/* Divider */}
-      <div className="w-px h-4" style={{ backgroundColor: "var(--sh-border)", ...introStyle(D_VIEWPORT, launched) }} />
+      <div className="w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_VIEWPORT, launched) }} />
 
       {/* Theme toggle */}
       <div className="flex items-center gap-2" style={introStyle(D_THEME, launched)}>
         <span
           className="font-mono select-none"
-          style={{ fontSize: "12px", color: "var(--sh-text-faint)", letterSpacing: "0.02em" }}
+          style={{ fontSize: "12px", color: "var(--shouf-text-faint)", letterSpacing: "0.02em" }}
         >
           --mode:&nbsp;{theme}
         </span>
@@ -169,7 +169,7 @@ function CanvasHeader() {
       </div>
 
       {/* Divider */}
-      <div className="w-px h-4" style={{ backgroundColor: "var(--sh-border)", ...introStyle(D_THEME, launched) }} />
+      <div className="w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_THEME, launched) }} />
 
       {/* Accent color picker */}
       <div style={introStyle(D_ACCENT_TOOL, launched)}>
@@ -191,7 +191,7 @@ export function CenterPanel({ showControls = false }: { showControls?: boolean }
   return (
     <main
       className="flex flex-col flex-1 h-full overflow-hidden"
-      style={{ backgroundColor: "var(--sh-bg)", minWidth: 0 }}
+      style={{ backgroundColor: "var(--shouf-bg)", minWidth: 0 }}
     >
       <CanvasHeader />
       <ComponentRenderer />

@@ -29,8 +29,8 @@ export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
       onClick={handleClick}
       className="w-full flex items-center gap-2 px-3 py-[5px] text-left rounded-sm transition-colors cursor-default"
       style={{
-        backgroundColor: isSelected ? "var(--sh-accent-sel)" : "transparent",
-        color:           isSelected ? "var(--sh-accent)" : "var(--sh-text-muted)",
+        backgroundColor: isSelected ? "var(--shouf-accent-sel)" : "transparent",
+        color:           isSelected ? "var(--shouf-accent)" : "var(--shouf-text-muted)",
         // Intro stagger only — once the intro has played, items appear instantly
         // so reopening an accordion feels snappy rather than sluggish.
         ...(launched ? {} : {
@@ -44,7 +44,7 @@ export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
       }}
       onMouseEnter={(e) => {
         if (!isSelected)
-          (e.currentTarget as HTMLElement).style.backgroundColor = "var(--sh-hover)";
+          (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover)";
       }}
       onMouseLeave={(e) => {
         if (!isSelected)
@@ -55,7 +55,7 @@ export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
       <span
         className="shrink-0 w-[5px] h-[5px] rounded-full"
         style={{
-          backgroundColor: isSelected ? "var(--sh-accent)" : "var(--sh-text-faint)",
+          backgroundColor: isSelected ? "var(--shouf-accent)" : "var(--shouf-text-faint)",
         }}
       />
       <span className="text-[14px] font-medium leading-none truncate">

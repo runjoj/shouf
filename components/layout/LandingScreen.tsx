@@ -53,7 +53,7 @@ function LogoMark() {
           display:         "flex",
           alignItems:      "center",
           justifyContent:  "center",
-          backgroundColor: "var(--sh-accent)",
+          backgroundColor: "var(--shouf-accent)",
           flexShrink:      0,
         }}
       >
@@ -315,7 +315,7 @@ export function LandingScreen() {
                   style={{
                     display:         "inline-block",
                     marginLeft:      "2px",
-                    color:           "var(--sh-accent)",
+                    color:           "var(--shouf-accent)",
                     animation:       "ls-cursor-blink 0.7s step-end infinite",
                     fontWeight:      300,
                   }}

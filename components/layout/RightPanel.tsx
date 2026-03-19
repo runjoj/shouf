@@ -8,8 +8,8 @@ export function RightPanel() {
     <aside
       className="flex flex-col h-full overflow-hidden"
       style={{
-        backgroundColor: "var(--sh-panel)",
-        borderLeft: "1px solid var(--sh-border-sub)",
+        backgroundColor: "var(--shouf-panel)",
+        borderLeft: "1px solid var(--shouf-border-sub)",
         width: "280px",
       }}
     >

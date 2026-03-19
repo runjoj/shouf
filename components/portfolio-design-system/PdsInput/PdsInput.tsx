@@ -11,7 +11,7 @@
 // Expressive craft moment: switching between states reveals the token system
 // in action. The background lifts from muted #F0F0F0 to white, the border
 // shifts to the live accent color, and a focus ring blooms outward — all via
-// CSS transitions. The ring uses var(--sh-accent-ring) so it reacts to the
+// CSS transitions. The ring uses var(--shouf-accent-ring) so it reacts to the
 // accent picker in real time, demonstrating that the token system is runtime-
 // capable, not static.
 
@@ -30,7 +30,7 @@ function SearchIcon({ size }: { size: "sm" | "md" | "lg" }) {
       viewBox="0 0 14 14"
       fill="none"
       aria-hidden="true"
-      style={{ flexShrink: 0, color: "var(--pds-inp-placeholder)" }}
+      style={{ flexShrink: 0, color: "var(--shouf-inp-placeholder)" }}
     >
       <circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.5" />
       <path d="M9.5 9.5L12.5 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -47,7 +47,7 @@ function ErrorIcon({ size }: { size: "sm" | "md" | "lg" }) {
       viewBox="0 0 16 16"
       fill="none"
       aria-hidden="true"
-      style={{ flexShrink: 0, color: "var(--pds-inp-error-color)" }}
+      style={{ flexShrink: 0, color: "var(--shouf-inp-error-color)" }}
     >
       <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.4" />
       <path d="M8 5v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -58,10 +58,10 @@ function ErrorIcon({ size }: { size: "sm" | "md" | "lg" }) {
 
 // ─── Size maps ────────────────────────────────────────────────────────────────
 
-const SIZE_H    = { sm: "var(--pds-inp-h-sm)",     md: "var(--pds-inp-h-md)",     lg: "var(--pds-inp-h-lg)"     };
-const SIZE_PX   = { sm: "var(--pds-inp-px-sm)",    md: "var(--pds-inp-px-md)",    lg: "var(--pds-inp-px-lg)"    };
-const SIZE_FONT = { sm: "var(--pds-inp-font-sm)",   md: "var(--pds-inp-font-md)",   lg: "var(--pds-inp-font-lg)"   };
-const SIZE_RAD  = { sm: "var(--pds-inp-radius-sm)", md: "var(--pds-inp-radius-md)", lg: "var(--pds-inp-radius-lg)" };
+const SIZE_H    = { sm: "var(--shouf-inp-h-sm)",     md: "var(--shouf-inp-h-md)",     lg: "var(--shouf-inp-h-lg)"     };
+const SIZE_PX   = { sm: "var(--shouf-inp-px-sm)",    md: "var(--shouf-inp-px-md)",    lg: "var(--shouf-inp-px-lg)"    };
+const SIZE_FONT = { sm: "var(--shouf-inp-font-sm)",   md: "var(--shouf-inp-font-md)",   lg: "var(--shouf-inp-font-lg)"   };
+const SIZE_RAD  = { sm: "var(--shouf-inp-radius-sm)", md: "var(--shouf-inp-radius-md)", lg: "var(--shouf-inp-radius-lg)" };
 const LABEL_FONT = { sm: "11px", md: "12px", lg: "13px" };
 const LABEL_GAP  = { sm: "4px",  md: "5px",  lg: "6px"  };
 // kbd badge font scales with input size
@@ -123,21 +123,21 @@ export const PdsInput = forwardRef<HTMLInputElement, PdsInputProps>(
     const showFocused = state === "focused" || (state === "default" && isFocused);
 
     // ── Resolve current visual state ────────────────────────────────────────
-    const bg = showError   ? "var(--pds-inp-bg-error)"
-             : isDisabled  ? "var(--pds-inp-bg)"
-             : showFocused ? "var(--pds-inp-bg-focus)"
-             : "var(--pds-inp-bg)";
+    const bg = showError   ? "var(--shouf-inp-bg-error)"
+             : isDisabled  ? "var(--shouf-inp-bg)"
+             : showFocused ? "var(--shouf-inp-bg-focus)"
+             : "var(--shouf-inp-bg)";
 
-    const borderColor = showError   ? "var(--pds-inp-border-error)"
-                      : showFocused ? "var(--pds-inp-border-focus)"
-                      : "var(--pds-inp-border)";
+    const borderColor = showError   ? "var(--shouf-inp-border-error)"
+                      : showFocused ? "var(--shouf-inp-border-focus)"
+                      : "var(--shouf-inp-border)";
 
     // Ring implemented as box-shadow — transitions smoothly between states
-    const ring = showError   ? "0 0 0 3px var(--pds-inp-ring-error)"
-               : showFocused ? "0 0 0 3px var(--pds-inp-ring-focus)"
+    const ring = showError   ? "0 0 0 3px var(--shouf-inp-ring-error)"
+               : showFocused ? "0 0 0 3px var(--shouf-inp-ring-focus)"
                : "none";
 
-    const textColor = isDisabled ? "var(--pds-inp-placeholder)" : "var(--pds-inp-color)";
+    const textColor = isDisabled ? "var(--shouf-inp-placeholder)" : "var(--shouf-inp-color)";
 
     // ── Layout ──────────────────────────────────────────────────────────────
 
@@ -187,14 +187,14 @@ export const PdsInput = forwardRef<HTMLInputElement, PdsInputProps>(
     const labelStyle: React.CSSProperties = {
       fontSize:   LABEL_FONT[size],
       fontWeight: 500,
-      color:      "var(--pds-inp-label-color)",
+      color:      "var(--shouf-inp-label-color)",
       userSelect: "none",
       lineHeight: 1,
     };
 
     const helperStyle: React.CSSProperties = {
       fontSize:   "11.5px",
-      color:      showError ? "var(--pds-inp-error-color)" : "var(--pds-inp-helper-color)",
+      color:      showError ? "var(--shouf-inp-error-color)" : "var(--shouf-inp-helper-color)",
       lineHeight: 1.4,
       marginTop:  "1px",
     };
@@ -207,8 +207,8 @@ export const PdsInput = forwardRef<HTMLInputElement, PdsInputProps>(
       fontSize:        KBD_FONT[size],
       fontFamily:      "inherit",
       lineHeight:      1,
-      color:           "var(--pds-inp-placeholder)",
-      backgroundColor: "var(--sh-border)",
+      color:           "var(--shouf-inp-placeholder)",
+      backgroundColor: "var(--shouf-border)",
       padding:         `2px ${KBD_PX[size]}`,
       borderRadius:    "4px",
       userSelect:      "none",

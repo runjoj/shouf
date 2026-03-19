@@ -2,7 +2,7 @@
 
 // ─── PdsToggle ─────────────────────────────────────────────────────────────
 // A design-system toggle switch component.
-// Intentionally uses only var(--sh-*) tokens so it adapts to both
+// Intentionally uses only var(--shouf-*) tokens so it adapts to both
 // light and dark mode automatically, and demonstrates the portfolio
 // using its own components in the shell UI.
 
@@ -43,7 +43,7 @@ export function PdsToggle({
         width:       trackW,
         height:      trackH,
         borderRadius: trackH,
-        background:  checked ? "var(--sh-accent)" : "var(--sh-switch-off)",
+        background:  checked ? "var(--shouf-accent)" : "var(--shouf-switch-off)",
         border:      "none",
         cursor:      "pointer",
         flexShrink:  0,
@@ -53,7 +53,7 @@ export function PdsToggle({
       }}
       onFocus={(e) => {
         (e.currentTarget as HTMLElement).style.boxShadow =
-          "0 0 0 3px var(--sh-accent-ring)";
+          "0 0 0 3px var(--shouf-accent-ring)";
       }}
       onBlur={(e) => {
         (e.currentTarget as HTMLElement).style.boxShadow = "none";

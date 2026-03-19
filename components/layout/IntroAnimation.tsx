@@ -121,7 +121,7 @@ export function IntroAnimation() {
           top:             0,
           bottom:          0,
           width:           "1px",
-          backgroundColor: "var(--sh-border-sub)",
+          backgroundColor: "var(--shouf-border-sub)",
           transformOrigin: "top center",
           transform:       leftBorder ? "scaleY(1)" : "scaleY(0)",
           transition:      leftBorder
@@ -138,7 +138,7 @@ export function IntroAnimation() {
           top:             0,
           bottom:          0,
           width:           "1px",
-          backgroundColor: "var(--sh-border-sub)",
+          backgroundColor: "var(--shouf-border-sub)",
           transformOrigin: "top center",
           transform:       rightBorder ? "scaleY(1)" : "scaleY(0)",
           transition:      rightBorder
@@ -155,7 +155,7 @@ export function IntroAnimation() {
           right:           0,
           top:             `${TOOLBAR_H - 1}px`,
           height:          "1px",
-          backgroundColor: "var(--sh-border-sub)",
+          backgroundColor: "var(--shouf-border-sub)",
           transformOrigin: "left center",
           transform:       toolbarBorder ? "scaleX(1)" : "scaleX(0)",
           transition:      toolbarBorder

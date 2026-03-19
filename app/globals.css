@@ -16,153 +16,153 @@
 /* ─── Shell design tokens ──────────────────────────────────────────────────── */
 :root {
   /* Surfaces — clean neutral white */
-  --sh-bg:            #FFFFFF;
-  --sh-canvas:        #F5F5F5;
-  --sh-canvas-dot:    #E0E0E0;
-  --sh-panel:         #F7F7F7;
-  --sh-panel-alt:     #F0F0F0;
+  --shouf-bg:            #FFFFFF;
+  --shouf-canvas:        #F5F5F5;
+  --shouf-canvas-dot:    #E0E0E0;
+  --shouf-panel:         #F7F7F7;
+  --shouf-panel-alt:     #F0F0F0;
   /* Borders */
-  --sh-border:        #E5E5E5;
-  --sh-border-sub:    #DCDCDC;
+  --shouf-border:        #E5E5E5;
+  --shouf-border-sub:    #DCDCDC;
   /* Text */
-  --sh-text:          #111111;
-  --sh-text-muted:    #777777;
-  --sh-text-faint:    #AAAAAA;
+  --shouf-text:          #111111;
+  --shouf-text-muted:    #777777;
+  --shouf-text-faint:    #AAAAAA;
   /* Accent palette — chartreuse primary */
-  --sh-accent:        #C8E000;
-  --sh-accent-h:      #B4CC00;
-  --sh-accent-a:      #A0B800;
-  --sh-accent-rose:   #E896A8;
-  --sh-accent-blue:   #7EC4E0;
-  --sh-accent-sage:   #96C4A4;
+  --shouf-accent:        #C8E000;
+  --shouf-accent-h:      #B4CC00;
+  --shouf-accent-a:      #A0B800;
+  --shouf-accent-rose:   #E896A8;
+  --shouf-accent-blue:   #7EC4E0;
+  --shouf-accent-sage:   #96C4A4;
   /* Compound / alpha */
-  --sh-accent-sel:    rgba(200, 224, 0, 0.14);
-  --sh-accent-ring:   rgba(200, 224, 0, 0.35);
-  --sh-box-border:    rgba(200, 224, 0, 0.30);
-  --sh-box-bg:        rgba(200, 224, 0, 0.05);
-  --sh-box-inner:     rgba(200, 224, 0, 0.18);
-  --sh-hover:         rgba(0, 0, 0, 0.04);
-  --sh-hover-str:     rgba(0, 0, 0, 0.06);
-  --sh-badge-bg:      rgba(0, 0, 0, 0.05);
+  --shouf-accent-sel:    rgba(200, 224, 0, 0.14);
+  --shouf-accent-ring:   rgba(200, 224, 0, 0.35);
+  --shouf-box-border:    rgba(200, 224, 0, 0.30);
+  --shouf-box-bg:        rgba(200, 224, 0, 0.05);
+  --shouf-box-inner:     rgba(200, 224, 0, 0.18);
+  --shouf-hover:         rgba(0, 0, 0, 0.04);
+  --shouf-hover-str:     rgba(0, 0, 0, 0.06);
+  --shouf-badge-bg:      rgba(0, 0, 0, 0.05);
   /* UI controls */
-  --sh-input-bg:      #F0F0F0;
-  --sh-option-bg:     #F7F7F7;
-  --sh-switch-off:    #D0D0D0;
-  --sh-skeleton:      #E5E5E5;
-  --sh-skeleton-alt:  #EEEEEE;
+  --shouf-input-bg:      #F0F0F0;
+  --shouf-option-bg:     #F7F7F7;
+  --shouf-switch-off:    #D0D0D0;
+  --shouf-skeleton:      #E5E5E5;
+  --shouf-skeleton-alt:  #EEEEEE;
   /* Accent text — dark on chartreuse */
-  --sh-accent-text:   #111111;
+  --shouf-accent-text:   #111111;
 }
 
 /* ─── Dark mode via system preference (unless user pinned light) ─────────── */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     /* Surfaces — neutral near-black */
-    --sh-bg:            #111111;
-    --sh-canvas:        #0E0E0E;
-    --sh-canvas-dot:    #1E1E1E;
-    --sh-panel:         #1A1A1A;
-    --sh-panel-alt:     #222222;
+    --shouf-bg:            #111111;
+    --shouf-canvas:        #0E0E0E;
+    --shouf-canvas-dot:    #1E1E1E;
+    --shouf-panel:         #1A1A1A;
+    --shouf-panel-alt:     #222222;
     /* Borders */
-    --sh-border:        #505050;
-    --sh-border-sub:    #464646;
+    --shouf-border:        #505050;
+    --shouf-border-sub:    #464646;
     /* Text */
-    --sh-text:          #F5F5F5;
-    --sh-text-muted:    #C4C4C4;
-    --sh-text-faint:    #949494;
+    --shouf-text:          #F5F5F5;
+    --shouf-text-muted:    #C4C4C4;
+    --shouf-text-faint:    #949494;
     /* Accent palette — vivid chartreuse against neutral dark */
-    --sh-accent:        #C8E000;
-    --sh-accent-h:      #D4EE00;
-    --sh-accent-a:      #E0FA00;
-    --sh-accent-rose:   #E896A8;
-    --sh-accent-blue:   #7EC4E0;
-    --sh-accent-sage:   #96C4A4;
+    --shouf-accent:        #C8E000;
+    --shouf-accent-h:      #D4EE00;
+    --shouf-accent-a:      #E0FA00;
+    --shouf-accent-rose:   #E896A8;
+    --shouf-accent-blue:   #7EC4E0;
+    --shouf-accent-sage:   #96C4A4;
     /* Compound / alpha */
-    --sh-accent-sel:    rgba(200, 224, 0, 0.15);
-    --sh-accent-ring:   rgba(200, 224, 0, 0.30);
-    --sh-box-border:    rgba(200, 224, 0, 0.28);
-    --sh-box-bg:        rgba(200, 224, 0, 0.06);
-    --sh-box-inner:     rgba(200, 224, 0, 0.18);
-    --sh-hover:         rgba(255, 255, 255, 0.04);
-    --sh-hover-str:     rgba(255, 255, 255, 0.07);
-    --sh-badge-bg:      rgba(255, 255, 255, 0.06);
+    --shouf-accent-sel:    rgba(200, 224, 0, 0.15);
+    --shouf-accent-ring:   rgba(200, 224, 0, 0.30);
+    --shouf-box-border:    rgba(200, 224, 0, 0.28);
+    --shouf-box-bg:        rgba(200, 224, 0, 0.06);
+    --shouf-box-inner:     rgba(200, 224, 0, 0.18);
+    --shouf-hover:         rgba(255, 255, 255, 0.04);
+    --shouf-hover-str:     rgba(255, 255, 255, 0.07);
+    --shouf-badge-bg:      rgba(255, 255, 255, 0.06);
     /* UI controls */
-    --sh-input-bg:      #222222;
-    --sh-option-bg:     #1A1A1A;
-    --sh-switch-off:    #2E2E2E;
-    --sh-skeleton:      #2E2E2E;
-    --sh-skeleton-alt:  #222222;
+    --shouf-input-bg:      #222222;
+    --shouf-option-bg:     #1A1A1A;
+    --shouf-switch-off:    #2E2E2E;
+    --shouf-skeleton:      #2E2E2E;
+    --shouf-skeleton-alt:  #222222;
     /* Accent text — dark on chartreuse (chartreuse is light even on dark bg) */
-    --sh-accent-text:   #111111;
+    --shouf-accent-text:   #111111;
   }
 }
 
 /* ─── Dark mode via explicit toggle ─────────────────────────────────────── */
 :root[data-theme="dark"] {
-  --sh-bg:            #111111;
-  --sh-canvas:        #0E0E0E;
-  --sh-canvas-dot:    #1E1E1E;
-  --sh-panel:         #1A1A1A;
-  --sh-panel-alt:     #222222;
-  --sh-border:        #505050;
-  --sh-border-sub:    #464646;
-  --sh-text:          #F5F5F5;
-  --sh-text-muted:    #C4C4C4;
-  --sh-text-faint:    #949494;
-  --sh-accent:        #C8E000;
-  --sh-accent-h:      #D4EE00;
-  --sh-accent-a:      #E0FA00;
-  --sh-accent-rose:   #E896A8;
-  --sh-accent-blue:   #7EC4E0;
-  --sh-accent-sage:   #96C4A4;
-  --sh-accent-sel:    rgba(200, 224, 0, 0.15);
-  --sh-accent-ring:   rgba(200, 224, 0, 0.30);
-  --sh-box-border:    rgba(200, 224, 0, 0.28);
-  --sh-box-bg:        rgba(200, 224, 0, 0.06);
-  --sh-box-inner:     rgba(200, 224, 0, 0.18);
-  --sh-hover:         rgba(255, 255, 255, 0.04);
-  --sh-hover-str:     rgba(255, 255, 255, 0.07);
-  --sh-badge-bg:      rgba(255, 255, 255, 0.06);
-  --sh-input-bg:      #222222;
-  --sh-option-bg:     #1A1A1A;
-  --sh-switch-off:    #2E2E2E;
-  --sh-skeleton:      #2E2E2E;
-  --sh-skeleton-alt:  #222222;
-  --sh-accent-text:   #111111;
+  --shouf-bg:            #111111;
+  --shouf-canvas:        #0E0E0E;
+  --shouf-canvas-dot:    #1E1E1E;
+  --shouf-panel:         #1A1A1A;
+  --shouf-panel-alt:     #222222;
+  --shouf-border:        #505050;
+  --shouf-border-sub:    #464646;
+  --shouf-text:          #F5F5F5;
+  --shouf-text-muted:    #C4C4C4;
+  --shouf-text-faint:    #949494;
+  --shouf-accent:        #C8E000;
+  --shouf-accent-h:      #D4EE00;
+  --shouf-accent-a:      #E0FA00;
+  --shouf-accent-rose:   #E896A8;
+  --shouf-accent-blue:   #7EC4E0;
+  --shouf-accent-sage:   #96C4A4;
+  --shouf-accent-sel:    rgba(200, 224, 0, 0.15);
+  --shouf-accent-ring:   rgba(200, 224, 0, 0.30);
+  --shouf-box-border:    rgba(200, 224, 0, 0.28);
+  --shouf-box-bg:        rgba(200, 224, 0, 0.06);
+  --shouf-box-inner:     rgba(200, 224, 0, 0.18);
+  --shouf-hover:         rgba(255, 255, 255, 0.04);
+  --shouf-hover-str:     rgba(255, 255, 255, 0.07);
+  --shouf-badge-bg:      rgba(255, 255, 255, 0.06);
+  --shouf-input-bg:      #222222;
+  --shouf-option-bg:     #1A1A1A;
+  --shouf-switch-off:    #2E2E2E;
+  --shouf-skeleton:      #2E2E2E;
+  --shouf-skeleton-alt:  #222222;
+  --shouf-accent-text:   #111111;
 }
 
 /* ─── Light mode via explicit toggle (overrides system dark) ─────────────── */
 :root[data-theme="light"] {
-  --sh-bg:            #FFFFFF;
-  --sh-canvas:        #F5F5F5;
-  --sh-canvas-dot:    #E0E0E0;
-  --sh-panel:         #F7F7F7;
-  --sh-panel-alt:     #F0F0F0;
-  --sh-border:        #E5E5E5;
-  --sh-border-sub:    #DCDCDC;
-  --sh-text:          #111111;
-  --sh-text-muted:    #777777;
-  --sh-text-faint:    #AAAAAA;
-  --sh-accent:        #C8E000;
-  --sh-accent-h:      #B4CC00;
-  --sh-accent-a:      #A0B800;
-  --sh-accent-rose:   #E896A8;
-  --sh-accent-blue:   #7EC4E0;
-  --sh-accent-sage:   #96C4A4;
-  --sh-accent-sel:    rgba(200, 224, 0, 0.14);
-  --sh-accent-ring:   rgba(200, 224, 0, 0.35);
-  --sh-box-border:    rgba(200, 224, 0, 0.30);
-  --sh-box-bg:        rgba(200, 224, 0, 0.05);
-  --sh-box-inner:     rgba(200, 224, 0, 0.18);
-  --sh-hover:         rgba(0, 0, 0, 0.04);
-  --sh-hover-str:     rgba(0, 0, 0, 0.06);
-  --sh-badge-bg:      rgba(0, 0, 0, 0.05);
-  --sh-input-bg:      #F0F0F0;
-  --sh-option-bg:     #F7F7F7;
-  --sh-switch-off:    #D0D0D0;
-  --sh-skeleton:      #E5E5E5;
-  --sh-skeleton-alt:  #EEEEEE;
-  --sh-accent-text:   #111111;
+  --shouf-bg:            #FFFFFF;
+  --shouf-canvas:        #F5F5F5;
+  --shouf-canvas-dot:    #E0E0E0;
+  --shouf-panel:         #F7F7F7;
+  --shouf-panel-alt:     #F0F0F0;
+  --shouf-border:        #E5E5E5;
+  --shouf-border-sub:    #DCDCDC;
+  --shouf-text:          #111111;
+  --shouf-text-muted:    #777777;
+  --shouf-text-faint:    #AAAAAA;
+  --shouf-accent:        #C8E000;
+  --shouf-accent-h:      #B4CC00;
+  --shouf-accent-a:      #A0B800;
+  --shouf-accent-rose:   #E896A8;
+  --shouf-accent-blue:   #7EC4E0;
+  --shouf-accent-sage:   #96C4A4;
+  --shouf-accent-sel:    rgba(200, 224, 0, 0.14);
+  --shouf-accent-ring:   rgba(200, 224, 0, 0.35);
+  --shouf-box-border:    rgba(200, 224, 0, 0.30);
+  --shouf-box-bg:        rgba(200, 224, 0, 0.05);
+  --shouf-box-inner:     rgba(200, 224, 0, 0.18);
+  --shouf-hover:         rgba(0, 0, 0, 0.04);
+  --shouf-hover-str:     rgba(0, 0, 0, 0.06);
+  --shouf-badge-bg:      rgba(0, 0, 0, 0.05);
+  --shouf-input-bg:      #F0F0F0;
+  --shouf-option-bg:     #F7F7F7;
+  --shouf-switch-off:    #D0D0D0;
+  --shouf-skeleton:      #E5E5E5;
+  --shouf-skeleton-alt:  #EEEEEE;
+  --shouf-accent-text:   #111111;
 }
 
 * {
@@ -174,8 +174,8 @@ body,
 #__next {
   height: 100%;
   overflow: hidden;
-  background-color: var(--sh-bg);
-  color: var(--sh-text);
+  background-color: var(--shouf-bg);
+  color: var(--shouf-text);
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -191,17 +191,17 @@ body,
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--sh-border);
+  background: var(--shouf-border);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--sh-border-sub);
+  background: var(--shouf-border-sub);
 }
 
 /* Dot-grid canvas background */
 .canvas-grid {
-  background-color: var(--sh-canvas);
-  background-image: radial-gradient(circle, var(--sh-canvas-dot) 1px, transparent 1px);
+  background-color: var(--shouf-canvas);
+  background-image: radial-gradient(circle, var(--shouf-canvas-dot) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
@@ -224,99 +224,99 @@ body,
 /* ─── Portfolio Design System — Button tokens ──────────────────────────────── */
 :root {
   /* Size scale */
-  --pds-btn-h-sm: 28px;
-  --pds-btn-h-md: 36px;
-  --pds-btn-h-lg: 44px;
+  --shouf-btn-h-sm: 28px;
+  --shouf-btn-h-md: 36px;
+  --shouf-btn-h-lg: 44px;
 
-  --pds-btn-px-sm: 12px;
-  --pds-btn-px-md: 16px;
-  --pds-btn-px-lg: 20px;
+  --shouf-btn-px-sm: 12px;
+  --shouf-btn-px-md: 16px;
+  --shouf-btn-px-lg: 20px;
 
-  --pds-btn-font-sm: 11.5px;
-  --pds-btn-font-md: 13px;
-  --pds-btn-font-lg: 15px;
-  --pds-btn-font-weight: 500;
-  --pds-btn-letter-spacing: -0.01em;
+  --shouf-btn-font-sm: 11.5px;
+  --shouf-btn-font-md: 13px;
+  --shouf-btn-font-lg: 15px;
+  --shouf-btn-font-weight: 500;
+  --shouf-btn-letter-spacing: -0.01em;
 
-  --pds-btn-gap-sm: 6px;
-  --pds-btn-gap-md: 8px;
-  --pds-btn-gap-lg: 10px;
+  --shouf-btn-gap-sm: 6px;
+  --shouf-btn-gap-md: 8px;
+  --shouf-btn-gap-lg: 10px;
 
-  --pds-btn-radius-sm: 6px;
-  --pds-btn-radius-md: 8px;
-  --pds-btn-radius-lg: 10px;
+  --shouf-btn-radius-sm: 6px;
+  --shouf-btn-radius-md: 8px;
+  --shouf-btn-radius-lg: 10px;
 
   /* Primary — vivid chartreuse with dark text */
-  --pds-btn-primary-bg:          #C8E000;
-  --pds-btn-primary-bg-hover:    #B4CC00;
-  --pds-btn-primary-bg-active:   #A0B800;
-  --pds-btn-primary-color:       #111111;
-  --pds-btn-primary-border:      transparent;
-  --pds-btn-primary-shadow:      0 1px 2px rgba(200,224,0,0.30), inset 0 1px 0 rgba(255,255,255,0.22);
-  --pds-btn-primary-shadow-hover:0 3px 14px rgba(200,224,0,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
+  --shouf-btn-primary-bg:          #C8E000;
+  --shouf-btn-primary-bg-hover:    #B4CC00;
+  --shouf-btn-primary-bg-active:   #A0B800;
+  --shouf-btn-primary-color:       #111111;
+  --shouf-btn-primary-border:      transparent;
+  --shouf-btn-primary-shadow:      0 1px 2px rgba(200,224,0,0.30), inset 0 1px 0 rgba(255,255,255,0.22);
+  --shouf-btn-primary-shadow-hover:0 3px 14px rgba(200,224,0,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
 
   /* Secondary */
-  --pds-btn-secondary-bg:           transparent;
-  --pds-btn-secondary-bg-hover:     rgba(200,224,0,0.08);
-  --pds-btn-secondary-bg-active:    rgba(200,224,0,0.14);
-  --pds-btn-secondary-color:        #111111;
-  --pds-btn-secondary-border:       rgba(200,224,0,0.45);
-  --pds-btn-secondary-border-hover: rgba(200,224,0,0.75);
-  --pds-btn-secondary-shadow:       none;
+  --shouf-btn-secondary-bg:           transparent;
+  --shouf-btn-secondary-bg-hover:     rgba(200,224,0,0.08);
+  --shouf-btn-secondary-bg-active:    rgba(200,224,0,0.14);
+  --shouf-btn-secondary-color:        #111111;
+  --shouf-btn-secondary-border:       rgba(200,224,0,0.45);
+  --shouf-btn-secondary-border-hover: rgba(200,224,0,0.75);
+  --shouf-btn-secondary-shadow:       none;
 
   /* Ghost */
-  --pds-btn-ghost-bg:           transparent;
-  --pds-btn-ghost-bg-hover:     rgba(0,0,0,0.05);
-  --pds-btn-ghost-bg-active:    rgba(0,0,0,0.09);
-  --pds-btn-ghost-color:        #777777;
-  --pds-btn-ghost-color-hover:  #111111;
-  --pds-btn-ghost-border:       transparent;
-  --pds-btn-ghost-shadow:       none;
+  --shouf-btn-ghost-bg:           transparent;
+  --shouf-btn-ghost-bg-hover:     rgba(0,0,0,0.05);
+  --shouf-btn-ghost-bg-active:    rgba(0,0,0,0.09);
+  --shouf-btn-ghost-color:        #777777;
+  --shouf-btn-ghost-color-hover:  #111111;
+  --shouf-btn-ghost-border:       transparent;
+  --shouf-btn-ghost-shadow:       none;
 }
 
 /* ─── Dark mode button tokens ─────────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     /* Primary — electric chartreuse against neutral dark */
-    --pds-btn-primary-bg:           #C8E000;
-    --pds-btn-primary-bg-hover:     #D4EE00;
-    --pds-btn-primary-bg-active:    #E0FA00;
-    --pds-btn-primary-color:        #111111;
-    --pds-btn-primary-shadow:       0 1px 3px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
-    --pds-btn-primary-shadow-hover: 0 3px 14px rgba(200,224,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+    --shouf-btn-primary-bg:           #C8E000;
+    --shouf-btn-primary-bg-hover:     #D4EE00;
+    --shouf-btn-primary-bg-active:    #E0FA00;
+    --shouf-btn-primary-color:        #111111;
+    --shouf-btn-primary-shadow:       0 1px 3px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+    --shouf-btn-primary-shadow-hover: 0 3px 14px rgba(200,224,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
 
     /* Secondary */
-    --pds-btn-secondary-bg-hover:     rgba(200,224,0,0.10);
-    --pds-btn-secondary-bg-active:    rgba(200,224,0,0.16);
-    --pds-btn-secondary-color:        #C8E000;
-    --pds-btn-secondary-border:       rgba(200,224,0,0.40);
-    --pds-btn-secondary-border-hover: rgba(200,224,0,0.70);
+    --shouf-btn-secondary-bg-hover:     rgba(200,224,0,0.10);
+    --shouf-btn-secondary-bg-active:    rgba(200,224,0,0.16);
+    --shouf-btn-secondary-color:        #C8E000;
+    --shouf-btn-secondary-border:       rgba(200,224,0,0.40);
+    --shouf-btn-secondary-border-hover: rgba(200,224,0,0.70);
 
     /* Ghost */
-    --pds-btn-ghost-bg-hover:    rgba(255,255,255,0.06);
-    --pds-btn-ghost-bg-active:   rgba(255,255,255,0.10);
-    --pds-btn-ghost-color:       #888888;
-    --pds-btn-ghost-color-hover: #F5F5F5;
+    --shouf-btn-ghost-bg-hover:    rgba(255,255,255,0.06);
+    --shouf-btn-ghost-bg-active:   rgba(255,255,255,0.10);
+    --shouf-btn-ghost-color:       #888888;
+    --shouf-btn-ghost-color-hover: #F5F5F5;
   }
 }
 
 /* ─── Explicit dark mode button tokens ───────────────────────────────────── */
 :root[data-theme="dark"] {
-  --pds-btn-primary-bg:           #C8E000;
-  --pds-btn-primary-bg-hover:     #D4EE00;
-  --pds-btn-primary-bg-active:    #E0FA00;
-  --pds-btn-primary-color:        #111111;
-  --pds-btn-primary-shadow:       0 1px 3px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
-  --pds-btn-primary-shadow-hover: 0 3px 14px rgba(200,224,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
-  --pds-btn-secondary-bg-hover:     rgba(200,224,0,0.10);
-  --pds-btn-secondary-bg-active:    rgba(200,224,0,0.16);
-  --pds-btn-secondary-color:        #C8E000;
-  --pds-btn-secondary-border:       rgba(200,224,0,0.40);
-  --pds-btn-secondary-border-hover: rgba(200,224,0,0.70);
-  --pds-btn-ghost-bg-hover:    rgba(255,255,255,0.06);
-  --pds-btn-ghost-bg-active:   rgba(255,255,255,0.10);
-  --pds-btn-ghost-color:       #888888;
-  --pds-btn-ghost-color-hover: #F5F5F5;
+  --shouf-btn-primary-bg:           #C8E000;
+  --shouf-btn-primary-bg-hover:     #D4EE00;
+  --shouf-btn-primary-bg-active:    #E0FA00;
+  --shouf-btn-primary-color:        #111111;
+  --shouf-btn-primary-shadow:       0 1px 3px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+  --shouf-btn-primary-shadow-hover: 0 3px 14px rgba(200,224,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+  --shouf-btn-secondary-bg-hover:     rgba(200,224,0,0.10);
+  --shouf-btn-secondary-bg-active:    rgba(200,224,0,0.16);
+  --shouf-btn-secondary-color:        #C8E000;
+  --shouf-btn-secondary-border:       rgba(200,224,0,0.40);
+  --shouf-btn-secondary-border-hover: rgba(200,224,0,0.70);
+  --shouf-btn-ghost-bg-hover:    rgba(255,255,255,0.06);
+  --shouf-btn-ghost-bg-active:   rgba(255,255,255,0.10);
+  --shouf-btn-ghost-color:       #888888;
+  --shouf-btn-ghost-color-hover: #F5F5F5;
 }
 
 /* Spinner keyframe */
@@ -394,70 +394,100 @@ body,
 /* ─── Portfolio Design System — Input tokens ─────────────────────────────── */
 :root {
   /* Size scale — matches the shell search bar's visual DNA */
-  --pds-inp-h-sm:      28px;
-  --pds-inp-h-md:      36px;
-  --pds-inp-h-lg:      44px;
+  --shouf-inp-h-sm:      28px;
+  --shouf-inp-h-md:      36px;
+  --shouf-inp-h-lg:      44px;
 
-  --pds-inp-px-sm:     10px;
-  --pds-inp-px-md:     12px;
-  --pds-inp-px-lg:     14px;
+  --shouf-inp-px-sm:     10px;
+  --shouf-inp-px-md:     12px;
+  --shouf-inp-px-lg:     14px;
 
-  --pds-inp-font-sm:   11.5px;
-  --pds-inp-font-md:   13px;
-  --pds-inp-font-lg:   15px;
+  --shouf-inp-font-sm:   11.5px;
+  --shouf-inp-font-md:   13px;
+  --shouf-inp-font-lg:   15px;
 
-  --pds-inp-radius-sm: 6px;
-  --pds-inp-radius-md: 8px;
-  --pds-inp-radius-lg: 10px;
+  --shouf-inp-radius-sm: 6px;
+  --shouf-inp-radius-md: 8px;
+  --shouf-inp-radius-lg: 10px;
 
   /* Default state */
-  --pds-inp-bg:          #F0F0F0;
-  --pds-inp-border:      #E5E5E5;
-  --pds-inp-color:       #111111;
-  --pds-inp-placeholder: #AAAAAA;
+  --shouf-inp-bg:          #F0F0F0;
+  --shouf-inp-border:      #E5E5E5;
+  --shouf-inp-color:       #111111;
+  --shouf-inp-placeholder: #AAAAAA;
 
   /* Focused state — border and ring are accent-derived so they react to the
      accent picker in real time. Demonstrates the runtime token system. */
-  --pds-inp-bg-focus:     #FFFFFF;
-  --pds-inp-border-focus: var(--sh-accent);
-  --pds-inp-ring-focus:   var(--sh-accent-ring);
+  --shouf-inp-bg-focus:     #FFFFFF;
+  --shouf-inp-border-focus: var(--shouf-accent);
+  --shouf-inp-ring-focus:   var(--shouf-accent-ring);
 
   /* Error state */
-  --pds-inp-bg-error:     rgba(229, 62, 62, 0.05);
-  --pds-inp-border-error: #E53E3E;
-  --pds-inp-ring-error:   rgba(229, 62, 62, 0.22);
-  --pds-inp-error-color:  #E53E3E;
+  --shouf-inp-bg-error:     rgba(229, 62, 62, 0.05);
+  --shouf-inp-border-error: #E53E3E;
+  --shouf-inp-ring-error:   rgba(229, 62, 62, 0.22);
+  --shouf-inp-error-color:  #E53E3E;
 
   /* Label and helper text */
-  --pds-inp-label-color:  #111111;
-  --pds-inp-helper-color: #777777;
+  --shouf-inp-label-color:  #111111;
+  --shouf-inp-helper-color: #777777;
 }
 
 /* Dark mode overrides */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --pds-inp-bg:          #222222;
-    --pds-inp-border:      #464646;
-    --pds-inp-color:       #F5F5F5;
-    --pds-inp-placeholder: #606060;
-    --pds-inp-bg-focus:    #1A1A1A;
-    --pds-inp-label-color: #F5F5F5;
-    --pds-inp-helper-color: #888888;
+    --shouf-inp-bg:          #222222;
+    --shouf-inp-border:      #464646;
+    --shouf-inp-color:       #F5F5F5;
+    --shouf-inp-placeholder: #606060;
+    --shouf-inp-bg-focus:    #1A1A1A;
+    --shouf-inp-label-color: #F5F5F5;
+    --shouf-inp-helper-color: #888888;
   }
 }
 :root[data-theme="dark"] {
-  --pds-inp-bg:          #222222;
-  --pds-inp-border:      #464646;
-  --pds-inp-color:       #F5F5F5;
-  --pds-inp-placeholder: #606060;
-  --pds-inp-bg-focus:    #1A1A1A;
-  --pds-inp-label-color: #F5F5F5;
-  --pds-inp-helper-color: #888888;
+  --shouf-inp-bg:          #222222;
+  --shouf-inp-border:      #464646;
+  --shouf-inp-color:       #F5F5F5;
+  --shouf-inp-placeholder: #606060;
+  --shouf-inp-bg-focus:    #1A1A1A;
+  --shouf-inp-label-color: #F5F5F5;
+  --shouf-inp-helper-color: #888888;
 }
 
 /* Placeholder color — must be done via global CSS, not inline style */
 .pds-inp::placeholder {
-  color: var(--pds-inp-placeholder);
+  color: var(--shouf-inp-placeholder);
+}
+
+/* ─── BambooHR component tokens ───────────────────────────────────────────── */
+:root {
+  /* Brand greens */
+  --bhr-green:           #3D7A30;
+  --bhr-green-light:     #5A9E49;
+  --bhr-green-hover:     #2E5E24;
+  --bhr-green-ring:      rgba(61, 122, 48, 0.12);
+  --bhr-green-glow:      rgba(61, 122, 48, 0.20);
+  /* Surfaces */
+  --bhr-bg:              #FFFFFF;
+  --bhr-content-bg:      #F0EFEB;
+  --bhr-content-wrap:    #FAFAFA;
+  --bhr-active-bg:       #F5F4F1;
+  --bhr-hover:           #F3F4F6;
+  /* Borders + dividers */
+  --bhr-border:          #E5E7EB;
+  --bhr-divider:         #E9EAEC;
+  --bhr-sub-divider:     #F0F1F3;
+  --bhr-avatar-border:   #D5D5D5;
+  --bhr-handle:          #D1D5DB;
+  /* Text */
+  --bhr-nav-text:        #374151;
+  --bhr-text-strong:     #111827;
+  --bhr-nav-icon:        #6B7280;
+  --bhr-muted:           #9CA3AF;
+  --bhr-placeholder:     #B5AFA7;
+  /* Semantic */
+  --bhr-danger:          #DC2626;
 }
 
 /* ─── Eucalyptus — Status badge tokens ────────────────────────────────────── */
@@ -502,25 +532,25 @@ body,
 
 /* ─── Spacing scale tokens ───────────────────────────────────────────────────── */
 :root {
-  --pds-space-4:  4px;
-  --pds-space-8:  8px;
-  --pds-space-12: 12px;
-  --pds-space-16: 16px;
-  --pds-space-20: 20px;
-  --pds-space-24: 24px;
-  --pds-space-32: 32px;
-  --pds-space-48: 48px;
-  --pds-space-64: 64px;
+  --shouf-space-4:  4px;
+  --shouf-space-8:  8px;
+  --shouf-space-12: 12px;
+  --shouf-space-16: 16px;
+  --shouf-space-20: 20px;
+  --shouf-space-24: 24px;
+  --shouf-space-32: 32px;
+  --shouf-space-48: 48px;
+  --shouf-space-64: 64px;
 }
 
 /* ─── Type scale tokens ─────────────────────────────────────────────────────── */
 :root {
-  --pds-type-8:  10px;
-  --pds-type-9:  10px;
-  --pds-type-10: 12px;
-  --pds-type-11: 12px;
-  --pds-type-12: 14px;
-  --pds-type-13: 14px;
-  --pds-type-15: 16px;
-  --pds-type-18: 20px;
+  --shouf-type-8:  10px;
+  --shouf-type-9:  10px;
+  --shouf-type-10: 12px;
+  --shouf-type-11: 12px;
+  --shouf-type-12: 14px;
+  --shouf-type-13: 14px;
+  --shouf-type-15: 16px;
+  --shouf-type-18: 20px;
 }
