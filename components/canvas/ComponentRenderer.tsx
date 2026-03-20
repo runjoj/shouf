@@ -15,14 +15,21 @@ import { AboutCanvas }         from "./AboutCanvas";
 import { EuEmbeddedCanvas }   from "./EuEmbeddedCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
-// These timing values must stay in sync with IntroAnimation.tsx.
 
 const HEADLINE_STR =
   "I\u2019m Jo, a designer and engineer who specializes in design systems";
-const WORDS            = HEADLINE_STR.split(" "); // 12 words
-const WORD_INTERVAL_MS = 110;                     // ms per word  (same as IntroAnimation)
-// Hide cursor just before the border-draw sequence starts (matches T_LEFT_BORDER - 80ms)
-const CURSOR_HIDE_MS   = WORDS.length * WORD_INTERVAL_MS + 500 - 80; // ~1740 ms
+
+// Natural per-character delays — deterministic jitter so timing is consistent
+// across renders but looks organic.
+function charDelay(ch: string, i: number): number {
+  const jitter = ((ch.charCodeAt(0) * 17 + i * 7) % 30) - 15;
+  const bonus  = ch === "," ? 130 : 0;
+  return Math.max(20, 42 + jitter + bonus);
+}
+const CHAR_DELAYS   = Array.from(HEADLINE_STR).map((ch, i) => charDelay(ch, i));
+const TOTAL_CHAR_MS = CHAR_DELAYS.reduce((a, b) => a + b, 0);
+// Hide cursor just before border-draw sequence starts
+const CURSOR_HIDE_MS = TOTAL_CHAR_MS + 500 - 80;
 
 // ─── Welcome canvas ───────────────────────────────────────────────────────────
 
@@ -30,7 +37,7 @@ function WelcomeCanvas() {
   const { launched } = useAppStore();
 
   // Start already-complete if we're past the intro (skip or hot reload)
-  const [typedCount, setTypedCount] = useState(launched ? WORDS.length : 0);
+  const [typedCount, setTypedCount] = useState(launched ? HEADLINE_STR.length : 0);
   const [showCursor, setShowCursor] = useState(!launched);
 
   // ── Typing sequence — runs once on mount if intro hasn't played yet ──────────
@@ -40,9 +47,12 @@ function WelcomeCanvas() {
     const timers: ReturnType<typeof setTimeout>[] = [];
     const add = (fn: () => void, ms: number) => { timers.push(setTimeout(fn, ms)); };
 
-    // Reveal one word at a time
-    for (let i = 0; i < WORDS.length; i++) {
-      add(() => setTypedCount(i + 1), i * WORD_INTERVAL_MS);
+    // Reveal one character at a time with natural timing
+    let t = 0;
+    for (let i = 0; i < HEADLINE_STR.length; i++) {
+      t += CHAR_DELAYS[i];
+      const charIdx = i + 1;
+      add(() => setTypedCount(charIdx), t);
     }
 
     // Hide cursor just before border-draw begins
@@ -54,12 +64,12 @@ function WelcomeCanvas() {
   // ── Snap to full text when skipped ──────────────────────────────────────────
   useEffect(() => {
     if (launched) {
-      setTypedCount(WORDS.length);
+      setTypedCount(HEADLINE_STR.length);
       setShowCursor(false);
     }
   }, [launched]);
 
-  const displayWords = WORDS.slice(0, typedCount);
+  const displayText = HEADLINE_STR.slice(0, typedCount);
 
   // During the intro the overlay background is always #111111 (dark), so force
   // near-white text so it reads in light mode too.  Once launched the canvas
@@ -73,7 +83,7 @@ function WelcomeCanvas() {
     // The preview card is rendered as an absolute sibling in ComponentRenderer.
     <div
       className="flex flex-col gap-8 select-none"
-      style={{ maxWidth: "520px", padding: "0 40px" }}
+      style={{ maxWidth: "680px", padding: "0 16px" }}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         {/*
@@ -93,11 +103,7 @@ function WelcomeCanvas() {
               margin:     0,
             }}
           >
-            {displayWords.map((word, i) => (
-                <span key={i} style={{ animation: "ls-word-in 150ms ease both" }}>
-                  {i > 0 ? " " : ""}{word}
-                </span>
-              ))}
+            {displayText}
             {showCursor && (
               <span
                 style={{
@@ -451,7 +457,7 @@ export function ComponentRenderer() {
           // Shift the flex centre-point leftward by half the left-panel width
           // so WelcomeCanvas lands at the true viewport centre, not the
           // centre of the narrower content area.  Only active during welcome.
-          paddingRight:   showWelcome ? "260px" : 0,
+          paddingRight:   showWelcome ? "320px" : 0,
         }}
       >
         {showWelcome && <WelcomeCanvas />}
