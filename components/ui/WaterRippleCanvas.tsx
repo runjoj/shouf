@@ -7,7 +7,7 @@ import { ACCENT_PRESETS } from "@/lib/accent";
 // ─── Animation constants ───────────────────────────────────────────────────────
 
 const DURATION   = 1400; // ms — slow, tide-like wash across the screen
-const MAX_RADIUS = 1200; // px — ring expands to this radius
+const MAX_RADIUS = 2200; // px — ring expands past any viewport diagonal
 const LINE_WIDTH = 200;  // px — very wide stroke; heavy blur turns it into a soft wash
 
 // ─── Easing ────────────────────────────────────────────────────────────────────
@@ -113,6 +113,21 @@ function buildTargets(originX: number, originY: number): CascadeTarget[] {
       entries.map(e => `${e.prop} 200ms ease`).join(", "),
     );
 
+    // Register a fallback restore timer immediately. If this element is never
+    // revealed by the ring (too far, or animation interrupted by HMR/unmount),
+    // the fallback fires after the full animation duration and restores the CSS
+    // var reference. revealTarget cancels this and schedules the shorter 250ms
+    // restore in its place.
+    const fallbackId = setTimeout(() => {
+      for (const { prop, varName } of entries) {
+        el.style.setProperty(prop, `var(${varName})`);
+      }
+      el.style.removeProperty("transition");
+      const idx = pendingRestores.findIndex(r => r.el === el);
+      if (idx !== -1) pendingRestores.splice(idx, 1);
+    }, DURATION + 500);
+    pendingRestores.push({ el, entries, timerId: fallbackId });
+
     const cx = rect.left + rect.width  / 2;
     const cy = rect.top  + rect.height / 2;
     targets.push({ el, distance: dist(originX, originY, cx, cy), revealed: false, entries });
@@ -134,6 +149,13 @@ function revealTarget(
   bgR: number, bgG: number, bgB: number,
   hexH: string, hexA: string,
 ) {
+  // Cancel the fallback restore timer registered by buildTargets.
+  const existing = pendingRestores.findIndex(r => r.el === target.el);
+  if (existing !== -1) {
+    clearTimeout(pendingRestores[existing].timerId);
+    pendingRestores.splice(existing, 1);
+  }
+
   for (const { prop, varName } of target.entries) {
     target.el.style.setProperty(prop, resolveVar(varName, fgR, fgG, fgB, bgR, bgG, bgB, hexH, hexA));
   }
@@ -256,7 +278,16 @@ export function WaterRippleCanvas() {
           }
         }
 
-        if (t >= 1) rippleRef.current = null;
+        if (t >= 1) {
+          // Reveal any targets the ring didn't reach (too far from origin).
+          for (const target of rip.targets) {
+            if (!target.revealed) {
+              target.revealed = true;
+              revealTarget(target, rip.r, rip.g, rip.b, rip.bgR, rip.bgG, rip.bgB, rip.hexH, rip.hexA);
+            }
+          }
+          rippleRef.current = null;
+        }
       }
 
       rafRef.current = requestAnimationFrame(draw);
