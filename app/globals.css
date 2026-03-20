@@ -210,6 +210,20 @@ body,
   user-select: none;
 }
 
+/* Responsive padding for full-canvas scroll views (ColorTokens, Typography, Spacing) */
+.canvas-scroll-pad {
+  align-self: stretch;
+  width: 100%;
+  overflow-y: auto;
+  padding: 28px 20px 56px;
+}
+
+@media (min-width: 640px) {
+  .canvas-scroll-pad {
+    padding: 48px 40px 64px;
+  }
+}
+
 /* ─── Typography tokens ─────────────────────────────────────────────────────── */
 :root {
   /* Manrope replaces the previous monospace stack for all UI labels and headlines */

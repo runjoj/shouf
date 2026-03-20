@@ -82,8 +82,8 @@ function WelcomeCanvas() {
     // Text column only — centered at true viewport centre via paddingRight offset.
     // The preview card is rendered as an absolute sibling in ComponentRenderer.
     <div
-      className="flex flex-col gap-8 select-none"
-      style={{ maxWidth: "680px", padding: "0 16px" }}
+      className="flex flex-col gap-8 select-none w-full px-5 lg:px-4"
+      style={{ maxWidth: "680px" }}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         {/*
@@ -446,6 +446,10 @@ export function ComponentRenderer() {
 
       {/* Content layer — always on top of the background */}
       <div
+        // On desktop, offset the flex centre-point leftward so WelcomeCanvas
+        // lands at the true viewport centre (not the centre of the narrower
+        // canvas area). Hidden on mobile — preview card is suppressed there.
+        className={showWelcome ? "lg:pr-[320px]" : ""}
         style={{
           position:       "relative",
           zIndex:         1,
@@ -454,14 +458,15 @@ export function ComponentRenderer() {
           display:        "flex",
           alignItems:     isFullCanvas ? "stretch"    : "center",
           justifyContent: isFullCanvas ? "flex-start" : "center",
-          // Shift the flex centre-point leftward by half the left-panel width
-          // so WelcomeCanvas lands at the true viewport centre, not the
-          // centre of the narrower content area.  Only active during welcome.
-          paddingRight:   showWelcome ? "320px" : 0,
         }}
       >
         {showWelcome && <WelcomeCanvas />}
-        {showWelcome && launched && <FloatingWelcomePreview launched={launched} />}
+        {/* Preview card — desktop only; on mobile it would overlap the text */}
+        {showWelcome && launched && (
+          <div className="hidden lg:block">
+            <FloatingWelcomePreview launched={launched} />
+          </div>
+        )}
 
         {!showWelcome && !selectedComponentId && !selectedSectionId && <NoSelectionState />}
 

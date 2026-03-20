@@ -258,14 +258,7 @@ export function ColorTokensCanvas() {
 
   return (
     /* Full-canvas scrollable wrapper */
-    <div
-      style={{
-        alignSelf: "stretch",
-        width:     "100%",
-        overflowY: "auto",
-        padding:   "48px 40px 64px",
-      }}
-    >
+    <div className="canvas-scroll-pad">
       <div style={{ maxWidth: "720px", margin: "0 auto" }}>
 
         {/* ── Page header ───────────────────────────────────────────────────── */}

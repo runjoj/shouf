@@ -72,8 +72,8 @@ function CanvasHeader({
       className="shrink-0 flex items-center gap-3 px-4 h-[44px]"
       style={{ borderBottom: "1px solid var(--shouf-border-sub)", backgroundColor: "var(--shouf-panel)" }}
     >
-      {/* Zoom controls */}
-      <div className="flex items-center gap-1" style={introStyle(D_ZOOM, launched)}>
+      {/* Zoom controls — hidden on mobile */}
+      <div className="hidden sm:flex items-center gap-1" style={introStyle(D_ZOOM, launched)}>
         <button
           onClick={onZoomIn}
           disabled={zoom >= ZOOM_MAX}
@@ -105,8 +105,8 @@ function CanvasHeader({
         </span>
       </div>
 
-      {/* Divider */}
-      <div className="w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_ZOOM, launched) }} />
+      {/* Divider — hidden on mobile with zoom */}
+      <div className="hidden sm:block w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_ZOOM, launched) }} />
 
       {/* Breadcrumb */}
       <div
@@ -132,8 +132,8 @@ function CanvasHeader({
         )}
       </div>
 
-      {/* Viewport controls */}
-      <div className="flex items-center gap-1" style={introStyle(D_VIEWPORT, launched)}>
+      {/* Viewport controls — hidden on mobile */}
+      <div className="hidden md:flex items-center gap-1" style={introStyle(D_VIEWPORT, launched)}>
         {["Desktop", "Tablet", "Mobile"].map((label, i) => {
           const icons = [
             <path key="d" d="M2 3h12v8H2zM5 11v2M3 11h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />,
@@ -161,13 +161,13 @@ function CanvasHeader({
         })}
       </div>
 
-      {/* Divider */}
-      <div className="w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_VIEWPORT, launched) }} />
+      {/* Divider — hidden on mobile with viewport controls */}
+      <div className="hidden md:block w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_VIEWPORT, launched) }} />
 
       {/* Theme toggle */}
       <div className="flex items-center gap-2" style={introStyle(D_THEME, launched)}>
         <span
-          className="font-mono select-none"
+          className="hidden md:inline font-mono select-none"
           style={{ fontSize: "12px", color: "var(--shouf-text-faint)", letterSpacing: "0.02em" }}
         >
           --mode:&nbsp;{theme}

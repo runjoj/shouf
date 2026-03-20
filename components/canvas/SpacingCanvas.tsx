@@ -229,14 +229,7 @@ export function SpacingCanvas() {
   }
 
   return (
-    <div
-      style={{
-        alignSelf: "stretch",
-        width:     "100%",
-        overflowY: "auto",
-        padding:   "52px 48px 80px",
-      }}
-    >
+    <div className="canvas-scroll-pad">
       <div style={{ maxWidth: "680px", margin: "0 auto" }}>
 
         {/* ── Page header ─────────────────────────────────────────────────── */}
