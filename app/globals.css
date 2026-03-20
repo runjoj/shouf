@@ -336,6 +336,12 @@ body,
   50%       { opacity: 0; }
 }
 
+/* Intro animation — word fade-in */
+@keyframes ls-word-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* Search dropdown enter — slides down from slightly above */
 @keyframes search-in {
   from { opacity: 0; transform: translateY(-4px); }

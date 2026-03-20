@@ -59,7 +59,7 @@ function WelcomeCanvas() {
     }
   }, [launched]);
 
-  const displayText = WORDS.slice(0, typedCount).join(" ");
+  const displayWords = WORDS.slice(0, typedCount);
 
   // During the intro the overlay background is always #111111 (dark), so force
   // near-white text so it reads in light mode too.  Once launched the canvas
@@ -84,7 +84,7 @@ function WelcomeCanvas() {
         */}
         <h2
           style={{
-            fontSize:   "30px",
+            fontSize:   "clamp(1.8rem, 2.4vw, 2.4rem)",
               fontWeight: 700,
               fontFamily: "var(--font-mono)",
               lineHeight: 1.35,
@@ -93,7 +93,11 @@ function WelcomeCanvas() {
               margin:     0,
             }}
           >
-            {displayText}
+            {displayWords.map((word, i) => (
+                <span key={i} style={{ animation: "ls-word-in 150ms ease both" }}>
+                  {i > 0 ? " " : ""}{word}
+                </span>
+              ))}
             {showCursor && (
               <span
                 style={{
@@ -112,7 +116,7 @@ function WelcomeCanvas() {
           {/* Subhead */}
           <p
             style={{
-              fontSize:   "15px",
+              fontSize:   "16px",
               lineHeight: 1.75,
               color:      "var(--shouf-text-muted)",
               margin:     0,
@@ -314,7 +318,7 @@ function FloatingWelcomePreview({ launched }: { launched: boolean }) {
     <div
       style={{
         position:        "absolute",
-        right:           "120px",
+        right:           "200px",
         top:             "50%",
         transform:       "translateY(-50%)",
         width:           "256px",
