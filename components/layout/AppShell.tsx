@@ -67,13 +67,13 @@ const RIGHT_PANEL_W = 280;
 
 // Pages that should NOT show the right panel or controls bar.
 // Everything else (component canvases with inspect/controls) shows both panels.
-const NO_PANELS = new Set(["welcome", "about", "pds-guide", "rc-guide", "eu-guide"]);
+const NO_PANELS = new Set(["welcome", "about", "pds-guide", "rc-guide", "eu-guide", "eu-embedded"]);
 
 function DesktopView() {
-  const { selectedComponentId } = useAppStore();
+  const { selectedComponentId, selectedSectionId } = useAppStore();
 
-  // Hide panels on landing/about/guide pages; show for all component canvases.
-  const showPanels = !!selectedComponentId && !NO_PANELS.has(selectedComponentId);
+  // Hide panels on landing/about/guide pages and section overview grids.
+  const showPanels = !!selectedComponentId && !NO_PANELS.has(selectedComponentId) && selectedSectionId === null;
 
   return (
     <div

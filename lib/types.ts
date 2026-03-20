@@ -4,12 +4,20 @@ export type ComponentEntry = {
   id: string;
   name: string;
   sectionId: string;
+  /** When set, clicking this entry navigates to the section grid for this sectionId */
+  overviewFor?: string;
+};
+
+export type NavSubGroup = {
+  label: string;
+  entries: ComponentEntry[];
 };
 
 export type NavSection = {
   id: string;
   title: string;
-  entries: ComponentEntry[];
+  entries: ComponentEntry[];   // top-level items (not in any sub-group)
+  groups?: NavSubGroup[];      // optional collapsible sub-groups
 };
 
 // ─── Panel ─────────────────────────────────────────────────────────────────────

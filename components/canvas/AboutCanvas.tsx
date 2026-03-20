@@ -68,7 +68,7 @@ const CSS = `
 
   @media (max-width: 680px) {
     .ab-hero { flex-direction: column !important; gap: 40px !important; }
-    .ab-photo { width: 100% !important; min-width: unset !important; height: 260px !important; }
+    .ab-photo { width: 100% !important; min-width: unset !important; height: 280px !important; }
     .ab-anim { display: none; }
   }
 `;
@@ -224,15 +224,15 @@ export function AboutCanvas() {
           {/* ── Hero — photo + bio ─────────────────────────────────────────── */}
           <section
             className="ab-hero"
-            style={{ display: "flex", gap: "72px", alignItems: "flex-start" }}
+            style={{ display: "flex", gap: "64px", alignItems: "flex-start" }}
           >
-            {/* Photo */}
+            {/* Photo — stretches to match bio column height */}
             <div
               className="ab-photo"
               style={{
-                width:        "260px",
-                minWidth:     "260px",
-                height:       "360px",
+                width:        "300px",
+                minWidth:     "300px",
+                alignSelf:    "stretch",
                 borderRadius: "14px",
                 flexShrink:   0,
                 overflow:     "hidden",
@@ -247,7 +247,7 @@ export function AboutCanvas() {
             </div>
 
             {/* Bio */}
-            <div style={{ flex: 1, paddingTop: "4px" }}>
+            <div style={{ flex: 1, paddingTop: "4px", maxWidth: "420px" }}>
               {BIO_PARAGRAPHS.map((para, i) => (
                 <p
                   key={i}

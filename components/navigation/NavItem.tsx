@@ -5,22 +5,32 @@ import { useAppStore } from "@/lib/store";
 
 type NavItemProps = {
   entry: ComponentEntry;
-  /** ms delay after launch() fires; item uses animation-fill-mode:both so
-      it stays at opacity:0 while the intro overlay is covering it, then
-      fades in with this delay once launched=true. */
   introDelay?: number;
 };
 
 export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
-  const { selectedComponentId, selectComponent, selectSection, setActiveMobilePanel, launched } =
-    useAppStore();
+  const {
+    selectedComponentId,
+    selectedSectionId,
+    selectComponent,
+    selectSection,
+    setActiveMobilePanel,
+    launched,
+  } = useAppStore();
 
-  const isSelected = selectedComponentId === entry.id;
+  // Overview entries navigate to the section grid; regular entries to their canvas
+  const isOverview = !!entry.overviewFor;
+  const isSelected = isOverview
+    ? selectedSectionId === entry.overviewFor
+    : selectedComponentId === entry.id;
 
   function handleClick() {
-    // Exit grid mode so the solo component canvas renders instead of the grid.
-    selectSection(null);
-    selectComponent(entry.id);
+    if (isOverview) {
+      selectSection(entry.overviewFor!);
+    } else {
+      selectSection(null);
+      selectComponent(entry.id);
+    }
     setActiveMobilePanel("canvas");
   }
 
@@ -31,8 +41,6 @@ export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
       style={{
         backgroundColor: isSelected ? "var(--shouf-accent-sel)" : "transparent",
         color:           isSelected ? "var(--shouf-accent)" : "var(--shouf-text-muted)",
-        // Intro stagger only — once the intro has played, items appear instantly
-        // so reopening an accordion feels snappy rather than sluggish.
         ...(launched ? {} : {
           animationName:           "intro-reveal",
           animationDuration:       "220ms",
@@ -51,7 +59,6 @@ export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
           (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
       }}
     >
-      {/* Entry dot */}
       <span
         className="shrink-0 w-[5px] h-[5px] rounded-full"
         style={{

@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from "react";
 import { useAppStore } from "@/lib/store";
+import { useTheme } from "@/lib/theme";
 import { isRegistered, getRegistration } from "@/lib/registry";
 import { TokenRow } from "./TokenRow";
 import type { TokenRow as TokenRowType } from "@/lib/types";

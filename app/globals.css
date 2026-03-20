@@ -212,8 +212,13 @@ body,
 
 /* ─── Typography tokens ─────────────────────────────────────────────────────── */
 :root {
-  /* Monospace stack — used for code labels, token values, welcome headline */
-  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+  /* Manrope replaces the previous monospace stack for all UI labels and headlines */
+  --font-mono: 'Manrope', sans-serif;
+}
+
+/* Override Tailwind's font-mono utility to match */
+.font-mono {
+  font-family: 'Manrope', sans-serif;
 }
 
 /* Scope Figtree to Eucalyptus components only — never bleeds into shell or Shouf DS */

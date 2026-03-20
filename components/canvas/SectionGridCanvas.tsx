@@ -255,6 +255,23 @@ function GlobalNavPreview() {
   );
 }
 
+function EmbeddedPreview() {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/embedded.gif"
+      alt="Embedded Experience"
+      style={{
+        width:        "100%",
+        maxWidth:     "192px",
+        display:      "block",
+        borderRadius: "5px",
+        border:       "1px solid var(--shouf-border-sub)",
+      }}
+    />
+  );
+}
+
 // ─── Custom preview lookup ────────────────────────────────────────────────────
 
 const CUSTOM_TILE_PREVIEWS: Record<string, () => React.ReactElement> = {
@@ -265,6 +282,7 @@ const CUSTOM_TILE_PREVIEWS: Record<string, () => React.ReactElement> = {
   "rc-guide":         GuidePreview,
   "rc-global-nav":    GlobalNavPreview,
   "eu-guide":         GuidePreview,
+  "eu-embedded":      EmbeddedPreview,
 };
 
 // ─── Placeholder preview (unregistered components without a custom preview) ───
@@ -396,8 +414,8 @@ function ComponentTile({ entry, isSelected, tileIndex, onClick }: TileProps) {
           {entry.name}
         </span>
 
-        {/* "placeholder" badge for unregistered components */}
-        {!renderer && (
+        {/* "placeholder" badge — only for entries with no renderer and no custom preview */}
+        {!renderer && !CustomPreview && (
           <span
             style={{
               marginLeft:    "auto",
@@ -419,13 +437,19 @@ function ComponentTile({ entry, isSelected, tileIndex, onClick }: TileProps) {
 // ─── SectionGridCanvas ────────────────────────────────────────────────────────
 
 export function SectionGridCanvas({ sectionId }: { sectionId: string }) {
-  const { selectedComponentId, selectComponent } = useAppStore();
+  const { selectedComponentId, selectComponent, selectSection } = useAppStore();
   const section = navSections.find((s) => s.id === sectionId);
 
   if (!section) return null;
 
-  const registeredCount   = section.entries.filter((e) => e.id in COMPONENT_REGISTRY).length;
-  const placeholderCount  = section.entries.length - registeredCount;
+  // Flatten top-level entries + all group entries, excluding the Overview entry itself
+  const allEntries = [
+    ...section.entries.filter((e) => !e.overviewFor),
+    ...(section.groups ?? []).flatMap((g) => g.entries),
+  ];
+
+  const registeredCount   = allEntries.filter((e) => e.id in COMPONENT_REGISTRY || e.id in CUSTOM_TILE_PREVIEWS).length;
+  const placeholderCount  = allEntries.length - registeredCount;
 
   return (
     <div
@@ -473,13 +497,13 @@ export function SectionGridCanvas({ sectionId }: { sectionId: string }) {
           gap:                   "14px",
         }}
       >
-        {section.entries.map((entry, i) => (
+        {allEntries.map((entry, i) => (
           <ComponentTile
             key={entry.id}
             entry={entry}
             isSelected={selectedComponentId === entry.id}
             tileIndex={i}
-            onClick={() => selectComponent(entry.id)}
+            onClick={() => { selectSection(null); selectComponent(entry.id); }}
           />
         ))}
       </div>

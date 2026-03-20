@@ -139,12 +139,17 @@ function revealTarget(
   }
   // After the 200ms transition completes, restore CSS var references so the
   // element re-links to :root and will pick up any future accent changes.
-  setTimeout(() => {
+  // Register in pendingRestores so a rapid second click can flush immediately.
+  const timerId = setTimeout(() => {
     for (const { prop, varName } of target.entries) {
       target.el.style.setProperty(prop, `var(${varName})`);
     }
     target.el.style.removeProperty("transition");
+    const idx = pendingRestores.findIndex(r => r.el === target.el);
+    if (idx !== -1) pendingRestores.splice(idx, 1);
   }, 250);
+
+  pendingRestores.push({ el: target.el, entries: target.entries, timerId });
 }
 
 // ─── Active ripple ─────────────────────────────────────────────────────────────
@@ -173,6 +178,33 @@ interface ActiveRipple {
 // When the ring radius crosses that element's distance from the origin, the
 // element transitions to the new accent colour over 200ms ease.
 // Elements closest to the swatch change first; distant elements change last.
+
+// ─── Pending restore registry ──────────────────────────────────────────────────
+// Tracks elements that have been revealed (concrete colour set) but whose CSS
+// var reference has not yet been restored by the 250ms setTimeout.
+// When a new ripple fires we flush this immediately so buildTargets finds them
+// via [style*='--shouf-accent'] and can freeze them at the current colour before
+// the new setAccent call changes :root.
+
+interface PendingRestore {
+  el:      HTMLElement;
+  entries: Array<{ prop: string; varName: string }>;
+  timerId: ReturnType<typeof setTimeout>;
+}
+
+// Module-level so it is shared across renders of WaterRippleCanvas.
+const pendingRestores: PendingRestore[] = [];
+
+function flushPendingRestores() {
+  for (const r of pendingRestores) {
+    clearTimeout(r.timerId);
+    for (const { prop, varName } of r.entries) {
+      r.el.style.setProperty(prop, `var(${varName})`);
+    }
+    r.el.style.removeProperty("transition");
+  }
+  pendingRestores.length = 0;
+}
 
 export function WaterRippleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -251,6 +283,10 @@ export function WaterRippleCanvas() {
       const fgB  = isLight ? preset.lB  : preset.b;
       const hexH = isLight ? preset.lightHexH : preset.hexH;
       const hexA = isLight ? preset.lightHexA : preset.hexA;
+
+      // Flush any elements still frozen from a previous ripple so they appear
+      // in the [style*='--shouf-accent'] query and participate in this cascade.
+      flushPendingRestores();
 
       const targets = buildTargets(x, y);
       rippleRef.current = {

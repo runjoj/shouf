@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { navSections } from "@/data/navigation";
-import { isRegistered, COMPONENT_RENDERERS } from "@/lib/registry";
+import { isRegistered, COMPONENT_RENDERERS, COMPONENT_REGISTRY } from "@/lib/registry";
 import { ColorTokensCanvas }   from "./ColorTokensCanvas";
 import { SectionGridCanvas }   from "./SectionGridCanvas";
 import { TypographyCanvas }    from "./TypographyCanvas";
@@ -12,6 +12,7 @@ import { EuGuideCanvas }       from "./EuGuideCanvas";
 import { PdsGuideCanvas }      from "./PdsGuideCanvas";
 import { RcGlobalNavCanvas }   from "./RcGlobalNavCanvas";
 import { AboutCanvas }         from "./AboutCanvas";
+import { EuEmbeddedCanvas }   from "./EuEmbeddedCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
 // These timing values must stay in sync with IntroAnimation.tsx.
@@ -68,35 +69,13 @@ function WelcomeCanvas() {
   const headlineTransition = launched ? "color 700ms ease"  : "none";
 
   return (
+    // Text column only — centered at true viewport centre via paddingRight offset.
+    // The preview card is rendered as an absolute sibling in ComponentRenderer.
     <div
-      className="flex flex-col items-center justify-center gap-8 select-none text-center"
-      style={{ maxWidth: "480px", padding: "0 32px" }}
+      className="flex flex-col gap-8 select-none"
+      style={{ maxWidth: "520px", padding: "0 40px" }}
     >
-      {/* Logo mark — invisible during intro, fades in after launch */}
-      <div
-        style={{
-          width:           "44px",
-          height:          "44px",
-          borderRadius:    "12px",
-          backgroundColor: "var(--shouf-accent)",
-          display:         "flex",
-          alignItems:      "center",
-          justifyContent:  "center",
-          flexShrink:      0,
-          opacity:         launched ? 1 : 0,
-          transition:      launched ? "opacity 300ms ease" : "none",
-        }}
-      >
-        <svg width="24" height="24" viewBox="0 0 12 12" fill="none">
-          <rect x="2"   y="2"   width="3.5" height="3.5" rx="0.75" fill="#111111" />
-          <rect x="6.5" y="2"   width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.5" />
-          <rect x="2"   y="6.5" width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.5" />
-          <rect x="6.5" y="6.5" width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.75" />
-        </svg>
-      </div>
-
-      {/* Headline + subhead */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         {/*
           This h2 is the SOURCE OF TRUTH for the typing animation.
           It renders at its final font-size, line-height, and position from the
@@ -105,62 +84,62 @@ function WelcomeCanvas() {
         */}
         <h2
           style={{
-            fontSize:   "20px",
-            fontWeight: 400,
-            fontFamily: "var(--font-mono)",
-            lineHeight: 1.35,
-            color:      headlineColor,
-            transition: headlineTransition,
-            margin:     0,
-          }}
-        >
-          {displayText}
-          {showCursor && (
-            <span
-              style={{
-                display:    "inline-block",
-                marginLeft: "2px",
-                color:      "var(--shouf-accent)",
-                animation:  "ls-cursor-blink 0.7s step-end infinite",
-                fontWeight: 300,
-              }}
-            >
-              |
-            </span>
-          )}
-        </h2>
+            fontSize:   "30px",
+              fontWeight: 700,
+              fontFamily: "var(--font-mono)",
+              lineHeight: 1.35,
+              color:      headlineColor,
+              transition: headlineTransition,
+              margin:     0,
+            }}
+          >
+            {displayText}
+            {showCursor && (
+              <span
+                style={{
+                  display:    "inline-block",
+                  marginLeft: "2px",
+                  color:      "var(--shouf-accent)",
+                  animation:  "ls-cursor-blink 0.7s step-end infinite",
+                  fontWeight: 300,
+                }}
+              >
+                |
+              </span>
+            )}
+          </h2>
 
-        {/* Subhead — hidden during intro, fades in after launch */}
-        <p
-          style={{
-            fontSize:   "14px",
-            lineHeight: 1.7,
-            color:      "var(--shouf-text-muted)",
-            margin:     0,
-            opacity:    launched ? 1 : 0,
-            transition: launched ? "opacity 400ms ease 100ms" : "none",
-          }}
-        >
-          Experienced in building components in Storybook, defining design tokens, and
-          turning design decisions into production-ready code.
-        </p>
-        {/* Shouf label — subtle, below subhead */}
-        <p
-          style={{
-            fontSize:      "12px",
-            fontFamily:    "var(--font-mono)",
-            letterSpacing: "0.05em",
-            color:         "var(--shouf-text-faint)",
-            margin:        "4px 0 0",
-            opacity:       launched ? 1 : 0,
-            transition:    launched ? "opacity 400ms ease 150ms" : "none",
-          }}
-        >
-          Shouf Design System
-        </p>
-      </div>
+          {/* Subhead */}
+          <p
+            style={{
+              fontSize:   "15px",
+              lineHeight: 1.75,
+              color:      "var(--shouf-text-muted)",
+              margin:     0,
+              opacity:    launched ? 1 : 0,
+              transition: launched ? "opacity 400ms ease 100ms" : "none",
+            }}
+          >
+            Experienced in building components in Storybook, defining design tokens, and
+            turning design decisions into production-ready code.
+          </p>
+          {/* Shouf label */}
+          <p
+            style={{
+              fontSize:      "12px",
+              fontFamily:    "var(--font-mono)",
+              letterSpacing: "0.05em",
+              color:         "var(--shouf-text-faint)",
+              margin:        0,
+              opacity:       launched ? 1 : 0,
+              transition:    launched ? "opacity 400ms ease 150ms" : "none",
+            }}
+          >
+            Shouf Design System
+          </p>
+        </div>
 
-      {/* Nav hint — hidden during intro, fades in after launch */}
+      {/* Nav hint */}
       <p
         style={{
           fontSize:      "12px",
@@ -299,6 +278,107 @@ function LiveComponentCanvas({ componentId }: { componentId: string }) {
   );
 }
 
+// ─── FloatingWelcomePreview ───────────────────────────────────────────────────
+// Cycles through live component previews — rendered inline in WelcomeCanvas's
+// flex row so it aligns naturally with the text column.
+
+const PREVIEW_CYCLE = [
+  { label: "Button",   id: "pds-button"   },
+  { label: "Input",    id: "pds-input"    },
+  { label: "Statuses", id: "eu-statuses"  },
+];
+
+const MONO = "var(--font-mono)";
+
+function FloatingWelcomePreview({ launched }: { launched: boolean }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [visible,   setVisible]   = useState(true);
+
+  useEffect(() => {
+    if (!launched) return;
+    const interval = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setActiveIdx((i) => (i + 1) % PREVIEW_CYCLE.length);
+        setVisible(true);
+      }, 350);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [launched]);
+
+  const item     = PREVIEW_CYCLE[activeIdx];
+  const renderer = COMPONENT_RENDERERS[item.id];
+  const values   = COMPONENT_REGISTRY[item.id]?.defaultValues ?? {};
+
+  return (
+    <div
+      style={{
+        position:        "absolute",
+        right:           "120px",
+        top:             "50%",
+        transform:       "translateY(-50%)",
+        width:           "256px",
+        borderRadius:    "16px",
+        backgroundColor: "var(--shouf-panel)",
+        border:          "1px solid var(--shouf-border-sub)",
+        overflow:        "hidden",
+        boxShadow:       "0 4px 24px rgba(0,0,0,0.12)",
+        // Expressive moment: card fades in after launch with a slight delay
+        opacity:         launched ? 1 : 0,
+        transition:      launched ? "opacity 400ms ease 500ms" : "none",
+      }}
+    >
+      {/* Label + dot indicators */}
+      <div
+        style={{
+          padding:      "12px 16px 10px",
+          borderBottom: "1px solid var(--shouf-border-sub)",
+          display:      "flex",
+          alignItems:   "center",
+        }}
+      >
+        <span style={{
+          fontFamily:    MONO,
+          fontSize:      "10px",
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color:         "var(--shouf-text-faint)",
+        }}>
+          {item.label}
+        </span>
+        <div style={{ marginLeft: "auto", display: "flex", gap: "5px" }}>
+          {PREVIEW_CYCLE.map((_, i) => (
+            <div key={i} style={{
+              width:           "5px",
+              height:          "5px",
+              borderRadius:    "50%",
+              backgroundColor: i === activeIdx ? "var(--shouf-accent)" : "var(--shouf-border)",
+              transition:      "background-color 200ms ease",
+            }} />
+          ))}
+        </div>
+      </div>
+
+      {/* Live component preview */}
+      <div
+        style={{
+          minHeight:      "160px",
+          display:        "flex",
+          alignItems:     "center",
+          justifyContent: "center",
+          padding:        "28px 24px",
+          pointerEvents:  "none",
+          userSelect:     "none",
+          opacity:        visible ? 1 : 0,
+          transition:     "opacity 300ms ease",
+        }}
+      >
+        {renderer?.(values)}
+      </div>
+    </div>
+  );
+}
+
 // ─── ComponentRenderer ───────────────────────────────────────────────────────
 
 export function ComponentRenderer() {
@@ -321,6 +401,7 @@ export function ComponentRenderer() {
     selectedComponentId === "pds-typography"   ||
     selectedComponentId === "pds-spacing"      ||
     selectedComponentId === "eu-guide"         ||
+    selectedComponentId === "eu-embedded"      ||
     selectedComponentId === "rc-global-nav"    ||
     selectedComponentId === "about"            ||
     isGridCanvas
@@ -370,6 +451,7 @@ export function ComponentRenderer() {
         }}
       >
         {showWelcome && <WelcomeCanvas />}
+        {showWelcome && launched && <FloatingWelcomePreview launched={launched} />}
 
         {!showWelcome && !selectedComponentId && !selectedSectionId && <NoSelectionState />}
 
@@ -401,6 +483,9 @@ export function ComponentRenderer() {
         {!showWelcome && !isGridCanvas && selectedComponentId === "about" && (
           <AboutCanvas />
         )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "eu-embedded" && (
+          <EuEmbeddedCanvas />
+        )}
 
         {/* ── Registered components via LiveComponentCanvas ─────────────── */}
         {!showWelcome && !isGridCanvas && selectedComponentId &&
@@ -409,6 +494,7 @@ export function ComponentRenderer() {
           selectedComponentId !== "pds-typography"   &&
           selectedComponentId !== "pds-spacing"      &&
           selectedComponentId !== "eu-guide"         &&
+          selectedComponentId !== "eu-embedded"      &&
           selectedComponentId !== "rc-global-nav"    &&
           isRegistered(selectedComponentId) && (
           <LiveComponentCanvas componentId={selectedComponentId} />
@@ -421,6 +507,7 @@ export function ComponentRenderer() {
           selectedComponentId !== "pds-typography"   &&
           selectedComponentId !== "pds-spacing"      &&
           selectedComponentId !== "eu-guide"         &&
+          selectedComponentId !== "eu-embedded"      &&
           selectedComponentId !== "rc-global-nav"    &&
           selectedComponentId !== "about"            &&
           !isRegistered(selectedComponentId) && (

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree, Inter, Playfair_Display } from "next/font/google";
+import { Figtree, Inter, Playfair_Display, Space_Grotesk, Instrument_Sans, Manrope } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/store";
 import { ThemeProvider } from "@/lib/theme";
@@ -13,6 +13,24 @@ const figtree = Figtree({
   subsets: ["latin"],
   variable: "--font-figtree",
   weight: ["400", "500", "600"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const instrumentSans = Instrument_Sans({
+  subsets: ["latin"],
+  variable: "--font-instrument-sans",
+  weight: ["400", "500", "600", "700"],
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const playfair = Playfair_Display({
@@ -40,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${figtree.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${figtree.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} ${manrope.variable}`} suppressHydrationWarning>
       {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         {/* biome-ignore lint: FOUC prevention must run inline before hydration */}

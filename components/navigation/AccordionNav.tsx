@@ -19,9 +19,17 @@ function buildDelays() {
     const headerDelay = ms;
     ms += 60; // gap between header and first item
     const itemDelays: number[] = [];
+    // top-level entries
     for (let i = 0; i < section.entries.length; i++) {
       itemDelays.push(ms);
       ms += 50;
+    }
+    // grouped entries
+    for (const group of (section.groups ?? [])) {
+      for (let i = 0; i < group.entries.length; i++) {
+        itemDelays.push(ms);
+        ms += 50;
+      }
     }
     sections.push({ sectionId: section.id, headerDelay, itemDelays });
   }

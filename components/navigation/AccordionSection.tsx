@@ -1,14 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import type { NavSection } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
 import { NavItem } from "./NavItem";
 
 type AccordionSectionProps = {
   section: NavSection;
-  /** ms delay (after launch) for the section header to animate in */
   headerDelay?: number;
-  /** ms delays (after launch) for each entry, in order */
   itemDelays?: number[];
 };
 
@@ -17,20 +16,38 @@ export function AccordionSection({
   headerDelay = 0,
   itemDelays = [],
 }: AccordionSectionProps) {
-  const { expandedSections, toggleSection, selectSection, launched } = useAppStore();
+  const { expandedSections, toggleSection, launched } = useAppStore();
   const isExpanded = expandedSections.has(section.id);
+
+  // Sub-groups start expanded
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
+    () => new Set((section.groups ?? []).map((g) => g.label))
+  );
+
+  function toggleGroup(label: string) {
+    setExpandedGroups((prev) => {
+      const next = new Set(prev);
+      next.has(label) ? next.delete(label) : next.add(label);
+      return next;
+    });
+  }
+
+  // Total count across top-level entries and all groups
+  const totalCount =
+    section.entries.length +
+    (section.groups ?? []).reduce((acc, g) => acc + g.entries.length, 0);
+
+  // Delays are ordered: top-level entries first, then groups in order
+  let delayIdx = 0;
 
   return (
     <div className="flex flex-col">
-      {/* Section header — clicking navigates to the section grid AND toggles
-          the accordion. The grid remains visible even if the accordion is
-          collapsed; selectedSectionId and expandedSections are independent. */}
+      {/* Section header */}
       <button
-        onClick={() => { toggleSection(section.id); selectSection(section.id); }}
+        onClick={() => toggleSection(section.id)}
         className="group w-full flex items-center gap-1.5 px-3 py-2 text-left transition-colors"
         style={{
           color: "var(--shouf-text)",
-          // Intro stagger — header fades in with its delay
           animationName:           "intro-reveal",
           animationDuration:       "220ms",
           animationTimingFunction: "ease",
@@ -73,7 +90,6 @@ export function AccordionSection({
           {section.title}
         </span>
 
-        {/* Entry count badge */}
         <span
           className="ml-auto shrink-0 text-[12px] font-medium px-1.5 py-0.5 rounded"
           style={{
@@ -81,20 +97,75 @@ export function AccordionSection({
             color: "var(--shouf-text-faint)",
           }}
         >
-          {section.entries.length}
+          {totalCount}
         </span>
       </button>
 
-      {/* Entries */}
+      {/* Expanded content */}
       {isExpanded && (
         <div className="flex flex-col pl-2 pr-1 pb-1 gap-px">
-          {section.entries.map((entry, i) => (
-            <NavItem
-              key={entry.id}
-              entry={entry}
-              introDelay={itemDelays[i] ?? headerDelay + 60 + i * 50}
-            />
-          ))}
+
+          {/* Top-level entries */}
+          {section.entries.map((entry) => {
+            const d = itemDelays[delayIdx++] ?? headerDelay + 60;
+            return <NavItem key={entry.id} entry={entry} introDelay={d} />;
+          })}
+
+          {/* Sub-groups */}
+          {(section.groups ?? []).map((group) => {
+            const isGroupExpanded = expandedGroups.has(group.label);
+            // Capture delays for this group's entries before rendering
+            const groupDelays = group.entries.map(() => itemDelays[delayIdx++] ?? headerDelay + 60);
+
+            return (
+              <div key={group.label} className="flex flex-col mt-0.5">
+                {/* Sub-group header */}
+                <button
+                  onClick={() => toggleGroup(group.label)}
+                  className="w-full flex items-center gap-1.5 px-3 py-1 text-left rounded-sm transition-colors"
+                  style={{ color: "var(--shouf-text-faint)" }}
+                  onMouseEnter={(e) =>
+                    ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover)")
+                  }
+                  onMouseLeave={(e) =>
+                    ((e.currentTarget as HTMLElement).style.backgroundColor = "transparent")
+                  }
+                >
+                  <svg
+                    width="8"
+                    height="8"
+                    viewBox="0 0 10 10"
+                    fill="none"
+                    className="shrink-0 transition-transform duration-150"
+                    style={{ transform: isGroupExpanded ? "rotate(90deg)" : "rotate(0deg)" }}
+                  >
+                    <path
+                      d="M3 2L7 5L3 8"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span
+                    className="text-[11px] font-semibold uppercase tracking-wider"
+                    style={{ letterSpacing: "0.06em" }}
+                  >
+                    {group.label}
+                  </span>
+                </button>
+
+                {/* Sub-group entries */}
+                {isGroupExpanded && (
+                  <div className="flex flex-col pl-2 gap-px">
+                    {group.entries.map((entry, i) => (
+                      <NavItem key={entry.id} entry={entry} introDelay={groupDelays[i]} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
