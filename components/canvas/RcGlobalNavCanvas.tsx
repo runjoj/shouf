@@ -200,6 +200,15 @@ const C = {
 export function RcGlobalNavCanvas() {
   const [frameWidth, setFrameWidth] = useState<number | null>(null);
   const [collapsed,  setCollapsed]  = useState(false);
+
+  // On mobile viewports, start at the minimum frame width so the component
+  // demo opens in its compact mobile navigation mode rather than filling
+  // the full canvas width.
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      setFrameWidth(BP_MIN);
+    }
+  }, []);
   const [activeId,   setActiveId]   = useState("reports");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);

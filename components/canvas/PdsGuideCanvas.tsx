@@ -33,8 +33,9 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
     <div
       style={{
         fontFamily:    MONO,
-        fontSize:      "10px",
-        letterSpacing: "0.14em",
+        fontSize:      "12px",
+        fontWeight:    800,
+        letterSpacing: "0.12em",
         textTransform: "uppercase",
         color:         "var(--shouf-text-faint)",
         marginBottom:  "10px",
@@ -177,18 +178,73 @@ export function PdsGuideCanvas() {
   return (
     <div
       ref={scrollRef}
+      className="flex flex-col md:grid md:grid-cols-[200px_1fr]"
       style={{
-        alignSelf:           "stretch",
-        width:               "100%",
-        overflowY:           "auto",
-        display:             "grid",
-        gridTemplateColumns: "1fr 168px",
-        position:            "relative",
-        alignItems:          "start",
+        alignSelf:  "stretch",
+        width:      "100%",
+        maxWidth:   "880px",
+        overflowY:  "auto",
+        position:   "relative",
+        alignItems: "start",
+        margin:     "0 auto",
       }}
     >
-      {/* ── Main content ─────────────────────────────────────────────────── */}
-      <div style={{ padding: "52px 40px 120px 48px", maxWidth: "680px" }}>
+      {/* ── Sticky section nav — first in DOM so it appears at top on mobile ── */}
+      <nav
+        className="md:sticky"
+        style={{
+          top:       "52px",
+          alignSelf: "start",
+          padding:   "24px 24px 0",
+        }}
+      >
+        <div
+          style={{
+            fontFamily:    MONO,
+            fontSize:      "11px",
+            fontWeight:    500,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color:         "var(--shouf-text-faint)",
+            marginBottom:  "14px",
+          }}
+        >
+          On this page
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+          {SECTIONS.map(({ id, label }) => {
+            const isActive = activeId === id;
+            return (
+              <button
+                key={id}
+                onClick={() => jumpTo(id)}
+                style={{
+                  all:             "unset",
+                  display:         "block",
+                  fontSize:        "14px",
+                  fontWeight:      isActive ? 500 : 400,
+                  color:           isActive ? "var(--shouf-text)" : "var(--shouf-text-faint)",
+                  padding:         "8px 12px",
+                  borderRadius:    "6px",
+                  cursor:          "pointer",
+                  backgroundColor: isActive ? "var(--shouf-hover)" : "transparent",
+                  borderLeft:      isActive
+                    ? "2px solid var(--shouf-accent)"
+                    : "2px solid transparent",
+                  transition:      "color 120ms ease, background-color 120ms ease, border-left-color 120ms ease",
+                  whiteSpace:      "nowrap",
+                  letterSpacing:   "-0.005em",
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* ── Main content — second in DOM, order-1 puts it first on desktop ── */}
+      <div className="px-5 md:px-10 md:pl-12" style={{ paddingTop: "24px", paddingBottom: "120px", maxWidth: "680px" }}>
 
         {/* ── Overview ──────────────────────────────────────────────────── */}
         <Section id="overview">
@@ -196,8 +252,9 @@ export function PdsGuideCanvas() {
             <div
               style={{
                 fontFamily:    MONO,
-                fontSize:      "10px",
-                letterSpacing: "0.14em",
+                fontSize:      "12px",
+                fontWeight:    800,
+                letterSpacing: "0.12em",
                 textTransform: "uppercase",
                 color:         "var(--shouf-accent)",
                 marginBottom:  "14px",
@@ -411,59 +468,6 @@ export function PdsGuideCanvas() {
         </Section>
 
       </div>
-
-      {/* ── Sticky section nav ───────────────────────────────────────────── */}
-      <nav
-        style={{
-          position:  "sticky",
-          top:       "52px",
-          alignSelf: "start",
-          padding:   "52px 24px 0 0",
-        }}
-      >
-        <div
-          style={{
-            fontFamily:    MONO,
-            fontSize:      "9px",
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color:         "var(--shouf-text-faint)",
-            marginBottom:  "14px",
-          }}
-        >
-          On this page
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-          {SECTIONS.map(({ id, label }) => {
-            const isActive = activeId === id;
-            return (
-              <button
-                key={id}
-                onClick={() => jumpTo(id)}
-                style={{
-                  all:             "unset",
-                  display:         "block",
-                  fontSize:        "12px",
-                  fontWeight:      isActive ? 500 : 400,
-                  color:           isActive ? "var(--shouf-text)" : "var(--shouf-text-faint)",
-                  padding:         "5px 10px",
-                  borderRadius:    "5px",
-                  cursor:          "pointer",
-                  backgroundColor: isActive ? "var(--shouf-hover)" : "transparent",
-                  borderLeft:      isActive
-                    ? "2px solid var(--shouf-accent)"
-                    : "2px solid transparent",
-                  transition:      "color 120ms ease, background-color 120ms ease, border-left-color 120ms ease",
-                  whiteSpace:      "nowrap",
-                  letterSpacing:   "-0.005em",
-                }}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-      </nav>
 
     </div>
   );

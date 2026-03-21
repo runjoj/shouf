@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { useTheme } from "@/lib/theme";
 import { navSections } from "@/data/navigation";
@@ -9,6 +9,7 @@ import { ComponentRenderer } from "@/components/canvas/ComponentRenderer";
 import { ControlsBar } from "@/components/canvas/ControlsBar";
 import { PdsToggle } from "@/components/ui/PdsToggle";
 import { AccentPicker } from "@/components/ui/AccentPicker";
+import { ACCENT_PRESETS } from "@/lib/accent";
 
 // ─── Zoom constants ────────────────────────────────────────────────────────────
 const ZOOM_MIN  = 50;
@@ -23,7 +24,8 @@ const D_VIEWPORT    = 290;
 const D_THEME       = 390;
 const D_ACCENT_TOOL = 480;
 
-function introStyle(delay: number, launched: boolean): CSSProperties {
+function introStyle(delay: number, launched: boolean, skip = false): CSSProperties {
+  if (skip) return {};
   return {
     animationName:           "intro-reveal",
     animationDuration:       "200ms",
@@ -34,18 +36,111 @@ function introStyle(delay: number, launched: boolean): CSSProperties {
   };
 }
 
+// ─── Mobile condensed theme + accent button ───────────────────────────────────
+
+function MobileThemeButton() {
+  const [open, setOpen] = useState(false);
+  const { theme, toggleTheme, accentId } = useTheme();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const currentPreset = ACCENT_PRESETS.find((p) => p.id === accentId) ?? ACCENT_PRESETS[0];
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (!containerRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  return (
+    <div ref={containerRef} style={{ position: "relative", flexShrink: 0 }}>
+      {/* Accent circle button */}
+      <button
+        onClick={() => setOpen((o) => !o)}
+        title="Theme & accent"
+        style={{
+          width:           22,
+          height:          22,
+          borderRadius:    "50%",
+          backgroundColor: currentPreset.hex,
+          border:          "none",
+          cursor:          "pointer",
+          outline:         open ? `2px solid ${currentPreset.hex}` : "2px solid transparent",
+          outlineOffset:   "2.5px",
+          display:         "block",
+          flexShrink:      0,
+          transition:      "outline 120ms ease",
+        }}
+      />
+
+      {/* Dropdown */}
+      {open && (
+        <div
+          style={{
+            position:        "absolute",
+            right:           0,
+            top:             "calc(100% + 10px)",
+            zIndex:          200,
+            backgroundColor: "var(--shouf-panel)",
+            border:          "1px solid var(--shouf-border)",
+            borderRadius:    12,
+            padding:         "12px",
+            boxShadow:       "0 8px 32px rgba(0,0,0,0.18)",
+            minWidth:        172,
+          }}
+        >
+          {/* Theme toggle row */}
+          <div
+            style={{
+              display:        "flex",
+              alignItems:     "center",
+              justifyContent: "space-between",
+              gap:            12,
+              marginBottom:   12,
+            }}
+          >
+            <span
+              style={{
+                fontSize:      12,
+                color:         "var(--shouf-text-muted)",
+                fontFamily:    "var(--font-mono)",
+                letterSpacing: "0.02em",
+              }}
+            >
+              --mode: {theme}
+            </span>
+            <PdsToggle
+              checked={theme === "dark"}
+              onChange={() => toggleTheme()}
+              size="sm"
+              label="Toggle theme"
+            />
+          </div>
+          {/* Accent swatches */}
+          <AccentPicker size="sm" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Breadcrumb bar ──────────────────────────────────────────────────────────
 
 function CanvasHeader({
   zoom,
   onZoomIn,
   onZoomOut,
+  skipIntro = false,
 }: {
   zoom: number;
   onZoomIn: () => void;
   onZoomOut: () => void;
+  skipIntro?: boolean;
 }) {
-  const { selectedComponentId, selectedSectionId, launched } = useAppStore();
+  const { selectedComponentId, selectedSectionId, launched, activeMobilePanel, setActiveMobilePanel } = useAppStore();
   const { theme, toggleTheme } = useTheme();
 
   // Resolve component entry + its owning section (relevant in both grid and solo views)
@@ -67,13 +162,30 @@ function CanvasHeader({
   //   fallback                   → "Canvas"
   const activeSection = gridSection ?? entrySection;
 
+  // Show inspect button only when a component canvas is active
+  const showInspect = !!selectedComponentId && !["welcome","about","pds-guide","rc-guide","eu-guide","eu-embedded","pds-color-tokens"].includes(selectedComponentId) && selectedSectionId === null;
+
   return (
     <div
       className="shrink-0 flex items-center gap-3 px-4 h-[44px]"
       style={{ borderBottom: "1px solid var(--shouf-border-sub)", backgroundColor: "var(--shouf-panel)" }}
     >
-      {/* Zoom controls */}
-      <div className="flex items-center gap-1" style={introStyle(D_ZOOM, launched)}>
+      {/* ── Mobile navigator button (hidden on desktop) ── */}
+      <button
+        className="flex lg:hidden items-center justify-center w-7 h-7 rounded shrink-0"
+        onClick={() => setActiveMobilePanel("navigator")}
+        title="Open navigator"
+        style={{ color: activeMobilePanel === "navigator" ? "var(--shouf-accent)" : "var(--shouf-text-muted)" }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)"; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"; }}
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M2 4h12M2 8h12M2 12h8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+        </svg>
+      </button>
+
+      {/* Zoom controls — hidden on mobile */}
+      <div className="hidden sm:flex items-center gap-1" style={introStyle(D_ZOOM, launched, skipIntro)}>
         <button
           onClick={onZoomIn}
           disabled={zoom >= ZOOM_MAX}
@@ -105,13 +217,13 @@ function CanvasHeader({
         </span>
       </div>
 
-      {/* Divider */}
-      <div className="w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_ZOOM, launched) }} />
+      {/* Divider — hidden on mobile with zoom */}
+      <div className="hidden sm:block w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_ZOOM, launched, skipIntro) }} />
 
       {/* Breadcrumb */}
       <div
         className="flex items-center gap-1.5 text-[12px] flex-1 min-w-0"
-        style={introStyle(D_BREADCRUMB, launched)}
+        style={introStyle(D_BREADCRUMB, launched, skipIntro)}
       >
         {activeSection && entry ? (
           /* Section Name / Component Name */
@@ -132,8 +244,8 @@ function CanvasHeader({
         )}
       </div>
 
-      {/* Viewport controls */}
-      <div className="flex items-center gap-1" style={introStyle(D_VIEWPORT, launched)}>
+      {/* Viewport controls — hidden on mobile */}
+      <div className="hidden md:flex items-center gap-1" style={introStyle(D_VIEWPORT, launched, skipIntro)}>
         {["Desktop", "Tablet", "Mobile"].map((label, i) => {
           const icons = [
             <path key="d" d="M2 3h12v8H2zM5 11v2M3 11h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />,
@@ -161,13 +273,13 @@ function CanvasHeader({
         })}
       </div>
 
-      {/* Divider */}
-      <div className="w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_VIEWPORT, launched) }} />
+      {/* Divider — hidden on mobile with viewport controls */}
+      <div className="hidden md:block w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_VIEWPORT, launched, skipIntro) }} />
 
-      {/* Theme toggle */}
-      <div className="flex items-center gap-2" style={introStyle(D_THEME, launched)}>
+      {/* Theme toggle — desktop only */}
+      <div className="hidden lg:flex items-center gap-2" style={introStyle(D_THEME, launched, skipIntro)}>
         <span
-          className="font-mono select-none"
+          className="hidden md:inline font-mono select-none"
           style={{ fontSize: "12px", color: "var(--shouf-text-faint)", letterSpacing: "0.02em" }}
         >
           --mode:&nbsp;{theme}
@@ -180,12 +292,35 @@ function CanvasHeader({
         />
       </div>
 
-      {/* Divider */}
-      <div className="w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_THEME, launched) }} />
+      {/* Divider — desktop only */}
+      <div className="hidden lg:block w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_THEME, launched, skipIntro) }} />
 
-      {/* Accent color picker */}
-      <div style={introStyle(D_ACCENT_TOOL, launched)}>
+      {/* Accent color picker — desktop only */}
+      <div className="hidden lg:block" style={introStyle(D_ACCENT_TOOL, launched, skipIntro)}>
         <AccentPicker size="sm" />
+      </div>
+
+      {/* ── Mobile right controls: inspect + condensed theme (hidden on desktop) ── */}
+      <div className="flex lg:hidden items-center gap-2 shrink-0">
+        {showInspect && (
+          <button
+            onClick={() => setActiveMobilePanel(activeMobilePanel === "inspect" ? "canvas" : "inspect")}
+            className="flex items-center justify-center w-7 h-7 rounded"
+            title="Open inspect"
+            style={{ color: activeMobilePanel === "inspect" ? "var(--shouf-accent)" : "var(--shouf-text-muted)" }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"; }}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.3" />
+              <path d="M2 6h12" stroke="currentColor" strokeWidth="1.3" />
+              <path d="M7 6v8" stroke="currentColor" strokeWidth="1.3" />
+              <path d="M4 9h1.5M4 12h1.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              <path d="M9 9h3M9 12h2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+            </svg>
+          </button>
+        )}
+        <MobileThemeButton />
       </div>
     </div>
   );
@@ -199,7 +334,7 @@ function CanvasHeader({
 // Measured height of the controls bar (header ~32px + row ~50px + 1px border).
 const CONTROLS_H = 88;
 
-export function CenterPanel({ showControls = false }: { showControls?: boolean }) {
+export function CenterPanel({ showControls = false, skipIntro = false }: { showControls?: boolean; skipIntro?: boolean }) {
   const [zoom, setZoom] = useState(100);
 
   const zoomIn  = () => setZoom((z) => Math.min(ZOOM_MAX, z + ZOOM_STEP));
@@ -212,7 +347,7 @@ export function CenterPanel({ showControls = false }: { showControls?: boolean }
       className="flex flex-col flex-1 h-full overflow-hidden"
       style={{ backgroundColor: "var(--shouf-bg)", minWidth: 0 }}
     >
-      <CanvasHeader zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} />
+      <CanvasHeader zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} skipIntro={skipIntro} />
 
       {/* Canvas area — two-layer approach:
           1. Outer: flex:1 block provides height; position:relative anchors inner.

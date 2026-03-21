@@ -11,18 +11,26 @@ import { SpacingCanvas }       from "./SpacingCanvas";
 import { EuGuideCanvas }       from "./EuGuideCanvas";
 import { PdsGuideCanvas }      from "./PdsGuideCanvas";
 import { RcGlobalNavCanvas }   from "./RcGlobalNavCanvas";
+import { RcGuideCanvas }       from "./RcGuideCanvas";
 import { AboutCanvas }         from "./AboutCanvas";
 import { EuEmbeddedCanvas }   from "./EuEmbeddedCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
-// These timing values must stay in sync with IntroAnimation.tsx.
 
 const HEADLINE_STR =
   "I\u2019m Jo, a designer and engineer who specializes in design systems";
-const WORDS            = HEADLINE_STR.split(" "); // 12 words
-const WORD_INTERVAL_MS = 110;                     // ms per word  (same as IntroAnimation)
-// Hide cursor just before the border-draw sequence starts (matches T_LEFT_BORDER - 80ms)
-const CURSOR_HIDE_MS   = WORDS.length * WORD_INTERVAL_MS + 500 - 80; // ~1740 ms
+
+// Natural per-character delays — deterministic jitter so timing is consistent
+// across renders but looks organic.
+function charDelay(ch: string, i: number): number {
+  const jitter = ((ch.charCodeAt(0) * 17 + i * 7) % 30) - 15;
+  const bonus  = ch === "," ? 130 : 0;
+  return Math.max(20, 42 + jitter + bonus);
+}
+const CHAR_DELAYS   = Array.from(HEADLINE_STR).map((ch, i) => charDelay(ch, i));
+const TOTAL_CHAR_MS = CHAR_DELAYS.reduce((a, b) => a + b, 0);
+// Hide cursor just before border-draw sequence starts
+const CURSOR_HIDE_MS = TOTAL_CHAR_MS + 500 - 80;
 
 // ─── Welcome canvas ───────────────────────────────────────────────────────────
 
@@ -30,7 +38,7 @@ function WelcomeCanvas() {
   const { launched } = useAppStore();
 
   // Start already-complete if we're past the intro (skip or hot reload)
-  const [typedCount, setTypedCount] = useState(launched ? WORDS.length : 0);
+  const [typedCount, setTypedCount] = useState(launched ? HEADLINE_STR.length : 0);
   const [showCursor, setShowCursor] = useState(!launched);
 
   // ── Typing sequence — runs once on mount if intro hasn't played yet ──────────
@@ -40,9 +48,12 @@ function WelcomeCanvas() {
     const timers: ReturnType<typeof setTimeout>[] = [];
     const add = (fn: () => void, ms: number) => { timers.push(setTimeout(fn, ms)); };
 
-    // Reveal one word at a time
-    for (let i = 0; i < WORDS.length; i++) {
-      add(() => setTypedCount(i + 1), i * WORD_INTERVAL_MS);
+    // Reveal one character at a time with natural timing
+    let t = 0;
+    for (let i = 0; i < HEADLINE_STR.length; i++) {
+      t += CHAR_DELAYS[i];
+      const charIdx = i + 1;
+      add(() => setTypedCount(charIdx), t);
     }
 
     // Hide cursor just before border-draw begins
@@ -54,12 +65,12 @@ function WelcomeCanvas() {
   // ── Snap to full text when skipped ──────────────────────────────────────────
   useEffect(() => {
     if (launched) {
-      setTypedCount(WORDS.length);
+      setTypedCount(HEADLINE_STR.length);
       setShowCursor(false);
     }
   }, [launched]);
 
-  const displayText = WORDS.slice(0, typedCount).join(" ");
+  const displayText = HEADLINE_STR.slice(0, typedCount);
 
   // During the intro the overlay background is always #111111 (dark), so force
   // near-white text so it reads in light mode too.  Once launched the canvas
@@ -70,11 +81,18 @@ function WelcomeCanvas() {
 
   return (
     // Text column only — centered at true viewport centre via paddingRight offset.
-    // The preview card is rendered as an absolute sibling in ComponentRenderer.
+    // On mobile, the preview card is rendered inline at the top of this column.
     <div
-      className="flex flex-col gap-8 select-none"
-      style={{ maxWidth: "520px", padding: "0 40px" }}
+      className="flex flex-col gap-8 select-none w-full px-5 lg:px-4"
+      style={{ maxWidth: "680px" }}
     >
+      {/* Mobile-only preview card — sits above the text on small screens */}
+      {launched && (
+        <div className="block lg:hidden">
+          <FloatingWelcomePreview launched={launched} mobile />
+        </div>
+      )}
+
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         {/*
           This h2 is the SOURCE OF TRUTH for the typing animation.
@@ -84,7 +102,7 @@ function WelcomeCanvas() {
         */}
         <h2
           style={{
-            fontSize:   "30px",
+            fontSize:   "clamp(1.8rem, 2.4vw, 2.4rem)",
               fontWeight: 700,
               fontFamily: "var(--font-mono)",
               lineHeight: 1.35,
@@ -112,7 +130,7 @@ function WelcomeCanvas() {
           {/* Subhead */}
           <p
             style={{
-              fontSize:   "15px",
+              fontSize:   "16px",
               lineHeight: 1.75,
               color:      "var(--shouf-text-muted)",
               margin:     0,
@@ -290,7 +308,7 @@ const PREVIEW_CYCLE = [
 
 const MONO = "var(--font-mono)";
 
-function FloatingWelcomePreview({ launched }: { launched: boolean }) {
+function FloatingWelcomePreview({ launched, mobile = false }: { launched: boolean; mobile?: boolean }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [visible,   setVisible]   = useState(true);
 
@@ -313,17 +331,18 @@ function FloatingWelcomePreview({ launched }: { launched: boolean }) {
   return (
     <div
       style={{
-        position:        "absolute",
-        right:           "120px",
-        top:             "50%",
-        transform:       "translateY(-50%)",
-        width:           "256px",
+        // Desktop: absolutely positioned floating card
+        // Mobile: inline block, full width, no positioning
+        position:        mobile ? "relative" : "absolute",
+        right:           mobile ? undefined : "200px",
+        top:             mobile ? undefined : "50%",
+        transform:       mobile ? undefined : "translateY(-50%)",
+        width:           mobile ? "100%" : "256px",
         borderRadius:    "16px",
         backgroundColor: "var(--shouf-panel)",
         border:          "1px solid var(--shouf-border-sub)",
         overflow:        "hidden",
         boxShadow:       "0 4px 24px rgba(0,0,0,0.12)",
-        // Expressive moment: card fades in after launch with a slight delay
         opacity:         launched ? 1 : 0,
         transition:      launched ? "opacity 400ms ease 500ms" : "none",
       }}
@@ -402,6 +421,7 @@ export function ComponentRenderer() {
     selectedComponentId === "pds-spacing"      ||
     selectedComponentId === "eu-guide"         ||
     selectedComponentId === "eu-embedded"      ||
+    selectedComponentId === "rc-guide"         ||
     selectedComponentId === "rc-global-nav"    ||
     selectedComponentId === "about"            ||
     isGridCanvas
@@ -436,6 +456,10 @@ export function ComponentRenderer() {
 
       {/* Content layer — always on top of the background */}
       <div
+        // On desktop, offset the flex centre-point leftward so WelcomeCanvas
+        // lands at the true viewport centre (not the centre of the narrower
+        // canvas area). Hidden on mobile — preview card is suppressed there.
+        className={showWelcome ? "lg:pr-[320px]" : ""}
         style={{
           position:       "relative",
           zIndex:         1,
@@ -444,14 +468,15 @@ export function ComponentRenderer() {
           display:        "flex",
           alignItems:     isFullCanvas ? "stretch"    : "center",
           justifyContent: isFullCanvas ? "flex-start" : "center",
-          // Shift the flex centre-point leftward by half the left-panel width
-          // so WelcomeCanvas lands at the true viewport centre, not the
-          // centre of the narrower content area.  Only active during welcome.
-          paddingRight:   showWelcome ? "260px" : 0,
         }}
       >
         {showWelcome && <WelcomeCanvas />}
-        {showWelcome && launched && <FloatingWelcomePreview launched={launched} />}
+        {/* Preview card — desktop only; on mobile it would overlap the text */}
+        {showWelcome && launched && (
+          <div className="hidden lg:block">
+            <FloatingWelcomePreview launched={launched} />
+          </div>
+        )}
 
         {!showWelcome && !selectedComponentId && !selectedSectionId && <NoSelectionState />}
 
@@ -477,6 +502,9 @@ export function ComponentRenderer() {
         {!showWelcome && !isGridCanvas && selectedComponentId === "eu-guide" && (
           <EuGuideCanvas />
         )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "rc-guide" && (
+          <RcGuideCanvas />
+        )}
         {!showWelcome && !isGridCanvas && selectedComponentId === "rc-global-nav" && (
           <RcGlobalNavCanvas />
         )}
@@ -495,6 +523,7 @@ export function ComponentRenderer() {
           selectedComponentId !== "pds-spacing"      &&
           selectedComponentId !== "eu-guide"         &&
           selectedComponentId !== "eu-embedded"      &&
+          selectedComponentId !== "rc-guide"         &&
           selectedComponentId !== "rc-global-nav"    &&
           isRegistered(selectedComponentId) && (
           <LiveComponentCanvas componentId={selectedComponentId} />
@@ -508,6 +537,7 @@ export function ComponentRenderer() {
           selectedComponentId !== "pds-spacing"      &&
           selectedComponentId !== "eu-guide"         &&
           selectedComponentId !== "eu-embedded"      &&
+          selectedComponentId !== "rc-guide"         &&
           selectedComponentId !== "rc-global-nav"    &&
           selectedComponentId !== "about"            &&
           !isRegistered(selectedComponentId) && (

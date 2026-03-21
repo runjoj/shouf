@@ -35,7 +35,7 @@ function buildInitialControlValues(): Record<string, ComponentControlValues> {
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
   const [selectedSectionId,   setSelectedSectionId]   = useState<string | null>(null);
-  const [activeMobilePanel, setActiveMobilePanel] = useState<MobilePanel>("navigator");
+  const [activeMobilePanel, setActiveMobilePanel] = useState<MobilePanel>("canvas");
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     () => new Set(navSections.map((s) => s.id))
   );

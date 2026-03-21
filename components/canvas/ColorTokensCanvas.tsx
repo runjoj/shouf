@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ACCENT_PRESETS } from "@/lib/accent";
 import { useTheme } from "@/lib/theme";
 import { useAppStore } from "@/lib/store";
@@ -209,17 +209,30 @@ export function ColorTokensCanvas() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Controls → theme: apply when control value changes ───────────────────────
+  // syncReady guards against the first render: the init effect above schedules
+  // a state update but it hasn't propagated yet when these effects first run,
+  // so stale stored control values would incorrectly revert the live accent/mode.
+  const syncReady = useRef(false);
+
   useEffect(() => {
+    if (!syncReady.current) return;
     if (controlAccent && controlAccent !== accentId) {
       setAccent(controlAccent);
     }
   }, [controlAccent]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    if (!syncReady.current) return;
     if ((controlMode === "dark" || controlMode === "light") && controlMode !== theme) {
       setTheme(controlMode as "dark" | "light");
     }
   }, [controlMode]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Mark sync as ready after the initial effects have all run.
+  // This effect must be defined AFTER the sync effects so it runs last on mount.
+  useEffect(() => {
+    syncReady.current = true;
+  }, []);
 
   // ── Read all live CSS var hex values ─────────────────────────────────────────
   const refreshHex = useCallback(() => {
@@ -245,14 +258,7 @@ export function ColorTokensCanvas() {
 
   return (
     /* Full-canvas scrollable wrapper */
-    <div
-      style={{
-        alignSelf: "stretch",
-        width:     "100%",
-        overflowY: "auto",
-        padding:   "48px 40px 64px",
-      }}
-    >
+    <div className="canvas-scroll-pad">
       <div style={{ maxWidth: "720px", margin: "0 auto" }}>
 
         {/* ── Page header ───────────────────────────────────────────────────── */}

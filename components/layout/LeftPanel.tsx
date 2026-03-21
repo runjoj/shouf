@@ -219,22 +219,9 @@ function LogoMark() {
       }}
       title="Back to Welcome"
     >
-      <div className="flex items-center gap-2">
-        <div
-          className="w-[22px] h-[22px] rounded-md flex items-center justify-center"
-          style={{ backgroundColor: "var(--shouf-accent)" }}
-        >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <rect x="2"   y="2"   width="3.5" height="3.5" rx="0.75" fill="#111111" />
-            <rect x="6.5" y="2"   width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.5" />
-            <rect x="2"   y="6.5" width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.5" />
-            <rect x="6.5" y="6.5" width="3.5" height="3.5" rx="0.75" fill="#111111" fillOpacity="0.75" />
-          </svg>
-        </div>
-        <span className="text-[14px] font-bold tracking-tight" style={{ color: "var(--shouf-text)" }}>
-          helloitsjo
-        </span>
-      </div>
+      <span className="text-[14px] font-bold" style={{ color: "var(--shouf-text)", fontFamily: "var(--font-manrope)", letterSpacing: "0.75px" }}>
+        helloitsjo
+      </span>
     </button>
   );
 }

@@ -25,20 +25,29 @@ const HEADLINE_SERIF = (
 const HEADLINE_STR =
   "I'm Jo, a designer and engineer who specializes in design systems";
 
-const WORDS = HEADLINE_STR.split(" ");
 
 // ─── Animation timing (ms) ────────────────────────────────────────────────────
 
-const T_BG_START      = 0;
-const T_BLOBS_START   = 400;
-const T_CURSOR_ON     = 800;
-const T_WORD_INTERVAL = 80;   // ms per word
-const T_SERIF_START   = 1800; // cursor off + mono→serif crossfade
-const T_SUBHEAD       = 2200;
-const T_BUTTON        = 2600;
-const T_DONE          = 3000;
-const T_HINT_IN       = 300;
-const T_HINT_OUT      = 2000;
+const T_BG_START    = 0;
+const T_BLOBS_START = 400;
+const T_CURSOR_ON   = 800;
+const T_HINT_IN     = 300;
+const T_HINT_OUT    = 2000;
+
+// Natural per-character delays — deterministic jitter keyed on char + position
+function lsCharDelay(ch: string, i: number): number {
+  const jitter = ((ch.charCodeAt(0) * 17 + i * 7) % 30) - 15;
+  const bonus  = ch === "," ? 130 : 0;
+  return Math.max(20, 40 + jitter + bonus);
+}
+const LS_CHAR_DELAYS   = Array.from(HEADLINE_STR).map((ch, i) => lsCharDelay(ch, i));
+const LS_TOTAL_CHAR_MS = LS_CHAR_DELAYS.reduce((a, b) => a + b, 0);
+
+// Derived timings — flow from typing duration
+const T_SERIF_START = T_CURSOR_ON + LS_TOTAL_CHAR_MS + 280;
+const T_SUBHEAD     = T_SERIF_START + 400;
+const T_BUTTON      = T_SERIF_START + 800;
+const T_DONE        = T_SERIF_START + 1100;
 
 // ─── Logo mark ────────────────────────────────────────────────────────────────
 
@@ -89,7 +98,7 @@ export function LandingScreen() {
 
   const [bgVisible,      setBgVisible]      = useState(false);
   const [blobsVisible,   setBlobsVisible]   = useState(false);
-  const [typedCount,     setTypedCount]     = useState(0);
+  const [typedCount,     setTypedCount]     = useState(0); // char count
   const [showCursor,     setShowCursor]     = useState(false);
   const [serif,          setSerif]          = useState(false);
   const [subheadVisible, setSubheadVisible] = useState(false);
@@ -104,7 +113,7 @@ export function LandingScreen() {
     timers.current = [];
     setBgVisible(true);
     setBlobsVisible(true);
-    setTypedCount(WORDS.length);
+    setTypedCount(HEADLINE_STR.length);
     setShowCursor(false);
     setSerif(true);
     setSubheadVisible(true);
@@ -129,10 +138,13 @@ export function LandingScreen() {
     add(() => setHintVisible(true),  T_HINT_IN);
     add(() => setHintVisible(false), T_HINT_OUT);
 
-    // Typing sequence
+    // Typing sequence — character by character with natural timing
     add(() => setShowCursor(true), T_CURSOR_ON);
-    for (let i = 0; i < WORDS.length; i++) {
-      add(() => setTypedCount(i + 1), T_CURSOR_ON + i * T_WORD_INTERVAL);
+    let t = T_CURSOR_ON;
+    for (let i = 0; i < HEADLINE_STR.length; i++) {
+      t += LS_CHAR_DELAYS[i];
+      const charIdx = i + 1;
+      add(() => setTypedCount(charIdx), t);
     }
 
     // Mono → serif crossfade (the magic moment)
@@ -165,7 +177,7 @@ export function LandingScreen() {
   };
 
   // ── Mono h1 text ─────────────────────────────────────────────────────────────
-  const typedText = WORDS.slice(0, typedCount).join(" ");
+  const typedText = HEADLINE_STR.slice(0, typedCount);
 
   // ─────────────────────────────────────────────────────────────────────────────
   return (
