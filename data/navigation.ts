@@ -6,7 +6,7 @@ export const navSections: NavSection[] = [
     title: "Responsive Components",
     entries: [
       { id: "rc-overview",   name: "Overview",           sectionId: "responsive-components", overviewFor: "responsive-components" },
-      { id: "rc-guide",      name: "Guide",              sectionId: "responsive-components" },
+      { id: "rc-guide",      name: "Responsive Case Study", sectionId: "responsive-components" },
       { id: "rc-global-nav", name: "Global Navigation",  sectionId: "responsive-components" },
     ],
   },

@@ -24,17 +24,17 @@ export type AccentPreset = {
 };
 
 export const ACCENT_PRESETS: AccentPreset[] = [
-  // Chartreuse — dark: vibrant lime; light: olive (#646F00 → 5.3:1 on white)
-  {
-    id: "chartreuse", label: "Chartreuse",
-    hex: "#C8E000", hexH: "#D4EE00", hexA: "#E0FA00", r: 200, g: 224, b: 0,
-    lightHex: "#646F00", lightHexH: "#535C00", lightHexA: "#424800", lR: 100, lG: 111, lB: 0,
-  },
   // Electric Mint — dark: cyan-green; light: deep teal (#007A60 → 4.9:1 on white)
   {
     id: "mint", label: "Electric Mint",
     hex: "#00D4A0", hexH: "#00C090", hexA: "#00AC80", r: 0, g: 212, b: 160,
     lightHex: "#007A60", lightHexH: "#006850", lightHexA: "#005640", lR: 0, lG: 122, lB: 96,
+  },
+  // Chartreuse — dark: vibrant lime; light: olive (#646F00 → 5.3:1 on white)
+  {
+    id: "chartreuse", label: "Chartreuse",
+    hex: "#C8E000", hexH: "#D4EE00", hexA: "#E0FA00", r: 200, g: 224, b: 0,
+    lightHex: "#646F00", lightHexH: "#535C00", lightHexA: "#424800", lR: 100, lG: 111, lB: 0,
   },
   // Bright Coral — dark: vivid red-pink; light: deep rose (#C22040 → 5.9:1 on white)
   {
@@ -62,7 +62,7 @@ export const ACCENT_PRESETS: AccentPreset[] = [
   },
 ];
 
-export const DEFAULT_ACCENT_ID = "chartreuse";
+export const DEFAULT_ACCENT_ID = "mint";
 
 // ─── Build all CSS vars for a given accent preset + theme ─────────────────────
 //

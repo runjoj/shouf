@@ -55,8 +55,12 @@ export function MobileTabBar() {
 
   return (
     <div
-      className="flex items-stretch border-b shrink-0"
-      style={{ borderColor: "var(--shouf-border-sub)", backgroundColor: "var(--shouf-panel)" }}
+      className="flex items-stretch border-t shrink-0"
+      style={{
+        borderColor:          "var(--shouf-border-sub)",
+        backgroundColor:      "var(--shouf-panel)",
+        paddingBottom:        "env(safe-area-inset-bottom, 0px)",
+      }}
     >
       {TABS.map((tab) => {
         const isActive = activeMobilePanel === tab.id;
@@ -71,7 +75,7 @@ export function MobileTabBar() {
             <span className="text-[10px] font-medium">{tab.label}</span>
             {isActive && (
               <span
-                className="absolute bottom-0 left-3 right-3 h-[2px] rounded-t"
+                className="absolute top-0 left-3 right-3 h-[2px] rounded-b"
                 style={{ backgroundColor: "var(--shouf-accent)" }}
               />
             )}

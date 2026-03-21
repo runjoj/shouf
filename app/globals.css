@@ -9,7 +9,7 @@
   --color-shell-text: #111111;
   --color-shell-text-muted: #777777;
   --color-shell-text-faint: #AAAAAA;
-  --color-shell-accent: #C8E000;
+  --color-shell-accent: #00D4A0;
   --color-shell-canvas: #F5F5F5;
 }
 
@@ -28,19 +28,19 @@
   --shouf-text:          #111111;
   --shouf-text-muted:    #777777;
   --shouf-text-faint:    #AAAAAA;
-  /* Accent palette — chartreuse primary */
-  --shouf-accent:        #C8E000;
-  --shouf-accent-h:      #B4CC00;
-  --shouf-accent-a:      #A0B800;
+  /* Accent palette — electric mint primary */
+  --shouf-accent:        #007A60;
+  --shouf-accent-h:      #006850;
+  --shouf-accent-a:      #005640;
   --shouf-accent-rose:   #E896A8;
   --shouf-accent-blue:   #7EC4E0;
   --shouf-accent-sage:   #96C4A4;
   /* Compound / alpha */
-  --shouf-accent-sel:    rgba(200, 224, 0, 0.14);
-  --shouf-accent-ring:   rgba(200, 224, 0, 0.35);
-  --shouf-box-border:    rgba(200, 224, 0, 0.30);
-  --shouf-box-bg:        rgba(200, 224, 0, 0.05);
-  --shouf-box-inner:     rgba(200, 224, 0, 0.18);
+  --shouf-accent-sel:    rgba(0, 212, 160, 0.14);
+  --shouf-accent-ring:   rgba(0, 212, 160, 0.35);
+  --shouf-box-border:    rgba(0, 122, 96, 0.30);
+  --shouf-box-bg:        rgba(0, 212, 160, 0.05);
+  --shouf-box-inner:     rgba(0, 212, 160, 0.18);
   --shouf-hover:         rgba(0, 0, 0, 0.04);
   --shouf-hover-str:     rgba(0, 0, 0, 0.06);
   --shouf-badge-bg:      rgba(0, 0, 0, 0.05);
@@ -70,19 +70,19 @@
     --shouf-text:          #F5F5F5;
     --shouf-text-muted:    #C4C4C4;
     --shouf-text-faint:    #949494;
-    /* Accent palette — vivid chartreuse against neutral dark */
-    --shouf-accent:        #C8E000;
-    --shouf-accent-h:      #D4EE00;
-    --shouf-accent-a:      #E0FA00;
+    /* Accent palette — electric mint against neutral dark */
+    --shouf-accent:        #00D4A0;
+    --shouf-accent-h:      #00C090;
+    --shouf-accent-a:      #00AC80;
     --shouf-accent-rose:   #E896A8;
     --shouf-accent-blue:   #7EC4E0;
     --shouf-accent-sage:   #96C4A4;
     /* Compound / alpha */
-    --shouf-accent-sel:    rgba(200, 224, 0, 0.15);
-    --shouf-accent-ring:   rgba(200, 224, 0, 0.30);
-    --shouf-box-border:    rgba(200, 224, 0, 0.28);
-    --shouf-box-bg:        rgba(200, 224, 0, 0.06);
-    --shouf-box-inner:     rgba(200, 224, 0, 0.18);
+    --shouf-accent-sel:    rgba(0, 212, 160, 0.15);
+    --shouf-accent-ring:   rgba(0, 212, 160, 0.30);
+    --shouf-box-border:    rgba(0, 212, 160, 0.28);
+    --shouf-box-bg:        rgba(0, 212, 160, 0.06);
+    --shouf-box-inner:     rgba(0, 212, 160, 0.18);
     --shouf-hover:         rgba(255, 255, 255, 0.04);
     --shouf-hover-str:     rgba(255, 255, 255, 0.07);
     --shouf-badge-bg:      rgba(255, 255, 255, 0.06);
@@ -109,17 +109,17 @@
   --shouf-text:          #F5F5F5;
   --shouf-text-muted:    #C4C4C4;
   --shouf-text-faint:    #949494;
-  --shouf-accent:        #C8E000;
-  --shouf-accent-h:      #D4EE00;
-  --shouf-accent-a:      #E0FA00;
+  --shouf-accent:        #00D4A0;
+  --shouf-accent-h:      #00C090;
+  --shouf-accent-a:      #00AC80;
   --shouf-accent-rose:   #E896A8;
   --shouf-accent-blue:   #7EC4E0;
   --shouf-accent-sage:   #96C4A4;
-  --shouf-accent-sel:    rgba(200, 224, 0, 0.15);
-  --shouf-accent-ring:   rgba(200, 224, 0, 0.30);
-  --shouf-box-border:    rgba(200, 224, 0, 0.28);
-  --shouf-box-bg:        rgba(200, 224, 0, 0.06);
-  --shouf-box-inner:     rgba(200, 224, 0, 0.18);
+  --shouf-accent-sel:    rgba(0, 212, 160, 0.15);
+  --shouf-accent-ring:   rgba(0, 212, 160, 0.30);
+  --shouf-box-border:    rgba(0, 212, 160, 0.28);
+  --shouf-box-bg:        rgba(0, 212, 160, 0.06);
+  --shouf-box-inner:     rgba(0, 212, 160, 0.18);
   --shouf-hover:         rgba(255, 255, 255, 0.04);
   --shouf-hover-str:     rgba(255, 255, 255, 0.07);
   --shouf-badge-bg:      rgba(255, 255, 255, 0.06);
@@ -143,17 +143,17 @@
   --shouf-text:          #111111;
   --shouf-text-muted:    #777777;
   --shouf-text-faint:    #AAAAAA;
-  --shouf-accent:        #C8E000;
-  --shouf-accent-h:      #B4CC00;
-  --shouf-accent-a:      #A0B800;
+  --shouf-accent:        #007A60;
+  --shouf-accent-h:      #006850;
+  --shouf-accent-a:      #005640;
   --shouf-accent-rose:   #E896A8;
   --shouf-accent-blue:   #7EC4E0;
   --shouf-accent-sage:   #96C4A4;
-  --shouf-accent-sel:    rgba(200, 224, 0, 0.14);
-  --shouf-accent-ring:   rgba(200, 224, 0, 0.35);
-  --shouf-box-border:    rgba(200, 224, 0, 0.30);
-  --shouf-box-bg:        rgba(200, 224, 0, 0.05);
-  --shouf-box-inner:     rgba(200, 224, 0, 0.18);
+  --shouf-accent-sel:    rgba(0, 212, 160, 0.14);
+  --shouf-accent-ring:   rgba(0, 212, 160, 0.35);
+  --shouf-box-border:    rgba(0, 122, 96, 0.30);
+  --shouf-box-bg:        rgba(0, 212, 160, 0.05);
+  --shouf-box-inner:     rgba(0, 212, 160, 0.18);
   --shouf-hover:         rgba(0, 0, 0, 0.04);
   --shouf-hover-str:     rgba(0, 0, 0, 0.06);
   --shouf-badge-bg:      rgba(0, 0, 0, 0.05);
@@ -182,20 +182,12 @@ body,
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Thin scrollbars */
+/* Hidden scrollbars */
+* {
+  scrollbar-width: none;
+}
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--shouf-border);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--shouf-border-sub);
+  display: none;
 }
 
 /* Dot-grid canvas background */

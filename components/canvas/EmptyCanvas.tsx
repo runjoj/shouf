@@ -11,24 +11,24 @@ function NoSelectionState() {
       {/* Icon placeholder */}
       <div
         className="flex items-center justify-center w-14 h-14 rounded-xl"
-        style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid #2c2c33" }}
+        style={{ backgroundColor: "var(--shouf-hover)", border: "1px solid var(--shouf-border)", color: "var(--shouf-text-faint)" }}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <rect
             x="3" y="3" width="18" height="18" rx="3"
-            stroke="#484852" strokeWidth="1.5"
+            stroke="currentColor" strokeWidth="1.5"
           />
           <path
             d="M3 9h18M9 3v18"
-            stroke="#484852" strokeWidth="1.5" strokeLinecap="round"
+            stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
           />
         </svg>
       </div>
       <div className="flex flex-col items-center gap-1 text-center">
-        <p className="text-sm font-medium" style={{ color: "#8a8a96" }}>
+        <p className="text-sm font-medium" style={{ color: "var(--shouf-text-muted)" }}>
           No component selected
         </p>
-        <p className="text-xs" style={{ color: "#484852" }}>
+        <p className="text-xs" style={{ color: "var(--shouf-text-faint)" }}>
           Choose a component from the navigator to preview it here
         </p>
       </div>

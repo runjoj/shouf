@@ -67,8 +67,9 @@ const CSS = `
   .ab-fact:hover .dp-dot { opacity: 1; transition: opacity 0.8s ease 0.15s; }
 
   @media (max-width: 680px) {
-    .ab-hero { flex-direction: column !important; gap: 40px !important; }
-    .ab-photo { width: 100% !important; min-width: unset !important; height: 280px !important; }
+    .ab-hero { flex-direction: column !important; gap: 32px !important; align-items: center !important; }
+    .ab-photo { width: 160px !important; min-width: unset !important; height: auto !important; align-self: center !important; }
+    .ab-photo img { height: auto !important; object-fit: cover !important; }
     .ab-anim { display: none; }
   }
 `;
