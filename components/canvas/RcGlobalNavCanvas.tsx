@@ -303,34 +303,52 @@ export function RcGlobalNavCanvas() {
   const activeEntry = NAV_ROWS.find((r): r is NavEntry => r !== "divider" && r.id === activeId);
 
   // ── Resize drag ───────────────────────────────────────────────────────────
-  const onHandleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
+  const startDrag = useCallback((startX: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    dragState.current = { startX: e.clientX, startWidth: frameRef.current?.clientWidth ?? canvas.clientWidth };
+    dragState.current = { startX, startWidth: frameRef.current?.clientWidth ?? canvas.clientWidth };
     setIsDragging(true);
     setShowBadge(true);
     clearTimeout(badgeTimer.current);
   }, []);
 
+  const onHandleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    startDrag(e.clientX);
+  }, [startDrag]);
+
+  const onHandleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    startDrag(e.touches[0].clientX);
+  }, [startDrag]);
+
   useEffect(() => {
     if (!isDragging) return;
-    const onMove = (e: MouseEvent) => {
+    const applyDrag = (clientX: number) => {
       const state  = dragState.current;
       const canvas = canvasRef.current;
       if (!state || !canvas) return;
       const maxW = canvas.clientWidth;
-      const next = Math.max(BP_MIN, Math.min(maxW, state.startWidth + (e.clientX - state.startX)));
+      const next = Math.max(BP_MIN, Math.min(maxW, state.startWidth + (clientX - state.startX)));
       setFrameWidth(next >= maxW - 8 ? null : next);
     };
-    const onUp = () => {
+    const onMouseMove = (e: MouseEvent) => applyDrag(e.clientX);
+    const onTouchMove = (e: TouchEvent) => { e.preventDefault(); applyDrag(e.touches[0].clientX); };
+    const onEnd = () => {
       setIsDragging(false);
       dragState.current = null;
       badgeTimer.current = setTimeout(() => setShowBadge(false), 1400);
     };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup",   onUp);
-    return () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup",   onEnd);
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend",  onEnd);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup",   onEnd);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend",  onEnd);
+    };
   }, [isDragging]);
 
   useEffect(() => () => clearTimeout(badgeTimer.current), []);
@@ -605,13 +623,14 @@ export function RcGlobalNavCanvas() {
           );
         })()}
 
-        {/* Resize handle */}
+        {/* Resize handle — touch-friendly: padded hit area, touch events */}
         <div
           onMouseDown={onHandleMouseDown}
+          onTouchStart={onHandleTouchStart}
           title="Drag to resize"
-          style={{ position: "absolute", left: frameWidth !== null ? `calc(${frameWidth}px - 4px)` : "calc(100% - 4px)", top: "50%", transform: "translateY(-50%)", width: "8px", height: "40px", borderRadius: "4px", background: isDragging ? C.handleHover : C.handleBg, cursor: "col-resize", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "center", transition: isDragging ? "none" : "background 150ms ease", boxShadow: isDragging ? `0 0 0 3px rgba(61, 122, 48, 0.20)` : "none" }}
-          onMouseEnter={(e) => { if (!isDragging) (e.currentTarget as HTMLElement).style.background = C.handleHover; }}
-          onMouseLeave={(e) => { if (!isDragging) (e.currentTarget as HTMLElement).style.background = C.handleBg; }}
+          style={{ position: "absolute", left: frameWidth !== null ? `calc(${frameWidth}px - 4px)` : "calc(100% - 4px)", top: "50%", transform: "translateY(-50%)", width: "8px", height: "40px", borderRadius: "4px", background: isDragging ? C.handleHover : C.handleBg, cursor: "col-resize", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "center", transition: isDragging ? "none" : "background 150ms ease", boxShadow: isDragging ? `0 0 0 3px rgba(61, 122, 48, 0.20)` : "none", touchAction: "none" }}
+          onMouseEnter={(e) => { if (!isDragging) e.currentTarget.style.background = C.handleHover; }}
+          onMouseLeave={(e) => { if (!isDragging) e.currentTarget.style.background = C.handleBg; }}
         >
           <svg width="4" height="20" viewBox="0 0 4 20" fill="none">
             <circle cx="2" cy="5"  r="1.5" fill={isDragging ? "#fff" : "#9CA3AF"} />

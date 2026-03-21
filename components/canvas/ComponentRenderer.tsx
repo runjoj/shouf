@@ -80,18 +80,11 @@ function WelcomeCanvas() {
   const headlineTransition = launched ? "color 700ms ease"  : "none";
 
   return (
-    // Text column only — centered at true viewport centre via paddingRight offset.
-    // On mobile, the preview card is rendered inline at the top of this column.
+    // Text column — sits in the flex welcome row; preview card is a sibling.
     <div
-      className="flex flex-col gap-8 select-none w-full px-5 lg:px-4"
-      style={{ maxWidth: "680px" }}
+      className="flex flex-col gap-8 select-none"
+      style={{ maxWidth: "640px", flex: "1 1 320px", minWidth: 0 }}
     >
-      {/* Mobile-only preview card — sits above the text on small screens */}
-      {launched && (
-        <div className="block lg:hidden">
-          <FloatingWelcomePreview launched={launched} mobile />
-        </div>
-      )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         {/*
@@ -308,7 +301,7 @@ const PREVIEW_CYCLE = [
 
 const MONO = "var(--font-mono)";
 
-function FloatingWelcomePreview({ launched, mobile = false }: { launched: boolean; mobile?: boolean }) {
+function FloatingWelcomePreview({ launched }: { launched: boolean }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [visible,   setVisible]   = useState(true);
 
@@ -331,13 +324,10 @@ function FloatingWelcomePreview({ launched, mobile = false }: { launched: boolea
   return (
     <div
       style={{
-        // Desktop: absolutely positioned floating card
-        // Mobile: inline block, full width, no positioning
-        position:        mobile ? "relative" : "absolute",
-        right:           mobile ? undefined : "200px",
-        top:             mobile ? undefined : "50%",
-        transform:       mobile ? undefined : "translateY(-50%)",
-        width:           mobile ? "100%" : "256px",
+        // Inline flex item — no absolute positioning.
+        // Wraps above the text column on small screens (wrap-reverse on parent).
+        flexShrink:      0,
+        width:           "256px",
         borderRadius:    "16px",
         backgroundColor: "var(--shouf-panel)",
         border:          "1px solid var(--shouf-border-sub)",
@@ -456,10 +446,6 @@ export function ComponentRenderer() {
 
       {/* Content layer — always on top of the background */}
       <div
-        // On desktop, offset the flex centre-point leftward so WelcomeCanvas
-        // lands at the true viewport centre (not the centre of the narrower
-        // canvas area). Hidden on mobile — preview card is suppressed there.
-        className={showWelcome ? "lg:pr-[320px]" : ""}
         style={{
           position:       "relative",
           zIndex:         1,
@@ -470,11 +456,24 @@ export function ComponentRenderer() {
           justifyContent: isFullCanvas ? "flex-start" : "center",
         }}
       >
-        {showWelcome && <WelcomeCanvas />}
-        {/* Preview card — desktop only; on mobile it would overlap the text */}
-        {showWelcome && launched && (
-          <div className="hidden lg:block">
-            <FloatingWelcomePreview launched={launched} />
+        {/* Welcome row — flex with wrap-reverse so the preview card naturally
+            sits to the right of the text on wide screens and wraps ABOVE the
+            text on narrow screens, always with guaranteed gap spacing. */}
+        {showWelcome && (
+          <div
+            style={{
+              display:        "flex",
+              flexWrap:       "wrap-reverse",
+              alignItems:     "center",
+              justifyContent: "center",
+              gap:            "48px",
+              padding:        "24px 48px",
+              width:          "100%",
+              boxSizing:      "border-box",
+            }}
+          >
+            <WelcomeCanvas />
+            {launched && <FloatingWelcomePreview launched={launched} />}
           </div>
         )}
 
