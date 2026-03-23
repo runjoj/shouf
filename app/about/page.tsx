@@ -5,10 +5,9 @@ import Link from "next/link";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const BIO_PARAGRAPHS = [
-  "I started as a software engineer and never fully left — I just added design. Seven years later I'm still most at home in the space between the two.",
-  "I care about understanding the why before anything else — the user need, the technical context, the business goal. That curiosity shapes everything I make.",
-  "My engineering background helps me work closely with developers, navigate technical constraints early, and contribute to the build when the project calls for it.",
-  "I design experiences that feel like they belong — intuitive, embedded in the product, not bolted on. I work quickly, iterate often, and I'm comfortable with ambiguity.",
+  "I started my career as an Army Captain, leading large teams through fast-moving missions with limited resources. It taught me how to make good decisions quickly and communicate effectively across different teams.",
+  "After the Army, I transitioned into software engineering before eventually also moving into design. That path gave me a unique perspective and it allows me to understand what's actually feasible for a development team under a deadline, as well as how to bridge the gap between design and engineering.",
+  "As a Design Engineer, I close the gap that usually exists between a design file and a shipped product. I catch technical constraints early, contribute to production code when the project calls for it, and build prototypes in real code. I think in systems, not screens, and I care most about creating work that developers can actually build and users actually understand.",
 ];
 
 // ─── CSS ──────────────────────────────────────────────────────────────────────
