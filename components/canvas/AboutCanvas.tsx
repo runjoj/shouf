@@ -12,31 +12,22 @@ const BIO_PARAGRAPHS = [
 
 // ─── Timeline ─────────────────────────────────────────────────────────────────
 
-// Year range for proportional positioning.
-// "Born" is placed at TL_START + 2 (no year shown).
-const TL_START = 2008;
-const TL_END   = 2026;
-
 interface Milestone {
-  year:    number | null; // null → "Born"
-  yearEnd?: number;
-  label:   string;
-  sub:     string;
-  above:   boolean;  // label above the line?
-  connH:   number;   // connector line height (px) — higher = further from line
+  label:    string;
+  sub:      string;
+  year:     string | null; // display string, e.g. "2014–18", null for Born
+  above:    boolean;       // tooltip above or below line
 }
 
-// Alternating above/below. connH is bumped for the two items that would
-// otherwise land on the same vertical level as a same-side neighbour.
 const MILESTONES: Milestone[] = [
-  { year: null, label: "Born",                 sub: "First gen Lebanese American", above: true,  connH: 14 },
-  { year: 2014, yearEnd: 2018, label: "Army Captain",         sub: "Medical evacuations",         above: false, connH: 14 },
-  { year: 2017, yearEnd: 2019, label: "Crisis Text Line",     sub: "Volunteer",                   above: true,  connH: 14 },
-  { year: 2018, yearEnd: 2019, label: "Backpacking",          sub: "Solo, 7 months",              above: false, connH: 14 },
-  { year: 2019,                label: "Software engineer",    sub: "Career transition",            above: true,  connH: 44 },
-  { year: 2021, yearEnd: 2023, label: "Women of the Wasatch", sub: "Director of Outreach",        above: false, connH: 14 },
-  { year: 2022, yearEnd: 2024, label: "Search & rescue",      sub: "Volunteer",                   above: true,  connH: 14 },
-  { year: 2023,                label: "Design",               sub: "Still going",                  above: false, connH: 44 },
+  { label: "Born",                 sub: "First gen Lebanese American", year: null,      above: true  },
+  { label: "Army Captain",         sub: "Medical evacuations",         year: "2014–18", above: false },
+  { label: "Crisis Text Line",     sub: "Volunteer",                   year: "2017–19", above: true  },
+  { label: "Backpacking",          sub: "Solo, 7 months",              year: "2018–19", above: false },
+  { label: "Software engineer",    sub: "Career transition",           year: "2019",    above: true  },
+  { label: "Women of the Wasatch", sub: "Director of Outreach",        year: "2021–23", above: false },
+  { label: "Search & rescue",      sub: "Volunteer",                   year: "2022–24", above: true  },
+  { label: "Design",               sub: "Still going",                 year: "2023",    above: false },
 ];
 
 // ─── CSS ──────────────────────────────────────────────────────────────────────
@@ -46,29 +37,57 @@ const CSS = `
     .ab-photo { width: 160px !important; min-width: unset !important; height: auto !important; align-self: center !important; }
     .ab-photo img { height: auto !important; object-fit: cover !important; }
   }
+
+  /* ── Timeline node dot ── */
   .tl-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background-color: var(--shouf-text-muted);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--shouf-border);
+    border: 1.5px solid var(--shouf-text-faint);
     margin: 0 auto;
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
   }
   .tl-node:hover .tl-dot {
-    transform: scale(1.75);
+    transform: scale(1.8);
     background-color: var(--shouf-accent);
+    border-color: var(--shouf-accent);
   }
-  .tl-title {
-    font-size: 11px; font-weight: 600;
+
+  /* ── Tooltip ── */
+  .tl-tip {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    pointer-events: none;
+  }
+  .tl-tip-above {
+    transform: translateY(-4px);
+  }
+  .tl-node:hover .tl-tip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .tl-tip-label {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--shouf-text);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .tl-tip-sub {
+    font-size: 14px;
     color: var(--shouf-text-muted);
-    line-height: 1.35;
-    transition: color 0.15s ease;
+    line-height: 1.4;
   }
-  .tl-node:hover .tl-title { color: var(--shouf-text); }
-  .tl-year {
-    font-size: 9px; font-family: var(--font-mono);
-    color: var(--shouf-text-faint); letter-spacing: 0.06em;
-    margin-bottom: 3px;
+  .tl-tip-year {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--shouf-text-faint);
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
   }
-  .tl-sub { font-size: 10px; color: var(--shouf-text-faint); margin-top: 2px; line-height: 1.3; }
 `;
 
 // ─── Timeline component ────────────────────────────────────────────────────────
@@ -82,26 +101,23 @@ function Timeline() {
     if (!el) return;
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold: 0.15 }
+      { threshold: 0.1 }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
-  const PAD = 20; // px of horizontal padding inside the track container
+  const n   = MILESTONES.length;
+  const PAD = 32; // px horizontal padding inside the track
 
   return (
-    <div ref={wrapRef} style={{ marginTop: "72px" }}>
-      <div style={{ overflowX: "auto", overflowY: "visible" }}>
-        <div
-          style={{
-            position:  "relative",
-            minWidth:  "900px",
-            height:    "260px",
-            padding:   `0 ${PAD}px`,
-          }}
-        >
-          {/* ── Base line ─────────────────────────────────────────────────── */}
+    <div ref={wrapRef} style={{ marginTop: "80px" }}>
+      {/* Outer wrapper: padding makes room for tooltips without needing overflow:visible on a scroll container */}
+      <div style={{ padding: "120px 0 120px", position: "relative" }}>
+        {/* Track */}
+        <div style={{ position: "relative", height: "24px", padding: `0 ${PAD}px` }}>
+
+          {/* Base line */}
           <div style={{
             position:        "absolute",
             top:             "50%",
@@ -112,47 +128,25 @@ function Timeline() {
             transform:       "translateY(-50%)",
           }} />
 
-          {/* ── Animated fill ─────────────────────────────────────────────── */}
+          {/* Animated fill */}
           <div style={{
             position:        "absolute",
             top:             "50%",
             left:            `${PAD}px`,
             height:          "1px",
-            backgroundColor: "var(--shouf-border-sub)",
+            backgroundColor: "var(--shouf-text-faint)",
             transform:       "translateY(-50%)",
             width:           visible ? `calc(100% - ${PAD * 2}px)` : "0px",
-            transition:      "width 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
+            transition:      "width 1.4s cubic-bezier(0.4, 0, 0.2, 1)",
           }} />
 
-          {/* ── Range bands ───────────────────────────────────────────────── */}
+          {/* Nodes — evenly spaced */}
           {MILESTONES.map((m, i) => {
-            if (!m.yearEnd || m.year === null) return null;
-            const l = (m.year    - TL_START) / (TL_END - TL_START);
-            const w = (m.yearEnd - m.year)   / (TL_END - TL_START);
-            return (
-              <div
-                key={`band${i}`}
-                style={{
-                  position:        "absolute",
-                  top:             "50%",
-                  left:            `calc(${PAD}px + ${l} * (100% - ${PAD * 2}px))`,
-                  width:           `calc(${w} * (100% - ${PAD * 2}px))`,
-                  height:          "3px",
-                  borderRadius:    "2px",
-                  backgroundColor: "var(--shouf-accent)",
-                  transform:       "translateY(-50%)",
-                  opacity:         visible ? 0.28 : 0,
-                  transition:      `opacity 0.5s ease ${0.7 + i * 0.07}s`,
-                  pointerEvents:   "none",
-                }}
-              />
-            );
-          })}
-
-          {/* ── Nodes ─────────────────────────────────────────────────────── */}
-          {MILESTONES.map((m, i) => {
-            const posYear = m.year ?? (TL_START + 2);
-            const frac    = (posYear - TL_START) / (TL_END - TL_START);
+            const frac = i / (n - 1);
+            // Nudge tooltip alignment at edges to keep it in-bounds
+            let tipAlign = "translateX(-50%)";
+            if (i === 0)     tipAlign = "translateX(-16%)";
+            if (i === n - 1) tipAlign = "translateX(-84%)";
 
             return (
               <div
@@ -164,48 +158,30 @@ function Timeline() {
                   left:       `calc(${PAD}px + ${frac} * (100% - ${PAD * 2}px))`,
                   transform:  "translate(-50%, -50%)",
                   opacity:    visible ? 1 : 0,
-                  transition: `opacity 0.35s ease ${0.4 + i * 0.09}s`,
+                  transition: `opacity 0.4s ease ${0.3 + i * 0.1}s`,
                   zIndex:     1,
-                  cursor:     "default",
                 }}
               >
                 {/* Dot */}
                 <div className="tl-dot" />
 
-                {/* Connector line */}
+                {/* Tooltip */}
                 <div
+                  className={`tl-tip ${m.above ? "tl-tip-above" : ""}`}
                   style={{
-                    position:        "absolute",
-                    left:            "50%",
-                    transform:       "translateX(-50%)",
-                    ...(m.above ? { bottom: "8px" } : { top: "8px" }),
-                    width:           "1px",
-                    height:          `${m.connH}px`,
-                    backgroundColor: "var(--shouf-border)",
-                  }}
-                />
-
-                {/* Label */}
-                <div
-                  style={{
-                    position:      "absolute",
-                    left:          "50%",
-                    transform:     "translateX(-50%)",
+                    position:  "absolute",
+                    left:      "50%",
+                    transform: tipAlign,
                     ...(m.above
-                      ? { bottom: `${8 + m.connH + 6}px` }
-                      : { top:    `${8 + m.connH + 6}px` }),
-                    width:         "88px",
-                    textAlign:     "center",
-                    pointerEvents: "none",
+                      ? { bottom: "calc(100% + 24px)" }
+                      : { top:    "calc(100% + 24px)" }),
+                    width:     "180px",
+                    textAlign: i === 0 ? "left" : i === n - 1 ? "right" : "center",
                   }}
                 >
-                  {m.year !== null && (
-                    <div className="tl-year">
-                      {m.year}{m.yearEnd ? `\u2013${m.yearEnd}` : ""}
-                    </div>
-                  )}
-                  <div className="tl-title">{m.label}</div>
-                  <div className="tl-sub">{m.sub}</div>
+                  {m.year && <div className="tl-tip-year">{m.year}</div>}
+                  <div className="tl-tip-label">{m.label}</div>
+                  <div className="tl-tip-sub">{m.sub}</div>
                 </div>
               </div>
             );
