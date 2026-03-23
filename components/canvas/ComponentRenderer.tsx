@@ -134,20 +134,6 @@ function WelcomeCanvas() {
             Experienced in building components in Storybook, defining design tokens, and
             turning design decisions into production-ready code.
           </p>
-          {/* Shouf label */}
-          <p
-            style={{
-              fontSize:      "12px",
-              fontFamily:    "var(--font-mono)",
-              letterSpacing: "0.05em",
-              color:         "var(--shouf-text-faint)",
-              margin:        0,
-              opacity:       launched ? 1 : 0,
-              transition:    launched ? "opacity 400ms ease 150ms" : "none",
-            }}
-          >
-            Shouf Design System
-          </p>
         </div>
 
       {/* Nav hint */}

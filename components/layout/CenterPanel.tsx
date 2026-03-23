@@ -20,7 +20,6 @@ const ZOOM_STEP = 10;
 // Elements pop in left → right to reinforce the assembly narrative.
 const D_ZOOM        = 100;
 const D_BREADCRUMB  = 190;
-const D_VIEWPORT    = 290;
 const D_THEME       = 390;
 const D_ACCENT_TOOL = 480;
 
@@ -243,38 +242,6 @@ function CanvasHeader({
           <span style={{ color: "var(--shouf-text-faint)" }}>Canvas</span>
         )}
       </div>
-
-      {/* Viewport controls — hidden on mobile */}
-      <div className="hidden md:flex items-center gap-1" style={introStyle(D_VIEWPORT, launched, skipIntro)}>
-        {["Desktop", "Tablet", "Mobile"].map((label, i) => {
-          const icons = [
-            <path key="d" d="M2 3h12v8H2zM5 11v2M3 11h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />,
-            <path key="t" d="M3 2h10v12H3zM3 9h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />,
-            <rect key="m" x="4" y="1" width="8" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.2" />,
-          ];
-          return (
-            <button
-              key={label}
-              title={label}
-              className="flex items-center justify-center w-6 h-6 rounded transition-colors"
-              style={{ color: i === 0 ? "var(--shouf-text-muted)" : "var(--shouf-text-faint)" }}
-              onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)")
-              }
-              onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLElement).style.backgroundColor = "transparent")
-              }
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                {icons[i]}
-              </svg>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Divider — hidden on mobile with viewport controls */}
-      <div className="hidden md:block w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_VIEWPORT, launched, skipIntro) }} />
 
       {/* Theme toggle — desktop only */}
       <div className="hidden lg:flex items-center gap-2" style={introStyle(D_THEME, launched, skipIntro)}>
