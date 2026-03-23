@@ -145,6 +145,10 @@ const CSS = `
   }
 
   /* ── Centralized animation stage — plays on mount, restarts on key change ── */
+  .tl-stage {
+    transform: scale(1.8);
+    transform-origin: center center;
+  }
   .tl-stage .dp {
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
@@ -204,15 +208,16 @@ function Timeline() {
   const ActiveAnim = hoverIdx !== null ? MILESTONES[hoverIdx].Anim : null;
 
   return (
-    <div ref={wrapRef} style={{ marginTop: "64px", overflowX: "auto" }}>
-      <div style={{ minWidth: "620px" }}>
+    <div ref={wrapRef} style={{ marginTop: "64px" }}>
+      <div>
 
         {/* ── Centralized animation stage — same position for every node ── */}
         <div style={{
           display:        "flex",
           justifyContent: "center",
           alignItems:     "center",
-          height:         "80px",
+          height:         "120px",
+          marginBottom:   "72px",
           opacity:        hoverIdx !== null ? 1 : 0,
           transition:     "opacity 0.2s ease",
           color:          "var(--shouf-text-muted)",
