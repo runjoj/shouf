@@ -132,64 +132,49 @@ const CSS = `
 
   /* ── Dot ── */
   .tl-dot {
-    width: 10px; height: 10px; border-radius: 50%;
+    width: 14px; height: 14px; border-radius: 50%;
     background-color: var(--shouf-border);
     border: 1.5px solid var(--shouf-text-faint);
-    margin: 0 auto;
     transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
     cursor: default;
   }
   .tl-node:hover .tl-dot {
-    transform: scale(1.7);
+    transform: scale(1.6);
     background-color: var(--shouf-accent);
     border-color: var(--shouf-accent);
   }
 
-  /* ── SVG animation area (above line, hover only) ── */
-  .tl-anim {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    color: var(--shouf-text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-  }
-  .tl-node:hover .tl-anim { opacity: 1; }
-
-  /* ── SVG draw animations ── */
-  .dp {
+  /* ── Centralized animation stage — plays on mount, restarts on key change ── */
+  .tl-stage .dp {
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
-    transition: stroke-dashoffset 0s;
+    animation: tl-dash-draw 1s cubic-bezier(0.37, 0, 0.63, 1) forwards;
   }
-  .tl-node:hover .dp {
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 1s cubic-bezier(0.37, 0, 0.63, 1);
+  .tl-stage .dp.d1 { animation-delay: 0.3s; }
+  .tl-stage .dp.d2 { animation-delay: 0.6s; }
+  .tl-stage .dp.d3 { animation-delay: 0.9s; }
+  @keyframes tl-dash-draw {
+    from { stroke-dashoffset: 600; }
+    to   { stroke-dashoffset: 0;   }
   }
-  .tl-node:hover .dp.d1 { transition-delay: 0.3s; }
-  .tl-node:hover .dp.d2 { transition-delay: 0.6s; }
-  .tl-node:hover .dp.d3 { transition-delay: 0.9s; }
-
-  .fi { opacity: 0; }
-  .tl-node:hover .fi { opacity: 0.22; transition: opacity 0.4s ease; }
-
-  .dp-dot { opacity: 0; transition: opacity 0s; }
-  .tl-node:hover .dp-dot { opacity: 1; transition: opacity 0.8s ease 0.15s; }
+  .tl-stage .fi { animation: tl-fi 0.4s ease forwards; }
+  @keyframes tl-fi { from { opacity: 0; } to { opacity: 0.22; } }
+  .tl-stage .dp-dot { animation: tl-dp-dot 0.8s ease 0.15s forwards; opacity: 0; }
+  @keyframes tl-dp-dot { from { opacity: 0; } to { opacity: 1; } }
 
   /* ── Always-visible labels ── */
   .tl-label-year {
-    font-size: 10px;
+    font-size: 11px;
     font-family: var(--font-mono);
     color: var(--shouf-text-faint);
     letter-spacing: 0.05em;
     margin-bottom: 4px;
   }
   .tl-label-text {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--shouf-text-muted);
-    line-height: 1.45;
+    line-height: 1.5;
     transition: color 0.15s ease;
   }
   .tl-node:hover .tl-label-text { color: var(--shouf-text); }
@@ -199,7 +184,8 @@ const CSS = `
 
 function Timeline() {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [visible,  setVisible]  = useState(false);
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -213,112 +199,118 @@ function Timeline() {
   }, []);
 
   const n    = MILESTONES.length;
-  const CONN = 28; // connector height in px — same for all nodes
+  const CONN = 36; // connector height in px
+
+  const ActiveAnim = hoverIdx !== null ? MILESTONES[hoverIdx].Anim : null;
 
   return (
     <div ref={wrapRef} style={{ marginTop: "64px", overflowX: "auto" }}>
-      {/* min-width ensures same-row labels never collide; overflowX:auto on parent scrolls */}
-      <div style={{ padding: "130px 56px 130px", position: "relative", minWidth: "620px" }}>
-        {/* Track — nodes absolutely positioned inside */}
-        <div style={{ position: "relative", height: "10px" }}>
+      <div style={{ minWidth: "620px" }}>
 
-          {/* ── Bleed line — gradient fades at each end beyond the nodes ── */}
-          <div style={{
-            position:   "absolute",
-            top:        "50%",
-            left:       "-56px",
-            right:      "-56px",
-            height:     "1px",
-            background: "linear-gradient(to right, transparent 0px, var(--shouf-border) 40px, var(--shouf-border) calc(100% - 40px), transparent 100%)",
-            transform:  "translateY(-50%)",
-          }} />
+        {/* ── Centralized animation stage — same position for every node ── */}
+        <div style={{
+          display:        "flex",
+          justifyContent: "center",
+          alignItems:     "center",
+          height:         "80px",
+          opacity:        hoverIdx !== null ? 1 : 0,
+          transition:     "opacity 0.2s ease",
+          color:          "var(--shouf-text-muted)",
+          pointerEvents:  "none",
+        }}>
+          {ActiveAnim && (
+            <div className="tl-stage" key={hoverIdx}>
+              <ActiveAnim />
+            </div>
+          )}
+        </div>
 
-          {/* ── Animated fill (draws left to right on scroll) ── */}
-          <div style={{
-            position:   "absolute",
-            top:        "50%",
-            left:       "-56px",
-            height:     "1px",
-            background: "linear-gradient(to right, transparent 0px, var(--shouf-border-sub) 40px)",
-            transform:  "translateY(-50%)",
-            width:      visible ? "calc(100% + 112px)" : "0px",
-            transition: "width 1.4s cubic-bezier(0.4, 0, 0.2, 1)",
-          }} />
+        {/* ── Track ── */}
+        <div style={{ padding: "90px 56px 110px", position: "relative" }}>
+          <div style={{ position: "relative", height: "14px" }}>
 
-          {/* ── Nodes ── */}
-          {MILESTONES.map((m, i) => {
-            const frac  = i / (n - 1);
-            // Alternate: even nodes label below, odd nodes label above.
-            // SVG animation is always on the opposite side from the label.
-            const above = i % 2 !== 0;
+            {/* ── Bleed line — gradient fades at each end beyond the nodes ── */}
+            <div style={{
+              position:   "absolute",
+              top:        "50%",
+              left:       "-56px",
+              right:      "-56px",
+              height:     "1px",
+              background: "linear-gradient(to right, transparent 0px, var(--shouf-border) 40px, var(--shouf-border) calc(100% - 40px), transparent 100%)",
+              transform:  "translateY(-50%)",
+            }} />
 
-            const labelX = i === 0 ? "translateX(-10%)" : i === n - 1 ? "translateX(-90%)" : "translateX(-50%)";
-            const animX  = i === 0 ? "translateX(-10%)" : i === n - 1 ? "translateX(-90%)" : "translateX(-50%)";
-            const align  = i === 0 ? "left" : i === n - 1 ? "right" : "center";
+            {/* ── Animated fill (draws left to right on scroll) ── */}
+            <div style={{
+              position:   "absolute",
+              top:        "50%",
+              left:       "-56px",
+              height:     "1px",
+              background: "linear-gradient(to right, transparent 0px, var(--shouf-border-sub) 40px)",
+              transform:  "translateY(-50%)",
+              width:      visible ? "calc(100% + 112px)" : "0px",
+              transition: "width 1.4s cubic-bezier(0.4, 0, 0.2, 1)",
+            }} />
 
-            return (
-              <div
-                key={i}
-                className="tl-node"
-                style={{
-                  position:   "absolute",
-                  top:        "50%",
-                  left:       `${frac * 100}%`,
-                  transform:  "translate(-50%, -50%)",
-                  width:      "10px",
-                  height:     "10px",
-                  opacity:    visible ? 1 : 0,
-                  transition: `opacity 0.4s ease ${0.3 + i * 0.08}s`,
-                  zIndex:     1,
-                }}
-              >
-                {/* Dot */}
-                <div className="tl-dot" />
+            {/* ── Nodes ── */}
+            {MILESTONES.map((m, i) => {
+              const frac  = i / (n - 1);
+              const above = i % 2 !== 0; // odd: label above line, even: label below
 
-                {/* Connector — goes up for odd nodes, down for even */}
-                <div style={{
-                  position:        "absolute",
-                  left:            "50%",
-                  transform:       "translateX(-50%)",
-                  width:           "1px",
-                  height:          `${CONN}px`,
-                  backgroundColor: "var(--shouf-border)",
-                  ...(above ? { bottom: "100%" } : { top: "100%" }),
-                }} />
+              const labelX = i === 0 ? "translateX(-10%)" : i === n - 1 ? "translateX(-90%)" : "translateX(-50%)";
+              const align  = i === 0 ? "left" : i === n - 1 ? "right" : "center";
 
-                {/* Label — above line for odd, below for even */}
-                <div style={{
-                  position:  "absolute",
-                  left:      "50%",
-                  transform: labelX,
-                  width:     "100px",
-                  textAlign: align,
-                  ...(above
-                    ? { bottom: `calc(100% + ${CONN + 8}px)` }
-                    : { top:    `calc(100% + ${CONN + 8}px)` }),
-                }}>
-                  {m.year && <div className="tl-label-year">{m.year}</div>}
-                  <div className="tl-label-text">{m.label}</div>
-                </div>
-
-                {/* SVG animation — opposite side from label, hover only */}
+              return (
                 <div
-                  className="tl-anim"
+                  key={i}
+                  className="tl-node"
+                  onMouseEnter={() => setHoverIdx(i)}
+                  onMouseLeave={() => setHoverIdx(null)}
                   style={{
-                    position:  "absolute",
-                    left:      "50%",
-                    transform: animX,
-                    ...(above
-                      ? { top:    "calc(100% + 20px)" }
-                      : { bottom: "calc(100% + 20px)" }),
+                    position:   "absolute",
+                    top:        "50%",
+                    left:       `${frac * 100}%`,
+                    transform:  "translate(-50%, -50%)",
+                    width:      "14px",
+                    height:     "14px",
+                    opacity:    visible ? 1 : 0,
+                    transition: `opacity 0.4s ease ${0.3 + i * 0.08}s`,
+                    zIndex:     1,
                   }}
                 >
-                  <m.Anim />
+                  <div className="tl-dot" />
+
+                  {/* Connector — goes up for odd nodes, down for even */}
+                  <div style={{
+                    position:        "absolute",
+                    left:            "50%",
+                    transform:       "translateX(-50%)",
+                    width:           "1px",
+                    height:          `${CONN}px`,
+                    backgroundColor: "var(--shouf-border)",
+                    ...(above ? { bottom: "100%" } : { top: "100%" }),
+                  }} />
+
+                  {/* Label — above line for odd, below for even */}
+                  <div style={{
+                    position:  "absolute",
+                    left:      "50%",
+                    transform: labelX,
+                    width:     "120px",
+                    textAlign: align,
+                    ...(above
+                      ? { bottom: `calc(100% + ${CONN + 8}px)` }
+                      : { top:    `calc(100% + ${CONN + 8}px)` }),
+                  }}>
+                    {m.year && <div className="tl-label-year">{m.year}</div>}
+                    <div className="tl-label-text">{m.label}</div>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
+
       </div>
     </div>
   );
