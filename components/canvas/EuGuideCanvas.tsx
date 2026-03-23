@@ -10,7 +10,6 @@ const SECTIONS = [
   { id: "solution",  label: "Solution"  },
   { id: "research",  label: "Research"  },
   { id: "design",    label: "Design"    },
-  { id: "feedback",  label: "Feedback"  },
   { id: "handoff",   label: "Handoff"   },
   { id: "takeaways", label: "Takeaways" },
 ];
@@ -353,17 +352,6 @@ export function EuGuideCanvas() {
           </Body>
           <Body>
             I prioritized creating clean and clear reusable elements in the designs and made sure any changes were made on the master component that lives in the library.
-          </Body>
-        </Section>
-
-        <Divider />
-
-        {/* ── Feedback ──────────────────────────────────────────────────── */}
-        <Section id="feedback">
-          <SectionLabel>Feedback</SectionLabel>
-          <SectionHeading>Library Refinement</SectionHeading>
-          <Body>
-            I received feedback that some element variants were missing and could be helpful to include, such as disabled button states and radio buttons. I added those in and established the design standard that disabled buttons would be set to 38% opacity for all text, icons, and backgrounds.
           </Body>
         </Section>
 
