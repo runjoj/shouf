@@ -1,10 +1,8 @@
 "use client";
 
 // ─── AboutCanvas ───────────────────────────────────────────────────────────────
-// Renders the About page content inside the shell's center panel so the left
-// nav and top bar remain visible. All expressive SVG animations are preserved.
 
-import React from "react";
+import { useRef, useEffect, useState } from "react";
 
 const BIO_PARAGRAPHS = [
   "I started my career as an Army Captain, leading large teams through fast-moving missions with limited resources. It taught me how to make good decisions quickly and communicate effectively across different teams.",
@@ -12,191 +10,211 @@ const BIO_PARAGRAPHS = [
   "As a Design Engineer, I close the gap that usually exists between a design file and a shipped product. I catch technical constraints early, contribute to production code when the project calls for it, and build prototypes in real code. I think in systems, not screens, and I care most about creating work that developers can actually build and users actually understand.",
 ];
 
+// ─── Timeline ─────────────────────────────────────────────────────────────────
+
+// Year range for proportional positioning.
+// "Born" is placed at TL_START + 2 (no year shown).
+const TL_START = 2008;
+const TL_END   = 2026;
+
+interface Milestone {
+  year:    number | null; // null → "Born"
+  yearEnd?: number;
+  label:   string;
+  sub:     string;
+  above:   boolean;  // label above the line?
+  connH:   number;   // connector line height (px) — higher = further from line
+}
+
+// Alternating above/below. connH is bumped for the two items that would
+// otherwise land on the same vertical level as a same-side neighbour.
+const MILESTONES: Milestone[] = [
+  { year: null, label: "Born",                 sub: "First gen Lebanese American", above: true,  connH: 14 },
+  { year: 2014, yearEnd: 2018, label: "Army Captain",         sub: "Medical evacuations",         above: false, connH: 14 },
+  { year: 2017, yearEnd: 2019, label: "Crisis Text Line",     sub: "Volunteer",                   above: true,  connH: 14 },
+  { year: 2018, yearEnd: 2019, label: "Backpacking",          sub: "Solo, 7 months",              above: false, connH: 14 },
+  { year: 2019,                label: "Software engineer",    sub: "Career transition",            above: true,  connH: 44 },
+  { year: 2021, yearEnd: 2023, label: "Women of the Wasatch", sub: "Director of Outreach",        above: false, connH: 14 },
+  { year: 2022, yearEnd: 2024, label: "Search & rescue",      sub: "Volunteer",                   above: true,  connH: 14 },
+  { year: 2023,                label: "Design",               sub: "Still going",                  above: false, connH: 44 },
+];
+
 // ─── CSS ──────────────────────────────────────────────────────────────────────
 const CSS = `
-  .ab-fact {
-    display: flex;
-    align-items: center;
-    padding: 24px 0;
-    border-bottom: 1px solid var(--shouf-border);
-    gap: 32px;
-    cursor: default;
-  }
-  .ab-fact:first-child { border-top: 1px solid var(--shouf-border); }
-  .ab-fact-text {
-    flex: 1;
-    font-size: 17px;
-    letter-spacing: -0.015em;
-    line-height: 1.4;
-    color: var(--shouf-text);
-    user-select: none;
-  }
-  .ab-anim {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    flex-shrink: 0;
-    color: var(--shouf-text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 88px;
-  }
-  .ab-fact:hover .ab-anim { opacity: 1; }
-
-  .dp {
-    stroke-dasharray: 600;
-    stroke-dashoffset: 600;
-    transition: stroke-dashoffset 0s;
-  }
-  .ab-fact:hover .dp {
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 1s cubic-bezier(0.37, 0, 0.63, 1);
-  }
-  .ab-fact:hover .dp.d1 { transition-delay: 0.3s; }
-  .ab-fact:hover .dp.d2 { transition-delay: 0.6s; }
-  .ab-fact:hover .dp.d3 { transition-delay: 0.9s; }
-
-  .fi { opacity: 0; }
-  .ab-fact:hover .fi {
-    opacity: 0.22;
-    transition: opacity 0.4s ease;
-  }
-
-  .dp-dot { opacity: 0; transition: opacity 0s; }
-  .ab-fact:hover .dp-dot { opacity: 1; transition: opacity 0.8s ease 0.15s; }
-
   @media (max-width: 680px) {
-    .ab-hero { flex-direction: column !important; gap: 32px !important; align-items: center !important; }
+    .ab-hero  { flex-direction: column !important; gap: 32px !important; align-items: center !important; }
     .ab-photo { width: 160px !important; min-width: unset !important; height: auto !important; align-self: center !important; }
     .ab-photo img { height: auto !important; object-fit: cover !important; }
-    .ab-anim { display: none; }
   }
+  .tl-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background-color: var(--shouf-text-muted);
+    margin: 0 auto;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+  .tl-node:hover .tl-dot {
+    transform: scale(1.75);
+    background-color: var(--shouf-accent);
+  }
+  .tl-title {
+    font-size: 11px; font-weight: 600;
+    color: var(--shouf-text-muted);
+    line-height: 1.35;
+    transition: color 0.15s ease;
+  }
+  .tl-node:hover .tl-title { color: var(--shouf-text); }
+  .tl-year {
+    font-size: 9px; font-family: var(--font-mono);
+    color: var(--shouf-text-faint); letter-spacing: 0.06em;
+    margin-bottom: 3px;
+  }
+  .tl-sub { font-size: 10px; color: var(--shouf-text-faint); margin-top: 2px; line-height: 1.3; }
 `;
 
-// ─── SVG animations ───────────────────────────────────────────────────────────
+// ─── Timeline component ────────────────────────────────────────────────────────
 
-function HeartbeatSVG() {
+function Timeline() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const PAD = 20; // px of horizontal padding inside the track container
+
   return (
-    <svg width="82" height="32" viewBox="0 0 82 32" fill="none" aria-hidden>
-      <path className="dp" d="M 0,16 L 20,16 L 25,6 L 30,26 L 34,10 L 38,16 L 82,16"
-        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <div ref={wrapRef} style={{ marginTop: "72px" }}>
+      <div style={{ overflowX: "auto", overflowY: "visible" }}>
+        <div
+          style={{
+            position:  "relative",
+            minWidth:  "900px",
+            height:    "260px",
+            padding:   `0 ${PAD}px`,
+          }}
+        >
+          {/* ── Base line ─────────────────────────────────────────────────── */}
+          <div style={{
+            position:        "absolute",
+            top:             "50%",
+            left:            `${PAD}px`,
+            right:           `${PAD}px`,
+            height:          "1px",
+            backgroundColor: "var(--shouf-border)",
+            transform:       "translateY(-50%)",
+          }} />
+
+          {/* ── Animated fill ─────────────────────────────────────────────── */}
+          <div style={{
+            position:        "absolute",
+            top:             "50%",
+            left:            `${PAD}px`,
+            height:          "1px",
+            backgroundColor: "var(--shouf-border-sub)",
+            transform:       "translateY(-50%)",
+            width:           visible ? `calc(100% - ${PAD * 2}px)` : "0px",
+            transition:      "width 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
+          }} />
+
+          {/* ── Range bands ───────────────────────────────────────────────── */}
+          {MILESTONES.map((m, i) => {
+            if (!m.yearEnd || m.year === null) return null;
+            const l = (m.year    - TL_START) / (TL_END - TL_START);
+            const w = (m.yearEnd - m.year)   / (TL_END - TL_START);
+            return (
+              <div
+                key={`band${i}`}
+                style={{
+                  position:        "absolute",
+                  top:             "50%",
+                  left:            `calc(${PAD}px + ${l} * (100% - ${PAD * 2}px))`,
+                  width:           `calc(${w} * (100% - ${PAD * 2}px))`,
+                  height:          "3px",
+                  borderRadius:    "2px",
+                  backgroundColor: "var(--shouf-accent)",
+                  transform:       "translateY(-50%)",
+                  opacity:         visible ? 0.28 : 0,
+                  transition:      `opacity 0.5s ease ${0.7 + i * 0.07}s`,
+                  pointerEvents:   "none",
+                }}
+              />
+            );
+          })}
+
+          {/* ── Nodes ─────────────────────────────────────────────────────── */}
+          {MILESTONES.map((m, i) => {
+            const posYear = m.year ?? (TL_START + 2);
+            const frac    = (posYear - TL_START) / (TL_END - TL_START);
+
+            return (
+              <div
+                key={i}
+                className="tl-node"
+                style={{
+                  position:   "absolute",
+                  top:        "50%",
+                  left:       `calc(${PAD}px + ${frac} * (100% - ${PAD * 2}px))`,
+                  transform:  "translate(-50%, -50%)",
+                  opacity:    visible ? 1 : 0,
+                  transition: `opacity 0.35s ease ${0.4 + i * 0.09}s`,
+                  zIndex:     1,
+                  cursor:     "default",
+                }}
+              >
+                {/* Dot */}
+                <div className="tl-dot" />
+
+                {/* Connector line */}
+                <div
+                  style={{
+                    position:        "absolute",
+                    left:            "50%",
+                    transform:       "translateX(-50%)",
+                    ...(m.above ? { bottom: "8px" } : { top: "8px" }),
+                    width:           "1px",
+                    height:          `${m.connH}px`,
+                    backgroundColor: "var(--shouf-border)",
+                  }}
+                />
+
+                {/* Label */}
+                <div
+                  style={{
+                    position:      "absolute",
+                    left:          "50%",
+                    transform:     "translateX(-50%)",
+                    ...(m.above
+                      ? { bottom: `${8 + m.connH + 6}px` }
+                      : { top:    `${8 + m.connH + 6}px` }),
+                    width:         "88px",
+                    textAlign:     "center",
+                    pointerEvents: "none",
+                  }}
+                >
+                  {m.year !== null && (
+                    <div className="tl-year">
+                      {m.year}{m.yearEnd ? `\u2013${m.yearEnd}` : ""}
+                    </div>
+                  )}
+                  <div className="tl-title">{m.label}</div>
+                  <div className="tl-sub">{m.sub}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
-
-function SonarSVG() {
-  return (
-    <svg width="60" height="40" viewBox="0 0 60 40" fill="none" aria-hidden>
-      <circle cx="6" cy="20" r="2" fill="currentColor" opacity="0.5" />
-      <path className="dp"    d="M 13,12 A 10,10 0 0 1 13,28" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <path className="dp d1" d="M 22,7  A 18,18 0 0 1 22,33" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <path className="dp d2" d="M 33,2  A 26,26 0 0 1 33,38" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function RadioWaveSVG() {
-  return (
-    <svg width="60" height="40" viewBox="0 0 60 40" fill="none" aria-hidden>
-      <circle cx="6" cy="20" r="2.5" fill="currentColor" />
-      <path className="dp"    d="M 14,14 A 8,8   0 0 1 14,26" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <path className="dp d1" d="M 23,9  A 14,14 0 0 1 23,31" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <path className="dp d2" d="M 34,4  A 20,20 0 0 1 34,36" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function BackpackSVG() {
-  return (
-    <svg width="82" height="40" viewBox="0 0 82 40" fill="none" aria-hidden>
-      <ellipse className="fi" cx="41" cy="20" rx="38" ry="17" stroke="currentColor" strokeWidth="1" />
-      <line    className="fi" x1="3" y1="20" x2="79" y2="20" stroke="currentColor" strokeWidth="0.75" />
-      <ellipse className="fi" cx="41" cy="20" rx="14" ry="17" stroke="currentColor" strokeWidth="0.75" />
-      <path className="dp-dot" d="M 9,23 C 18,12 28,30 40,18 C 52,7 64,26 73,19"
-        stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeDasharray="3 5" />
-    </svg>
-  );
-}
-
-function ElevationSVG() {
-  return (
-    <svg width="82" height="38" viewBox="0 0 82 38" fill="none" aria-hidden>
-      <line className="fi" x1="0" y1="35" x2="82" y2="35" stroke="currentColor" strokeWidth="0.75" />
-      <path className="dp" d="M 2,33 L 10,30 L 18,31 L 26,24 L 34,20 L 40,22 L 50,12 L 60,5 L 68,9 L 76,7"
-        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="60" cy="5" r="2" fill="currentColor" className="fi" style={{ opacity: 0 }} />
-    </svg>
-  );
-}
-
-function MountainSVG() {
-  return (
-    <svg width="82" height="44" viewBox="0 0 82 44" fill="none" aria-hidden>
-      <path className="dp" d="M 4,40 L 20,16 L 28,24 L 40,6 L 58,40"
-        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-      <path className="dp-dot" d="M 40,6 C 46,16 48,24 54,30 C 58,34 62,36 68,40"
-        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeDasharray="3 4" />
-    </svg>
-  );
-}
-
-function RowingSVG() {
-  return (
-    <svg width="82" height="36" viewBox="0 0 82 36" fill="none" aria-hidden>
-      <path className="dp"    d="M 0,22 C 10,15 20,29 30,22 C 40,15 50,29 60,22 C 70,15 78,26 82,22"
-        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <path className="dp d1" d="M 20,12 L 20,22" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <path className="dp d2" d="M 60,12 L 60,22" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function CedarSVG() {
-  return (
-    <svg width="48" height="50" viewBox="0 0 48 50" fill="none" aria-hidden>
-      <path className="dp"    d="M 24,48 L 24,34"            stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <path className="dp d1" d="M 6,38  L 24,28 L 42,38"   stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-      <path className="dp d2" d="M 11,30 L 24,18 L 37,30"   stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-      <path className="dp d3" d="M 16,22 L 24,10 L 32,22"   stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function PagesSVG() {
-  return (
-    <svg width="54" height="40" viewBox="0 0 54 40" fill="none" aria-hidden>
-      <path className="dp"    d="M 27,36 L 27,8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path className="dp d1" d="M 27,34 Q 10,28 8,10  L 27,14" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path className="dp d2" d="M 27,34 Q 14,24 14,6  L 27,10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path className="dp d1" d="M 27,34 Q 44,28 46,10 L 27,14" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path className="dp d2" d="M 27,34 Q 40,24 40,6  L 27,10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function LeavesSVG() {
-  return (
-    <svg width="48" height="52" viewBox="0 0 48 52" fill="none" aria-hidden>
-      <path className="dp"    d="M 24,50 C 24,42 22,34 24,22 C 26,12 24,4 24,4"
-        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-      <path className="dp d1" d="M 22,34 C 12,30 6,20 12,13 C 15,18 19,28 22,34 Z"
-        stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path className="dp d2" d="M 26,24 C 36,20 42,11 36,4  C 33,9 29,18 26,24 Z"
-        stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path className="dp d3" d="M 22,16 C 15,14 10,8 14,4   C 16,7 20,12 22,16 Z"
-        stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-const FACTS: { text: string; Anim: () => React.ReactElement }[] = [
-  { text: "Military veteran — medical evacuations",  Anim: HeartbeatSVG },
-  { text: "Search and rescue volunteer for 2 years", Anim: SonarSVG     },
-  { text: "Crisis text line volunteer for 2 years",  Anim: RadioWaveSVG },
-  { text: "Backpacked solo for 7 months",            Anim: BackpackSVG  },
-  { text: "Trail runner and backcountry skier",      Anim: ElevationSVG },
-  { text: "First generation Lebanese American",      Anim: CedarSVG     },
-];
 
 // ─── AboutCanvas ──────────────────────────────────────────────────────────────
 
@@ -205,12 +223,11 @@ export function AboutCanvas() {
     <>
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
-      {/* Scroll container — fills the center panel's flex-1 area */}
       <div
         style={{
-          width:     "100%",
-          height:    "100%",
-          overflowY: "auto",
+          width:           "100%",
+          height:          "100%",
+          overflowY:       "auto",
           backgroundColor: "var(--shouf-canvas)",
         }}
       >
@@ -221,12 +238,11 @@ export function AboutCanvas() {
             padding:  "56px 60px 120px",
           }}
         >
-          {/* ── Hero — photo + bio ─────────────────────────────────────────── */}
+          {/* ── Hero ─────────────────────────────────────────────────────── */}
           <section
             className="ab-hero"
             style={{ display: "flex", gap: "64px", alignItems: "flex-start" }}
           >
-            {/* Photo — stretches to match bio column height */}
             <div
               className="ab-photo"
               style={{
@@ -246,7 +262,6 @@ export function AboutCanvas() {
               />
             </div>
 
-            {/* Bio */}
             <div style={{ flex: 1, paddingTop: "4px", maxWidth: "420px" }}>
               {BIO_PARAGRAPHS.map((para, i) => (
                 <p
@@ -267,19 +282,8 @@ export function AboutCanvas() {
             </div>
           </section>
 
-          {/* ── Facts ─────────────────────────────────────────────────────── */}
-          <section style={{ marginTop: "80px" }}>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {FACTS.map(({ text, Anim }, i) => (
-                <li key={i} className="ab-fact">
-                  <span className="ab-fact-text">{text}</span>
-                  <div className="ab-anim">
-                    <Anim />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {/* ── Timeline ─────────────────────────────────────────────────── */}
+          <Timeline />
         </main>
       </div>
     </>

@@ -357,19 +357,6 @@ export function LandingScreen() {
           </p>
 
           {/* ── Shouf label ──────────────────────────────────────────────── */}
-          <p
-            style={{
-              marginTop:     "16px",
-              fontSize:      "12px",
-              fontFamily:    "var(--font-mono)",
-              letterSpacing: "0.04em",
-              color:         "#555555",
-              opacity:       subheadVisible ? 1 : 0,
-              transition:    "opacity 500ms ease 200ms",
-            }}
-          >
-            Shouf Design System
-          </p>
 
           {/* ── CTA — pops in below the subhead ─────────────────────────── */}
           <div

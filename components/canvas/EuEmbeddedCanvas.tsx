@@ -10,7 +10,6 @@ const SECTIONS = [
   { id: "solution",  label: "Solution"  },
   { id: "research",  label: "Research"  },
   { id: "design",    label: "Design"    },
-  { id: "feedback",  label: "Feedback"  },
   { id: "takeaways", label: "Takeaways" },
 ];
 
@@ -332,20 +331,6 @@ export function EuEmbeddedCanvas() {
             efficient and as clear as possible. It was important to me to ensure the user both could
             work quickly and could understand what they were adding, and could easily distinguish it
             from what was already there.
-          </Body>
-        </Section>
-
-        <Divider />
-
-        {/* ── Feedback ──────────────────────────────────────────────────── */}
-        <Section id="feedback">
-          <SectionLabel>Feedback</SectionLabel>
-          <SectionHeading>Missing credentials</SectionHeading>
-          <Body>
-            After presenting this to the team, I received feedback that the option for users to
-            select a credential was missing. This is required for our Qualiti Intelligence to know
-            how to login to the user&apos;s application and have the ability to generate steps. I
-            resolved this by adding it in for both suggested and manual tests.
           </Body>
         </Section>
 
