@@ -263,9 +263,8 @@ export function EuEmbeddedCanvas() {
           <SectionHeading>Qualiti used a lot of old, legacy code.</SectionHeading>
           <Body>
             The company originally started with just a few people, and one main developer. In order
-            to move quickly and generate a product that could win funding, a great deal of the
-            application was built with standardized but difficult to customize components such as
-            incredibly inflexible tables. This resulted in the need for a lot of modals. Any time
+            to quickly build a product to show to investors, a great deal of the application was
+            built with uncustomizable tables. This resulted in the need for a lot of modals. Any time
             the user wanted to add or edit something, instead of being able to act directly on the
             page, a modal would pop up and the user would have to interact with the modal instead.
           </Body>
