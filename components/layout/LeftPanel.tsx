@@ -31,7 +31,11 @@ const SECTION_META: Record<string, { short: string; color: string }> = {
 };
 
 // Flattened list of every nav entry — the search index.
-const ALL_ENTRIES: ComponentEntry[] = navSections.flatMap((s) => s.entries);
+// Includes both top-level entries and nested group entries.
+const ALL_ENTRIES: ComponentEntry[] = navSections.flatMap((s) => [
+  ...s.entries,
+  ...(s.groups ?? []).flatMap((g) => g.entries),
+]);
 
 // ─── HighlightMatch ───────────────────────────────────────────────────────────
 // Expressive craft moment: the matched substring is tinted with the live

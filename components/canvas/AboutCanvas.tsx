@@ -126,70 +126,103 @@ const MILESTONES: Milestone[] = [
 const CSS = `
   @media (max-width: 680px) {
     .ab-hero  { flex-direction: column !important; gap: 32px !important; align-items: center !important; }
-    .ab-photo { width: 160px !important; min-width: unset !important; height: auto !important; align-self: center !important; }
-    .ab-photo img { height: auto !important; object-fit: cover !important; }
+    .ab-photo { width: 200px !important; min-width: unset !important; height: 240px !important; align-self: center !important; }
+  }
+  @media (max-width: 768px) {
+    .ab-main { padding-bottom: 32px !important; }
+    .tl-wrap  { margin-top: 32px !important; }
   }
 
   /* ── Dot ── */
   .tl-dot {
-    width: 14px; height: 14px; border-radius: 50%;
+    width: 18px; height: 18px; border-radius: 50%;
     background-color: var(--shouf-border);
     border: 1.5px solid var(--shouf-text-faint);
     transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
     cursor: default;
   }
   .tl-node:hover .tl-dot {
-    transform: scale(1.6);
+    transform: scale(1.5);
     background-color: var(--shouf-accent);
     border-color: var(--shouf-accent);
   }
 
-  /* ── Centralized animation stage — plays on mount, restarts on key change ── */
-  .tl-stage {
-    transform: scale(1.8);
-    transform-origin: center center;
+  /* ── Per-node animation — fades in on hover ── */
+  .tl-anim {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    color: var(--shouf-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
   }
-  .tl-stage .dp {
+  .tl-node:hover .tl-anim { opacity: 1; }
+
+  /* ── SVG draw animations triggered by node hover ── */
+  .dp {
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
-    animation: tl-dash-draw 1s cubic-bezier(0.37, 0, 0.63, 1) forwards;
+    transition: stroke-dashoffset 0s;
   }
-  .tl-stage .dp.d1 { animation-delay: 0.3s; }
-  .tl-stage .dp.d2 { animation-delay: 0.6s; }
-  .tl-stage .dp.d3 { animation-delay: 0.9s; }
-  @keyframes tl-dash-draw {
-    from { stroke-dashoffset: 600; }
-    to   { stroke-dashoffset: 0;   }
+  .tl-node:hover .dp {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s cubic-bezier(0.37, 0, 0.63, 1);
   }
-  .tl-stage .fi { animation: tl-fi 0.4s ease forwards; }
-  @keyframes tl-fi { from { opacity: 0; } to { opacity: 0.22; } }
-  .tl-stage .dp-dot { animation: tl-dp-dot 0.8s ease 0.15s forwards; opacity: 0; }
-  @keyframes tl-dp-dot { from { opacity: 0; } to { opacity: 1; } }
+  .tl-node:hover .dp.d1 { transition-delay: 0.3s; }
+  .tl-node:hover .dp.d2 { transition-delay: 0.6s; }
+  .tl-node:hover .dp.d3 { transition-delay: 0.9s; }
+  .fi { opacity: 0; }
+  .tl-node:hover .fi { opacity: 0.22; transition: opacity 0.4s ease; }
+  .dp-dot { opacity: 0; transition: opacity 0s; }
+  .tl-node:hover .dp-dot { opacity: 1; transition: opacity 0.8s ease 0.15s; }
 
   /* ── Always-visible labels ── */
   .tl-label-year {
-    font-size: 11px;
+    font-size: 13px;
     font-family: var(--font-mono);
     color: var(--shouf-text-faint);
     letter-spacing: 0.05em;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
   .tl-label-text {
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 500;
     color: var(--shouf-text-muted);
     line-height: 1.5;
     transition: color 0.15s ease;
   }
   .tl-node:hover .tl-label-text { color: var(--shouf-text); }
+
+  /* ── Responsive layout toggles ── */
+  .tl-horizontal { display: block; }
+  .tl-vertical   { display: none; }
+  @media (max-width: 768px) {
+    .tl-horizontal { display: none; }
+    .tl-vertical   { display: block; }
+  }
+
+  /* ── Vertical timeline (mobile) ── */
+  .tl-v-item { display: flex; gap: 16px; }
+  .tl-v-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    background-color: var(--shouf-border);
+    border: 1.5px solid var(--shouf-text-faint);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    margin-top: 4px;
+  }
+  .tl-v-item:hover .tl-v-dot {
+    background-color: var(--shouf-accent);
+    border-color: var(--shouf-accent);
+  }
+  .tl-v-item:hover .tl-label-text { color: var(--shouf-text); }
 `;
 
 // ─── Timeline ─────────────────────────────────────────────────────────────────
 
 function Timeline() {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [visible,  setVisible]  = useState(false);
-  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -203,45 +236,61 @@ function Timeline() {
   }, []);
 
   const n    = MILESTONES.length;
-  const CONN = 36; // connector height in px
+  const CONN = 52; // connector height in px
+  // Animation sits beyond the label — label is ~CONN+8+label_height above/below dot,
+  // so offset the anim an extra 110px further out to clear it.
+  const ANIM_OFFSET = CONN + 120;
 
-  const ActiveAnim = hoverIdx !== null ? MILESTONES[hoverIdx].Anim : null;
+  // 6% inset — nodes don't sit at the very edge; line bleeds a bit past them
+  const INSET = 0.06;
+  const nodeFrac = (i: number) => INSET + (i / (n - 1)) * (1 - 2 * INSET);
 
   return (
-    <div ref={wrapRef} style={{ marginTop: "64px" }}>
-      <div>
+    <div ref={wrapRef} className="tl-wrap" style={{ marginTop: "40px" }}>
 
-        {/* ── Centralized animation stage — same position for every node ── */}
-        <div style={{
-          display:        "flex",
-          justifyContent: "center",
-          alignItems:     "center",
-          height:         "120px",
-          marginBottom:   "72px",
-          opacity:        hoverIdx !== null ? 1 : 0,
-          transition:     "opacity 0.2s ease",
-          color:          "var(--shouf-text-muted)",
-          pointerEvents:  "none",
-        }}>
-          {ActiveAnim && (
-            <div className="tl-stage" key={hoverIdx}>
-              <ActiveAnim />
+      {/* ── Vertical layout (mobile) ── */}
+      <div className="tl-vertical" style={{ padding: "0 32px 60px" }}>
+        {MILESTONES.map((m, i) => (
+          <div key={i} className="tl-v-item">
+            {/* Dot + connector column */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "10px", flexShrink: 0 }}>
+              <div
+                className="tl-v-dot"
+                style={{ opacity: visible ? 1 : 0, transition: `opacity 0.4s ease ${0.1 + i * 0.07}s` }}
+              />
+              {i < n - 1 && (
+                <div style={{
+                  width:           "1px",
+                  flex:            1,
+                  minHeight:       "24px",
+                  backgroundColor: "var(--shouf-border)",
+                }} />
+              )}
             </div>
-          )}
-        </div>
+            {/* Label column */}
+            <div style={{ paddingBottom: i < n - 1 ? "28px" : 0 }}>
+              {m.year && <div className="tl-label-year">{m.year}</div>}
+              <div className="tl-label-text">{m.label}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Horizontal layout (desktop) ── */}
+      <div className="tl-horizontal">
 
         {/* ── Track ── */}
-        <div style={{ padding: "90px 56px 110px", position: "relative" }}>
-          <div style={{ position: "relative", height: "14px" }}>
+        <div style={{ padding: "220px 0 220px", position: "relative" }}>
+          <div style={{ position: "relative", height: "18px" }}>
 
             {/* ── Bleed line — gradient fades at each end beyond the nodes ── */}
             <div style={{
               position:   "absolute",
               top:        "50%",
-              left:       "-56px",
-              right:      "-56px",
+              left:       0,
+              right:      0,
               height:     "1px",
-              background: "linear-gradient(to right, transparent 0px, var(--shouf-border) 40px, var(--shouf-border) calc(100% - 40px), transparent 100%)",
+              background: "linear-gradient(to right, transparent 0%, var(--shouf-border) 3%, var(--shouf-border) 97%, transparent 100%)",
               transform:  "translateY(-50%)",
             }} />
 
@@ -249,17 +298,17 @@ function Timeline() {
             <div style={{
               position:   "absolute",
               top:        "50%",
-              left:       "-56px",
+              left:       0,
               height:     "1px",
-              background: "linear-gradient(to right, transparent 0px, var(--shouf-border-sub) 40px)",
+              background: "linear-gradient(to right, transparent 0%, var(--shouf-border-sub) 3%)",
               transform:  "translateY(-50%)",
-              width:      visible ? "calc(100% + 112px)" : "0px",
+              width:      visible ? "100%" : "0px",
               transition: "width 1.4s cubic-bezier(0.4, 0, 0.2, 1)",
             }} />
 
             {/* ── Nodes ── */}
             {MILESTONES.map((m, i) => {
-              const frac  = i / (n - 1);
+              const frac  = nodeFrac(i);
               const above = i % 2 !== 0; // odd: label above line, even: label below
 
               const labelX = i === 0 ? "translateX(-10%)" : i === n - 1 ? "translateX(-90%)" : "translateX(-50%)";
@@ -269,15 +318,13 @@ function Timeline() {
                 <div
                   key={i}
                   className="tl-node"
-                  onMouseEnter={() => setHoverIdx(i)}
-                  onMouseLeave={() => setHoverIdx(null)}
                   style={{
                     position:   "absolute",
                     top:        "50%",
                     left:       `${frac * 100}%`,
                     transform:  "translate(-50%, -50%)",
-                    width:      "14px",
-                    height:     "14px",
+                    width:      "18px",
+                    height:     "18px",
                     opacity:    visible ? 1 : 0,
                     transition: `opacity 0.4s ease ${0.3 + i * 0.08}s`,
                     zIndex:     1,
@@ -301,7 +348,7 @@ function Timeline() {
                     position:  "absolute",
                     left:      "50%",
                     transform: labelX,
-                    width:     "120px",
+                    width:     "160px",
                     textAlign: align,
                     ...(above
                       ? { bottom: `calc(100% + ${CONN + 8}px)` }
@@ -310,13 +357,28 @@ function Timeline() {
                     {m.year && <div className="tl-label-year">{m.year}</div>}
                     <div className="tl-label-text">{m.label}</div>
                   </div>
+
+                  {/* Animation — same side as label, beyond it */}
+                  <div
+                    className="tl-anim"
+                    style={{
+                      position:  "absolute",
+                      left:      "50%",
+                      transform: "translateX(-50%)",
+                      ...(above
+                        ? { bottom: `calc(100% + ${ANIM_OFFSET}px)` }
+                        : { top:    `calc(100% + ${ANIM_OFFSET}px)` }),
+                    }}
+                  >
+                    <m.Anim />
+                  </div>
                 </div>
               );
             })}
           </div>
         </div>
 
-      </div>
+      </div>{/* end tl-horizontal */}
     </div>
   );
 }
@@ -337,10 +399,11 @@ export function AboutCanvas() {
         }}
       >
         <main
+          className="ab-main"
           style={{
-            maxWidth: "900px",
+            maxWidth: "1000px",
             margin:   "0 auto",
-            padding:  "56px 60px 120px",
+            padding:  "56px 60px 80px",
           }}
         >
           {/* ── Hero ─────────────────────────────────────────────────────── */}
@@ -357,17 +420,18 @@ export function AboutCanvas() {
                 borderRadius: "14px",
                 flexShrink:   0,
                 overflow:     "hidden",
+                position:     "relative",
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/about_photo.JPG"
                 alt="Jo Ann Saab"
-                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
               />
             </div>
 
-            <div style={{ flex: 1, paddingTop: "4px", maxWidth: "420px" }}>
+            <div style={{ flex: 1, paddingTop: "4px", maxWidth: "540px" }}>
               {BIO_PARAGRAPHS.map((para, i) => (
                 <p
                   key={i}
@@ -387,9 +451,10 @@ export function AboutCanvas() {
             </div>
           </section>
 
-          {/* ── Timeline ─────────────────────────────────────────────────── */}
-          <Timeline />
         </main>
+
+        {/* ── Timeline — full-width, outside the max-width main ── */}
+        <Timeline />
       </div>
     </>
   );
