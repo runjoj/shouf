@@ -154,7 +154,7 @@ function WelcomeCanvas() {
               pointerEvents: "none",
             }}
           >
-            tap or press any key to jump in
+            press any key to skip
           </p>
 
           {/* Subhead */}
