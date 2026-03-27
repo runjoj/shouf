@@ -34,7 +34,7 @@ const ANNOTATIONS: AnnotationDef[] = [
   {
     // Arrow curves from inside canvas leftward into the nav accordion items
     id:           "nav",
-    label:        "start exploring here",
+    label:        "explore pages here",
     svgFirst:     true,
     direction:    "row",
     alignItems:   "center",

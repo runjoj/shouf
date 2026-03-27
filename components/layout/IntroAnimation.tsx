@@ -114,8 +114,8 @@ export function IntroAnimation() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Keyboard + click handling ─────────────────────────────────────────────────
-  // • Picker NOT yet showing: any key or click → fast-forward to picker
-  // • Picker showing: Enter → confirm, Escape → skip, click on background → skip
+  // • Picker NOT yet showing: any key or click → skip straight to launched site
+  // • Picker showing: Enter → confirm, Escape → skip, click on background → confirm
   const handleOverlayClick = useCallback((e: React.MouseEvent) => {
     if (doneRef.current) return;
     // Only fire on background clicks, not on picker elements (swatches, button)
@@ -123,9 +123,11 @@ export function IntroAnimation() {
     if (pickerVisible) {
       handleEnter();
     } else {
-      showPickerNow();
+      // Skip intro entirely — go straight to launched site
+      skipIntroTyping();
+      skipAll();
     }
-  }, [pickerVisible, handleEnter, showPickerNow]);
+  }, [pickerVisible, handleEnter, skipIntroTyping, skipAll]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -136,13 +138,15 @@ export function IntroAnimation() {
         if (e.key === "Escape") { skipAll();     return; }
         return; // all other keys ignored while picker is open
       } else {
-        showPickerNow();
+        // Skip intro entirely — go straight to launched site
+        skipIntroTyping();
+        skipAll();
       }
     };
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [skipAll, handleEnter, showPickerNow, pickerVisible]);
+  }, [skipAll, handleEnter, skipIntroTyping, pickerVisible]);
 
   // If already launched (e.g., hot reload preserved state), nothing to render
   if (launched) return null;

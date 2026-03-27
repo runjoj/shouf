@@ -2,10 +2,8 @@
 
 import { useTheme } from "@/lib/theme";
 import { ACCENT_PRESETS } from "@/lib/accent";
-import { fireWaterRipple } from "@/lib/waterRipple";
-
 interface AccentPickerProps {
-  /** "sm" = 14px (toolbar), "md" = 18px (landing screen), "lg" = 20px (welcome screen, with ripple) */
+  /** "sm" = 14px (toolbar), "md" = 18px (landing screen), "lg" = 20px (welcome screen) */
   size?: "sm" | "md" | "lg";
 }
 
@@ -27,19 +25,7 @@ export function AccentPicker({ size = "sm" }: AccentPickerProps) {
         return (
           <button
             key={preset.id}
-            onClick={(e) => {
-              // Fire the ripple event BEFORE setAccent so the canvas can read
-              // --shouf-accent while it still holds the previous colour — the
-              // "from" value for the wave-carried colour transition.
-              // sm = toolbar only — ripple is distracting during the intro screen.
-              if (size === "sm") {
-                const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                fireWaterRipple(
-                  rect.left + rect.width  / 2,
-                  rect.top  + rect.height / 2,
-                  preset.hex,
-                );
-              }
+            onClick={() => {
               setAccent(preset.id);
             }}
             title={preset.label}

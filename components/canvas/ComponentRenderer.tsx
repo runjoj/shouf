@@ -115,7 +115,7 @@ function WelcomeCanvas() {
             fontSize:   fontSize,
             fontWeight: 700,
             fontFamily: "var(--font-mono)",
-            lineHeight: 1.35,
+            lineHeight: 1.2,
             color:      headlineColor,
             // Merge color transition with font-size transition after launch
             transition: launched
@@ -154,7 +154,7 @@ function WelcomeCanvas() {
               pointerEvents: "none",
             }}
           >
-            press any key to skip
+            press any key to jump in
           </p>
 
           {/* Subhead */}
@@ -168,23 +168,26 @@ function WelcomeCanvas() {
               transition: launched ? "opacity 400ms ease 100ms" : "none",
             }}
           >
-            Experienced in building components in Storybook, defining design tokens, and
-            turning design decisions into production-ready code.
+            From tokens to components to documentation, I turn design decisions
+            into production-ready code so teams ship faster and stay consistent.
           </p>
         </div>
 
-      {/* Nav hint */}
+      {/* Differentiator — elevated prominence */}
       <p
         style={{
-          fontSize:      "16px",
-          lineHeight:    1.75,
-          color:         "var(--shouf-text-muted)",
+          fontSize:      "13px",
+          fontFamily:    "var(--font-mono)",
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          lineHeight:    1.6,
+          color:         "var(--shouf-accent)",
           margin:        0,
           opacity:       launched ? 1 : 0,
           transition:    launched ? "opacity 400ms ease 200ms" : "none",
         }}
       >
-        This portfolio is a working design system. Start anywhere.
+        You&apos;re inside a working design system — explore it live.
       </p>
     </div>
   );
