@@ -13,12 +13,14 @@ import { PDS_SPACING_REGISTRATION }       from "@/components/portfolio-design-sy
 import { PDS_COLOR_TOKENS_REGISTRATION }  from "@/components/portfolio-design-system/PdsColorTokens/definition";
 import { PDS_INPUT_REGISTRATION }         from "@/components/portfolio-design-system/PdsInput/definition";
 import { PdsInputRenderer }               from "@/components/portfolio-design-system/PdsInput/PdsInput";
+import { WELCOME_REGISTRATION }           from "@/components/canvas/WelcomeDefinition";
 
 // ─── Registry maps ─────────────────────────────────────────────────────────────
 // Add each new component here. The renderer is kept separate from the
 // ComponentRegistration type so that type definitions stay React-free.
 
 export const COMPONENT_REGISTRY: Record<string, ComponentRegistration> = {
+  "welcome":              WELCOME_REGISTRATION,
   "pds-button":           PDS_BUTTON_REGISTRATION,
   "pds-input":            PDS_INPUT_REGISTRATION,
   "pds-color-tokens":     PDS_COLOR_TOKENS_REGISTRATION,

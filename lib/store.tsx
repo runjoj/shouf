@@ -43,6 +43,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     Record<string, ComponentControlValues>
   >(buildInitialControlValues);
   const [launched, setLaunched] = useState(false);
+  const [introSkipped, setIntroSkipped] = useState(false);
 
   const selectComponent = useCallback((id: string | null) => {
     setSelectedComponentId(id);
@@ -90,6 +91,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setSelectedSectionId(null);
   }, []);
 
+  const skipIntroTyping = useCallback(() => {
+    setIntroSkipped(true);
+  }, []);
+
   const store = useMemo<AppStore>(
     () => ({
       selectedComponentId,
@@ -98,6 +103,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       expandedSections,
       controlValues,
       launched,
+      introSkipped,
       selectComponent,
       selectSection,
       setActiveMobilePanel,
@@ -105,6 +111,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setControlValue,
       launch,
       reset,
+      skipIntroTyping,
     }),
     [
       selectedComponentId,
@@ -113,12 +120,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       expandedSections,
       controlValues,
       launched,
+      introSkipped,
       selectComponent,
       selectSection,
       toggleSection,
       setControlValue,
       launch,
       reset,
+      skipIntroTyping,
     ]
   );
 

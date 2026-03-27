@@ -2,38 +2,33 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useAppStore } from "@/lib/store";
+import { AccentPicker } from "@/components/ui/AccentPicker";
+import { PdsButton } from "@/components/portfolio-design-system/PdsButton/PdsButton";
 
 // ─── Timing constants (ms from app load) ──────────────────────────────────────
-// Typing is now handled by WelcomeCanvas itself (rendered above this overlay).
-// IntroAnimation only manages the dark overlay, border draws, and launch signal.
-//
-// Typing:  12 words × 110ms = 1320ms
-// Pause:   500ms cursor visible after last word
-// Borders: left→right→toolbar, each 200ms apart, 450ms draw duration
-// Launch:  overlay fades + panels reveal at 2870ms
+// Typing is handled by WelcomeCanvas (rendered above this overlay at z:55).
+// IntroAnimation manages the dark overlay, border draws, and launch signal.
 
-const WORD_COUNT       = 12;   // words in the WelcomeCanvas headline
-const T_WORD_INTERVAL  = 110;  // ms per word (must match WelcomeCanvas)
-const T_TYPING_DONE    = WORD_COUNT * T_WORD_INTERVAL; // 1320 ms
-const T_PAUSE          = 500;
-const T_LEFT_BORDER    = T_TYPING_DONE + T_PAUSE;          // 1820 ms
-const T_RIGHT_BORDER   = T_LEFT_BORDER  + 200;             // 2020 ms
-const T_TOOLBAR_BORDER = T_RIGHT_BORDER + 200;             // 2220 ms
-const T_BORDER_DUR     = 450;
-const T_LAUNCH         = T_TOOLBAR_BORDER + T_BORDER_DUR + 200; // 2870 ms
-
-const T_HINT_IN  = 400;
-const T_HINT_OUT = 2600;
+// ── Color picker moment after typing finishes ──────────────────────────────
+// WelcomeCanvas types ~66 chars at ~42ms avg + 130ms comma pause ≈ 2866ms.
+// Cursor hides at TOTAL_CHAR_MS + 420ms ≈ 3286ms. Picker panel appears just
+// after that, with sequential 200ms fade-ins per element.
+const T_BORDER_DUR   = 450;
+const T_PICKER_START = 3400;  // one-liner fades in
+const T_PICKER_IN    = T_PICKER_START + 200;
+const T_ENTER_IN     = T_PICKER_START + 400;
 
 // Panel geometry — must match actual panel widths / toolbar height
-const LEFT_W    = 260;
-const RIGHT_W   = 280;
-const TOOLBAR_H = 44;
+const LEFT_W     = 260;
+const RIGHT_W    = 280;
+const TOOLBAR_H  = 44;
+// Must match WelcomeCanvas maxWidth so picker left edge = h2 left edge
+const CONTENT_W  = 590;
 
 // ─── IntroAnimation ──────────────────────────────────────────────────────────
 
 export function IntroAnimation() {
-  const { launched, launch } = useAppStore();
+  const { launched, launch, skipIntroTyping } = useAppStore();
 
   const doneRef = useRef(false);
   const timers  = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -41,10 +36,33 @@ export function IntroAnimation() {
   const [leftBorder,     setLeftBorder]     = useState(false);
   const [rightBorder,    setRightBorder]    = useState(false);
   const [toolbarBorder,  setToolbarBorder]  = useState(false);
-  const [hintVisible,    setHintVisible]    = useState(false);
   const [overlayVisible, setOverlayVisible] = useState(true);
 
-  // ── Skip-to-end ─────────────────────────────────────────────────────────────
+  // Color picker moment — always shown on every load
+  const [showOneLiner, setShowOneLiner] = useState(false);
+  const [showPicker,   setShowPicker]   = useState(false);
+  const [showEnterBtn, setShowEnterBtn] = useState(false);
+
+  const pickerVisible = showOneLiner || showPicker || showEnterBtn;
+
+  // ── Draw borders then fade overlay out ───────────────────────────────────────
+  const runBordersAndLaunch = useCallback(() => {
+    setLeftBorder(true);
+    setTimeout(() => setRightBorder(true),                      200);
+    setTimeout(() => setToolbarBorder(true),                    400);
+    setTimeout(() => { setOverlayVisible(false); launch(); }, 400 + T_BORDER_DUR + 200);
+  }, [launch]);
+
+  // ── Enter button ─────────────────────────────────────────────────────────────
+  const handleEnter = useCallback(() => {
+    if (doneRef.current) return;
+    doneRef.current = true;
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+    runBordersAndLaunch();
+  }, [runBordersAndLaunch]);
+
+  // ── Skip-to-end (keyboard Escape) ────────────────────────────────────────────
   const skipAll = useCallback(() => {
     if (doneRef.current) return;
     doneRef.current = true;
@@ -53,45 +71,78 @@ export function IntroAnimation() {
     setLeftBorder(true);
     setRightBorder(true);
     setToolbarBorder(true);
-    setHintVisible(false);
     setOverlayVisible(false);
     launch();
   }, [launch]);
 
-  // ── Schedule intro on mount ──────────────────────────────────────────────────
+  // ── Fast-forward to picker (new visitor presses key during typing) ────────────
+  const showPickerNow = useCallback(() => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+    skipIntroTyping();
+    setShowOneLiner(true);
+    setShowPicker(true);
+    setShowEnterBtn(true);
+  }, [skipIntroTyping]);
+
+  // ── Schedule intro on mount (client-only via useEffect) ──────────────────────
   useEffect(() => {
     if (launched) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const add = (fn: () => void, ms: number) => {
       const id = setTimeout(fn, ms);
       timers.current.push(id);
     };
 
-    // Skip hint
-    add(() => setHintVisible(true),  T_HINT_IN);
-    add(() => setHintVisible(false), T_HINT_OUT);
-
-    // Border drawing sequence (after typing + pause)
-    add(() => setLeftBorder(true),    T_LEFT_BORDER);
-    add(() => setRightBorder(true),   T_RIGHT_BORDER);
-    add(() => setToolbarBorder(true), T_TOOLBAR_BORDER);
-
-    // Launch: fade overlay + reveal panels
-    add(() => {
-      doneRef.current = true;
-      setOverlayVisible(false);
-      launch();
-    }, T_LAUNCH);
+    // Always show color picker moment after typing finishes — every load
+    if (reducedMotion) {
+      // Respect prefers-reduced-motion — show all at once, no stagger
+      add(() => {
+        setShowOneLiner(true);
+        setShowPicker(true);
+        setShowEnterBtn(true);
+      }, T_PICKER_START);
+    } else {
+      add(() => setShowOneLiner(true), T_PICKER_START);
+      add(() => setShowPicker(true),   T_PICKER_IN);
+      add(() => setShowEnterBtn(true), T_ENTER_IN);
+    }
 
     return () => { timers.current.forEach(clearTimeout); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Key / click to skip ──────────────────────────────────────────────────────
+  // ── Keyboard + click handling ─────────────────────────────────────────────────
+  // • Picker NOT yet showing: any key or click → fast-forward to picker
+  // • Picker showing: Enter → confirm, Escape → skip, click on background → skip
+  const handleOverlayClick = useCallback((e: React.MouseEvent) => {
+    if (doneRef.current) return;
+    // Only fire on background clicks, not on picker elements (swatches, button)
+    if (e.target !== e.currentTarget) return;
+    if (pickerVisible) {
+      handleEnter();
+    } else {
+      showPickerNow();
+    }
+  }, [pickerVisible, handleEnter, showPickerNow]);
+
   useEffect(() => {
-    const onKey = () => { if (!doneRef.current) skipAll(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (doneRef.current) return;
+
+      if (pickerVisible) {
+        if (e.key === "Enter")  { handleEnter(); return; }
+        if (e.key === "Escape") { skipAll();     return; }
+        return; // all other keys ignored while picker is open
+      } else {
+        showPickerNow();
+      }
+    };
+
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [skipAll]);
+  }, [skipAll, handleEnter, showPickerNow, pickerVisible]);
 
   // If already launched (e.g., hot reload preserved state), nothing to render
   if (launched) return null;
@@ -99,8 +150,8 @@ export function IntroAnimation() {
   // ─────────────────────────────────────────────────────────────────────────────
   return (
     <div
-      onClick={() => { if (!doneRef.current) skipAll(); }}
       aria-hidden="true"
+      onClick={handleOverlayClick}
       style={{
         position:        "absolute",
         inset:           0,
@@ -109,7 +160,6 @@ export function IntroAnimation() {
         opacity:         overlayVisible ? 1 : 0,
         transition:      overlayVisible ? "none" : "opacity 700ms ease",
         pointerEvents:   overlayVisible ? "auto" : "none",
-        cursor:          doneRef.current ? "default" : "pointer",
         overflow:        "hidden",
       }}
     >
@@ -164,25 +214,87 @@ export function IntroAnimation() {
         }}
       />
 
-      {/* ── Skip hint — just below the vertically-centered welcome text ─────────── */}
-      <div
-        style={{
-          position:      "absolute",
-          top:           "calc(50% + 88px)",
-          left:          "50%",
-          transform:     "translateX(-50%)",
-          opacity:       hintVisible ? 0.7 : 0,
-          transition:    "opacity 500ms ease",
-          whiteSpace:    "nowrap",
-          fontSize:      "12px",
-          fontFamily:    "var(--font-mono)",
-          letterSpacing: "0.04em",
-          color:         "#FFFFFF",
-          pointerEvents: "none",
-        }}
-      >
-        · press any key or click to skip
-      </div>
+      {/* ── Color picker moment — shown on every load ────────────────────────── */}
+      {/* Expressive craft moment: transforms the overlay into a personalization  */}
+      {/* invitation — the first interaction is choosing your accent color.       */}
+      {pickerVisible && (
+        <div
+          style={{
+            position:       "absolute",
+            // Position below the headline with ~40px gap.
+            top:            "calc(50% + 24px)",
+            // Offset by (LEFT_W − RIGHT_W)/2 = −10px so the picker aligns with
+            // the headline, which is centered inside CenterPanel (not the viewport).
+            left:           "calc(50% - 10px)",
+            transform:      "translateX(-50%)",
+            display:        "flex",
+            flexDirection:  "column",
+            alignItems:     "flex-start",
+            gap:            "24px",
+            width:          `${CONTENT_W}px`,
+            maxWidth:       "calc(100% - 96px)",
+          }}
+        >
+          {/* One-liner */}
+          <p
+            style={{
+              fontSize:   "15px",
+              lineHeight: 1.65,
+              color:      "rgba(255,255,255,0.72)",
+              textAlign:  "left",
+              margin:     0,
+              opacity:    showOneLiner ? 1 : 0,
+              transition: "opacity 500ms ease",
+            }}
+          >
+            This portfolio is built on Shouf — a design system I designed and coded from scratch.
+          </p>
+
+          {/* Color picker + label */}
+          <div
+            style={{
+              display:       "flex",
+              flexDirection: "column",
+              alignItems:    "flex-start",
+              gap:           "16px",
+              opacity:       showPicker ? 1 : 0,
+              transition:    "opacity 500ms ease",
+            }}
+          >
+            <span
+              style={{
+                fontSize:      "12px",
+                fontFamily:    "var(--font-mono)",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color:         "rgba(255,255,255,1)",
+              }}
+            >
+              Make it yours — pick an accent color
+            </span>
+            {/* -4px compensates for the 4px hit-area padding on each dot button,
+                aligning the visible dot left edge with the Enter button left border. */}
+            <div style={{ marginLeft: "-4px" }}>
+              <AccentPicker size="lg" />
+            </div>
+          </div>
+
+          {/* Enter button — explicit primary CTA, styled with Shouf tokens */}
+          <div
+            style={{
+              opacity:    showEnterBtn ? 1 : 0,
+              transition: "opacity 400ms ease",
+            }}
+          >
+            <PdsButton
+              variant="primary"
+              size="md"
+              label="Enter"
+              onClick={handleEnter}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

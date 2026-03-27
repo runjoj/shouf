@@ -9,6 +9,7 @@ import { IntroAnimation } from "./IntroAnimation";
 import { AccordionNav } from "@/components/navigation/AccordionNav";
 import { InspectPanel } from "@/components/inspect/InspectPanel";
 import { WaterRippleCanvas } from "@/components/ui/WaterRippleCanvas";
+import { WelcomeAnnotations } from "@/components/canvas/WelcomeAnnotations";
 
 // ─── Close icon ───────────────────────────────────────────────────────────────
 
@@ -154,7 +155,7 @@ function MobileView() {
 }
 
 // Pages that should NOT show controls/inspect panels (guides, landing, about).
-const NO_PANELS = new Set(["welcome", "about", "pds-guide", "rc-guide", "eu-guide", "eu-embedded", "pds-color-tokens"]);
+const NO_PANELS = new Set(["about", "pds-guide", "rc-guide", "eu-guide", "eu-embedded", "pds-color-tokens"]);
 
 // ─── Desktop three-panel view ─────────────────────────────────────────────────
 
@@ -162,10 +163,14 @@ const NO_PANELS = new Set(["welcome", "about", "pds-guide", "rc-guide", "eu-guid
 const RIGHT_PANEL_W = 280;
 
 function DesktopView() {
-  const { selectedComponentId, selectedSectionId } = useAppStore();
+  const { selectedComponentId, selectedSectionId, launched } = useAppStore();
 
   // Hide panels on landing/about/guide pages and section overview grids.
   const showPanels = !!selectedComponentId && !NO_PANELS.has(selectedComponentId) && selectedSectionId === null;
+
+  // Reserve right panel width before launch (prevents headline shift) and
+  // whenever panels are active. Collapses smoothly on NO_PANELS pages.
+  const rightPanelReserved = !launched || showPanels;
 
   return (
     <div
@@ -176,24 +181,48 @@ function DesktopView() {
         backgroundColor: "var(--shouf-bg)",
       }}
     >
-      {/* ── Left panel ───────────────────────────────────────────────────────── */}
-      <LeftPanel />
+      {/* ── Left panel — space always in layout; content slides in on launch ─── */}
+      <div style={{ flexShrink: 0, overflow: "hidden", width: 260 }}>
+        <div
+          style={{
+            height:     "100%",
+            transform:  launched ? "translateX(0)" : "translateX(-100%)",
+            transition: "transform 500ms cubic-bezier(0.25, 0, 0, 1) 50ms",
+          }}
+        >
+          <LeftPanel />
+        </div>
+      </div>
 
       {/* ── Center panel ─────────────────────────────────────────────────────── */}
-      <CenterPanel showControls={showPanels} />
+      {/* Reserve controls bar height even before launch to prevent vertical shift */}
+      <CenterPanel showControls={showPanels || !launched} />
 
-      {/* ── Right panel — slides in from right when a controllable component
-           is selected, slides back out when returning to a guide/welcome page. */}
+      {/* ── Right panel — reserves RIGHT_PANEL_W once launched so CenterPanel
+           stays stable; content slides in/out with transform only. */}
       <div
         style={{
-          width:      showPanels ? RIGHT_PANEL_W : 0,
+          width:      rightPanelReserved ? RIGHT_PANEL_W : 0,
           flexShrink: 0,
           overflow:   "hidden",
-          transition: "width 300ms cubic-bezier(0.25, 0, 0, 1)",
+          transition: "width 500ms cubic-bezier(0.25, 0, 0, 1)",
         }}
       >
-        <RightPanel />
+        <div
+          style={{
+            width:      RIGHT_PANEL_W,
+            height:     "100%",
+            transform:  showPanels ? "translateX(0)" : "translateX(100%)",
+            transition: "transform 500ms cubic-bezier(0.25, 0, 0, 1) 250ms",
+          }}
+        >
+          <RightPanel />
+        </div>
       </div>
+
+      {/* ── Welcome annotations — sketch arrows pointing at each shell region ──── */}
+      {/* Appear 800ms after launch, staggered 300ms apart. pointer-events:none. */}
+      {launched && selectedComponentId === "welcome" && <WelcomeAnnotations />}
 
       {/* ── Intro animation overlay ───────────────────────────────────────────── */}
       {/* Covers everything during typing + border-draw phase, then fades out.    */}

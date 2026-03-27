@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAppStore } from "@/lib/store";
 import { navSections } from "@/data/navigation";
 import { isRegistered, COMPONENT_RENDERERS, COMPONENT_REGISTRY } from "@/lib/registry";
@@ -24,8 +24,8 @@ const HEADLINE_STR =
 // across renders but looks organic.
 function charDelay(ch: string, i: number): number {
   const jitter = ((ch.charCodeAt(0) * 17 + i * 7) % 30) - 15;
-  const bonus  = ch === "," ? 130 : 0;
-  return Math.max(20, 42 + jitter + bonus);
+  const bonus  = ch === "," ? 95 : 0;
+  return Math.max(18, 42 + jitter + bonus);
 }
 const CHAR_DELAYS   = Array.from(HEADLINE_STR).map((ch, i) => charDelay(ch, i));
 const TOTAL_CHAR_MS = CHAR_DELAYS.reduce((a, b) => a + b, 0);
@@ -34,19 +34,33 @@ const CURSOR_HIDE_MS = TOTAL_CHAR_MS + 500 - 80;
 
 // ─── Welcome canvas ───────────────────────────────────────────────────────────
 
+// ─── Headline size map — must match WelcomeDefinition SIZE_TOKENS ─────────────
+const WELCOME_FONT_SIZES: Record<string, string> = {
+  sm: "clamp(1.4rem, 1.8vw, 1.8rem)",
+  md: "clamp(1.8rem, 2.4vw, 2.4rem)",
+  lg: "clamp(2.2rem, 3vw, 3rem)",
+};
+
 function WelcomeCanvas() {
-  const { launched } = useAppStore();
+  const { launched, introSkipped, controlValues } = useAppStore();
+
+  // Headline size driven by the controls bar "Headline" select.
+  // Locked to "md" during typing so the animation frame is stable.
+  const sizeKey  = launched ? ((controlValues["welcome"]?.size as string) ?? "lg") : "lg";
+  const fontSize = WELCOME_FONT_SIZES[sizeKey] ?? WELCOME_FONT_SIZES.md;
 
   // Start already-complete if we're past the intro (skip or hot reload)
   const [typedCount, setTypedCount] = useState(launched ? HEADLINE_STR.length : 0);
   const [showCursor, setShowCursor] = useState(!launched);
+  const typingTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   // ── Typing sequence — runs once on mount if intro hasn't played yet ──────────
   useEffect(() => {
     if (launched) return;
 
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    const add = (fn: () => void, ms: number) => { timers.push(setTimeout(fn, ms)); };
+    const add = (fn: () => void, ms: number) => {
+      typingTimers.current.push(setTimeout(fn, ms));
+    };
 
     // Reveal one character at a time with natural timing
     let t = 0;
@@ -59,16 +73,19 @@ function WelcomeCanvas() {
     // Hide cursor just before border-draw begins
     add(() => setShowCursor(false), CURSOR_HIDE_MS);
 
-    return () => timers.forEach(clearTimeout);
+    return () => typingTimers.current.forEach(clearTimeout);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Snap to full text when skipped ──────────────────────────────────────────
+  // ── Snap to full text when skipped or launched ──────────────────────────────
   useEffect(() => {
-    if (launched) {
+    if (launched || introSkipped) {
+      // Cancel any pending typing timers
+      typingTimers.current.forEach(clearTimeout);
+      typingTimers.current = [];
       setTypedCount(HEADLINE_STR.length);
       setShowCursor(false);
     }
-  }, [launched]);
+  }, [launched, introSkipped]);
 
   const displayText = HEADLINE_STR.slice(0, typedCount);
 
@@ -83,7 +100,7 @@ function WelcomeCanvas() {
     // Text column — sits in the flex welcome row; preview card is a sibling.
     <div
       className="flex flex-col gap-8 select-none"
-      style={{ maxWidth: "640px", flex: "1 1 320px", minWidth: 0 }}
+      style={{ maxWidth: "590px", flex: "1 1 320px", minWidth: 0 }}
     >
 
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -95,14 +112,18 @@ function WelcomeCanvas() {
         */}
         <h2
           style={{
-            fontSize:   "clamp(1.8rem, 2.4vw, 2.4rem)",
-              fontWeight: 700,
-              fontFamily: "var(--font-mono)",
-              lineHeight: 1.35,
-              color:      headlineColor,
-              transition: headlineTransition,
-              margin:     0,
-            }}
+            fontSize:   fontSize,
+            fontWeight: 700,
+            fontFamily: "var(--font-mono)",
+            lineHeight: 1.35,
+            color:      headlineColor,
+            // Merge color transition with font-size transition after launch
+            transition: launched
+              ? "color 700ms ease, font-size 200ms ease"
+              : "none",
+            margin:     0,
+            textWrap:   "balance",
+          }}
           >
             {displayText}
             {showCursor && (
@@ -119,6 +140,22 @@ function WelcomeCanvas() {
               </span>
             )}
           </h2>
+
+          {/* Skip hint — visible only during typing, fades out */}
+          <p
+            style={{
+              fontSize:      "12px",
+              fontFamily:    "var(--font-mono)",
+              letterSpacing: "0.04em",
+              color:         "rgba(255,255,255,0.7)",
+              margin:        0,
+              opacity:       (!launched && !introSkipped && showCursor) ? 1 : 0,
+              transition:    "opacity 400ms ease",
+              pointerEvents: "none",
+            }}
+          >
+            press any key to skip
+          </p>
 
           {/* Subhead */}
           <p
@@ -139,16 +176,15 @@ function WelcomeCanvas() {
       {/* Nav hint */}
       <p
         style={{
-          fontSize:      "12px",
-          fontFamily:    "var(--font-mono)",
-          letterSpacing: "0.02em",
-          color:         "var(--shouf-text-faint)",
+          fontSize:      "16px",
+          lineHeight:    1.75,
+          color:         "var(--shouf-text-muted)",
           margin:        0,
           opacity:       launched ? 1 : 0,
           transition:    launched ? "opacity 400ms ease 200ms" : "none",
         }}
       >
-        ← select a section from the navigator to explore components
+        This portfolio is a working design system. Start anywhere.
       </p>
     </div>
   );
@@ -275,108 +311,9 @@ function LiveComponentCanvas({ componentId }: { componentId: string }) {
   );
 }
 
-// ─── FloatingWelcomePreview ───────────────────────────────────────────────────
-// Cycles through live component previews — rendered inline in WelcomeCanvas's
-// flex row so it aligns naturally with the text column.
-
-const PREVIEW_CYCLE = [
-  { label: "Button",   id: "pds-button"   },
-  { label: "Input",    id: "pds-input"    },
-  { label: "Statuses", id: "eu-statuses"  },
-];
-
-const MONO = "var(--font-mono)";
-
-function FloatingWelcomePreview({ launched }: { launched: boolean }) {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [visible,   setVisible]   = useState(true);
-
-  useEffect(() => {
-    if (!launched) return;
-    const interval = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setActiveIdx((i) => (i + 1) % PREVIEW_CYCLE.length);
-        setVisible(true);
-      }, 350);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [launched]);
-
-  const item     = PREVIEW_CYCLE[activeIdx];
-  const renderer = COMPONENT_RENDERERS[item.id];
-  const values   = COMPONENT_REGISTRY[item.id]?.defaultValues ?? {};
-
-  return (
-    <div
-      style={{
-        // Inline flex item — no absolute positioning.
-        // Wraps above the text column on small screens (wrap-reverse on parent).
-        flexShrink:      0,
-        width:           "256px",
-        borderRadius:    "16px",
-        backgroundColor: "var(--shouf-panel)",
-        border:          "1px solid var(--shouf-border-sub)",
-        overflow:        "hidden",
-        boxShadow:       "0 4px 24px rgba(0,0,0,0.12)",
-        opacity:         launched ? 1 : 0,
-        transition:      launched ? "opacity 400ms ease 500ms" : "none",
-      }}
-    >
-      {/* Label + dot indicators */}
-      <div
-        style={{
-          padding:      "12px 16px 10px",
-          borderBottom: "1px solid var(--shouf-border-sub)",
-          display:      "flex",
-          alignItems:   "center",
-        }}
-      >
-        <span style={{
-          fontFamily:    MONO,
-          fontSize:      "10px",
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          color:         "var(--shouf-text-faint)",
-        }}>
-          {item.label}
-        </span>
-        <div style={{ marginLeft: "auto", display: "flex", gap: "5px" }}>
-          {PREVIEW_CYCLE.map((_, i) => (
-            <div key={i} style={{
-              width:           "5px",
-              height:          "5px",
-              borderRadius:    "50%",
-              backgroundColor: i === activeIdx ? "var(--shouf-accent)" : "var(--shouf-border)",
-              transition:      "background-color 200ms ease",
-            }} />
-          ))}
-        </div>
-      </div>
-
-      {/* Live component preview */}
-      <div
-        style={{
-          minHeight:      "160px",
-          display:        "flex",
-          alignItems:     "center",
-          justifyContent: "center",
-          padding:        "28px 24px",
-          pointerEvents:  "none",
-          userSelect:     "none",
-          opacity:        visible ? 1 : 0,
-          transition:     "opacity 300ms ease",
-        }}
-      >
-        {renderer?.(values)}
-      </div>
-    </div>
-  );
-}
-
 // ─── ComponentRenderer ───────────────────────────────────────────────────────
 
-export function ComponentRenderer() {
+export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }) {
   const { selectedComponentId, selectedSectionId, launched } = useAppStore();
 
   // During intro, WelcomeCanvas renders above the dark overlay (z-index 50)
@@ -412,7 +349,10 @@ export function ComponentRenderer() {
         position:  "relative",
         // Rise above the overlay (z:50) during intro so WelcomeCanvas types
         // at its real DOM position — no size or position change on launch.
-        zIndex:    launched ? undefined : 55,
+        // pointerEvents:none during intro so clicks pass through to the picker
+        // panel inside IntroAnimation (z:50) without being intercepted here.
+        zIndex:        launched ? undefined : 55,
+        pointerEvents: launched ? undefined : "none",
       }}
     >
       {/* Dot-grid canvas background — fades in 1300 ms after launch */}
@@ -430,7 +370,7 @@ export function ComponentRenderer() {
         }}
       />
 
-      {/* Content layer — always on top of the background */}
+      {/* Content layer */}
       <div
         style={{
           position:       "relative",
@@ -442,9 +382,7 @@ export function ComponentRenderer() {
           justifyContent: isFullCanvas ? "flex-start" : "center",
         }}
       >
-        {/* Welcome row — flex with wrap-reverse so the preview card naturally
-            sits to the right of the text on wide screens and wraps ABOVE the
-            text on narrow screens, always with guaranteed gap spacing. */}
+        {/* Welcome row */}
         {showWelcome && (
           <div
             style={{
@@ -453,13 +391,14 @@ export function ComponentRenderer() {
               alignItems:     "center",
               justifyContent: "center",
               gap:            "48px",
+              // Fixed padding — CenterPanel width is stable from launch (right panel
+              // space is pre-reserved), so no intro offset hack needed.
               padding:        "24px 48px",
               width:          "100%",
               boxSizing:      "border-box",
             }}
           >
             <WelcomeCanvas />
-            {launched && <FloatingWelcomePreview launched={launched} />}
           </div>
         )}
 

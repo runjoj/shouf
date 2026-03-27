@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "shouf",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["next", "dev", "--port", "3001"],
+      "runtimeExecutable": "/Users/joannsaab/.nvm/versions/node/v22.11.0/bin/node",
+      "runtimeArgs": ["node_modules/.bin/next", "dev", "--port", "3001"],
       "port": 3001
     }
   ]

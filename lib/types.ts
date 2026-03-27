@@ -82,6 +82,8 @@ export type AppState = {
   controlValues: Record<string, ComponentControlValues>;
   /** Whether the intro animation has completed and panels are revealed */
   launched: boolean;
+  /** Set when user skips typing (key/click) — WelcomeCanvas snaps to full text */
+  introSkipped: boolean;
 };
 
 export type AppActions = {
@@ -98,6 +100,8 @@ export type AppActions = {
   launch: () => void;
   /** Navigate back to the Welcome page (logo click) — does not replay intro */
   reset: () => void;
+  /** Signal that the user skipped the typing animation */
+  skipIntroTyping: () => void;
 };
 
 export type AppStore = AppState & AppActions;

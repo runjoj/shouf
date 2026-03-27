@@ -303,18 +303,34 @@ const CONTROLS_H = 88;
 
 export function CenterPanel({ showControls = false, skipIntro = false }: { showControls?: boolean; skipIntro?: boolean }) {
   const [zoom, setZoom] = useState(100);
+  const { launched } = useAppStore();
 
   const zoomIn  = () => setZoom((z) => Math.min(ZOOM_MAX, z + ZOOM_STEP));
   const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, z - ZOOM_STEP));
 
   const scale = zoom / 100;
 
+  // Toolbar and controls bar slide in on launch for the "system building itself" feel.
+  // skipIntro (mobile) bypasses all intro animations.
+  const toolbarIn  = launched || skipIntro;
+  const controlsIn = launched || skipIntro;
+
   return (
     <main
       className="flex flex-col flex-1 h-full overflow-hidden"
       style={{ backgroundColor: "var(--shouf-bg)", minWidth: 0 }}
     >
-      <CanvasHeader zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} skipIntro={skipIntro} />
+      {/* Toolbar — slides down from above on launch */}
+      <div style={{ flexShrink: 0, overflow: "hidden" }}>
+        <div
+          style={{
+            transform:  toolbarIn ? "translateY(0)" : "translateY(-100%)",
+            transition: skipIntro ? "none" : "transform 500ms cubic-bezier(0.25, 0, 0, 1) 150ms",
+          }}
+        >
+          <CanvasHeader zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} skipIntro={skipIntro} />
+        </div>
+      </div>
 
       {/* Canvas area — two-layer approach:
           1. Outer: flex:1 block provides height; position:relative anchors inner.
@@ -328,21 +344,28 @@ export function CenterPanel({ showControls = false, skipIntro = false }: { showC
       <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
         <div style={{ position: "absolute", inset: 0, overflow: "auto" }}>
           <div style={{ zoom: scale, width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
-            <ComponentRenderer />
+            <ComponentRenderer skipIntro={skipIntro} />
           </div>
         </div>
       </div>
 
-      {/* Controls bar — slides up from the bottom when showControls becomes true */}
+      {/* Controls bar — space reserved via maxHeight; content slides up on launch */}
       <div
         style={{
           maxHeight:  showControls ? CONTROLS_H : 0,
           overflow:   "hidden",
           flexShrink: 0,
-          transition: "max-height 300ms cubic-bezier(0.25, 0, 0, 1)",
+          transition: "max-height 220ms cubic-bezier(0.25, 0, 0, 1)",
         }}
       >
-        <ControlsBar />
+        <div
+          style={{
+            transform:  controlsIn ? "translateY(0)" : "translateY(100%)",
+            transition: skipIntro ? "none" : "transform 500ms cubic-bezier(0.25, 0, 0, 1) 300ms",
+          }}
+        >
+          <ControlsBar />
+        </div>
       </div>
     </main>
   );
