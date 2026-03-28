@@ -22,6 +22,7 @@
 
 import { useState, useCallback, useRef, useEffect, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
+import { useAppStore } from "@/lib/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
@@ -197,7 +198,18 @@ const C = {
 
 // ─── Canvas ───────────────────────────────────────────────────────────────────
 
+// Viewport preset widths for the controls bar "Viewport" select
+const VIEWPORT_WIDTHS: Record<string, number | null> = {
+  desktop: null,   // full width
+  tablet:  680,    // just below BP_TABLET (720)
+  mobile:  380,    // between BP_MIN (320) and BP_MOBILE (500)
+};
+
 export function RcGlobalNavCanvas() {
+  const { controlValues, setControlValue } = useAppStore();
+  const viewportControl = (controlValues["rc-global-nav"]?.viewport as string) ?? "desktop";
+  const collapsedControl = controlValues["rc-global-nav"]?.collapsed === true;
+
   const [frameWidth, setFrameWidth] = useState<number | null>(null);
   const [collapsed,  setCollapsed]  = useState(false);
 
@@ -209,6 +221,20 @@ export function RcGlobalNavCanvas() {
       setFrameWidth(BP_MIN);
     }
   }, []);
+
+  // ── Sync viewport control → frame width ─────────────────────────────────
+  const skipSyncRef = useRef(false);
+  useEffect(() => {
+    if (skipSyncRef.current) { skipSyncRef.current = false; return; }
+    setFrameWidth(VIEWPORT_WIDTHS[viewportControl] ?? null);
+  }, [viewportControl]);
+
+  // ── Sync collapsed control → sidebar state ──────────────────────────────
+  useEffect(() => {
+    // Only apply on desktop — tablet/mobile don't have a persistent sidebar
+    if (!isTabletRef.current) setCollapsed(collapsedControl);
+  }, [collapsedControl]);
+  const isTabletRef = useRef(false);
   const [activeId,   setActiveId]   = useState("reports");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -247,15 +273,16 @@ export function RcGlobalNavCanvas() {
   useEffect(() => { if (!collapsed) setFlyout(null); }, [collapsed]);
   useEffect(() => () => clearTimeout(hoverTimer.current), []);
 
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const frameRef  = useRef<HTMLDivElement>(null);
-  const dragState = useRef<{ startX: number; startWidth: number } | null>(null);
+  const canvasRef  = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const frameRef   = useRef<HTMLDivElement>(null);
+  const dragState  = useRef<{ startX: number; startWidth: number } | null>(null);
   const badgeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // Need a measured width for breakpoint comparison — re-render on resize
+  // Measure the wrapper (inside padding) — this is the actual available space
   const [measuredWidth, setMeasuredWidth] = useState(0);
   useLayoutEffect(() => {
-    const el = canvasRef.current;
+    const el = wrapperRef.current;
     if (!el) return;
     const obs = new ResizeObserver(() => setMeasuredWidth(el.clientWidth));
     obs.observe(el);
@@ -263,9 +290,36 @@ export function RcGlobalNavCanvas() {
     return () => obs.disconnect();
   }, []);
 
+  // Clamp frameWidth to canvas when browser shrinks — keeps handle visible
+  useEffect(() => {
+    if (frameWidth !== null && measuredWidth > 0 && frameWidth > measuredWidth) {
+      setFrameWidth(measuredWidth);
+    }
+  }, [measuredWidth, frameWidth]);
+
   const resolvedWidth = frameWidth ?? measuredWidth;
   const isTablet = resolvedWidth > 0 && resolvedWidth < BP_TABLET;
   const isMobile = resolvedWidth > 0 && resolvedWidth < BP_MOBILE;
+  isTabletRef.current = isTablet;
+
+  // ── Sync resolved breakpoint → viewport dropdown ────────────────────────
+  const prevViewportLabel = useRef(viewportControl);
+  useEffect(() => {
+    if (resolvedWidth <= 0) return;
+    const newLabel = isMobile ? "mobile" : isTablet ? "tablet" : "desktop";
+    if (newLabel !== prevViewportLabel.current) {
+      prevViewportLabel.current = newLabel;
+      skipSyncRef.current = true; // prevent circular update
+      setControlValue("rc-global-nav", "viewport", newLabel);
+    }
+  }, [resolvedWidth, isMobile, isTablet, setControlValue]);
+
+  // ── Sync collapsed state → controls bar ─────────────────────────────────
+  useEffect(() => {
+    if (collapsed !== collapsedControl && !isTablet) {
+      setControlValue("rc-global-nav", "collapsed", collapsed);
+    }
+  }, [collapsed]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-close drawer / reset on breakpoint transitions
   const prevIsTablet = useRef(false);
@@ -304,9 +358,9 @@ export function RcGlobalNavCanvas() {
 
   // ── Resize drag ───────────────────────────────────────────────────────────
   const startDrag = useCallback((startX: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    dragState.current = { startX, startWidth: frameRef.current?.clientWidth ?? canvas.clientWidth };
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    dragState.current = { startX, startWidth: frameRef.current?.clientWidth ?? wrapper.clientWidth };
     setIsDragging(true);
     setShowBadge(true);
     clearTimeout(badgeTimer.current);
@@ -325,10 +379,10 @@ export function RcGlobalNavCanvas() {
   useEffect(() => {
     if (!isDragging) return;
     const applyDrag = (clientX: number) => {
-      const state  = dragState.current;
-      const canvas = canvasRef.current;
-      if (!state || !canvas) return;
-      const maxW = canvas.clientWidth;
+      const state   = dragState.current;
+      const wrapper = wrapperRef.current;
+      if (!state || !wrapper) return;
+      const maxW = wrapper.clientWidth;
       const next = Math.max(BP_MIN, Math.min(maxW, state.startWidth + (clientX - state.startX)));
       setFrameWidth(next >= maxW - 8 ? null : next);
     };
@@ -359,37 +413,37 @@ export function RcGlobalNavCanvas() {
       style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden", padding: "20px 24px 24px", background: "var(--shouf-canvas)", position: "relative", userSelect: isDragging ? "none" : undefined }}
     >
       {/* Canvas label */}
-      <div style={{ fontSize: "11px", fontFamily: "var(--font-mono)", color: "var(--shouf-text-faint)", marginBottom: "14px", letterSpacing: "0.04em", flexShrink: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+      <div style={{ fontSize: "11px", fontFamily: "var(--font-mono)", color: "var(--shouf-text)", marginBottom: "14px", letterSpacing: "0.04em", flexShrink: 0, display: "flex", alignItems: "center", gap: "10px" }}>
         <span>
           Responsive Components / Global Navigation — click items and the{" "}
-          <span style={{ color: "var(--shouf-text-muted)" }}>«</span> toggle to interact
+          <span style={{ color: "var(--shouf-accent)" }}>«</span> toggle to interact
         </span>
         {showBadge ? (
-          <span style={{ fontSize: "10px", fontFamily: "var(--font-mono)", padding: "2px 8px", borderRadius: "4px", background: isMobile ? "rgba(200,160,0,0.12)" : isTablet ? "rgba(61, 122, 48, 0.12)" : "var(--shouf-hover)", color: isMobile ? "#9B6F00" : isTablet ? "#3D7A30" : "var(--shouf-text-muted)", border: `1px solid ${isMobile ? "rgba(200,160,0,0.25)" : isTablet ? "rgba(61,122,48,0.25)" : "var(--shouf-border)"}`, whiteSpace: "nowrap" }}>
+          <span style={{ fontSize: "10px", fontFamily: "var(--font-mono)", padding: "2px 8px", borderRadius: "4px", background: isMobile ? "rgba(200,160,0,0.12)" : isTablet ? "rgba(61, 122, 48, 0.12)" : "var(--shouf-hover)", color: isMobile ? "#9B6F00" : isTablet ? "#3D7A30" : "var(--shouf-text)", border: `1px solid ${isMobile ? "rgba(200,160,0,0.25)" : isTablet ? "rgba(61,122,48,0.25)" : "var(--shouf-border)"}`, whiteSpace: "nowrap" }}>
             {frameWidth !== null ? `${frameWidth}px` : `${measuredWidth}px`}
             {isMobile ? " · mobile" : isTablet ? " · tablet" : " · desktop"}
           </span>
         ) : (
-          <span style={{ color: "var(--shouf-text-faint)", opacity: 0.6 }}>
+          <span style={{ color: "var(--shouf-text-muted)" }}>
             — drag{" "}<span style={{ display: "inline-block", width: "3px", height: "10px", borderRadius: "2px", background: "currentColor", verticalAlign: "middle", margin: "0 2px" }} />{" "}right edge to resize
           </span>
         )}
       </div>
 
       {/* Frame + handle wrapper */}
-      <div style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "stretch", position: "relative" }}>
+      <div ref={wrapperRef} style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "stretch", position: "relative", overflow: "hidden" }}>
 
         {/* ── Browser frame ─────────────────────────────────────────────────── */}
         <div
           ref={frameRef}
-          style={{ flex: frameWidth === null ? 1 : undefined, width: frameWidth !== null ? `${frameWidth}px` : undefined, minWidth: `${BP_MIN}px`, display: "flex", flexDirection: "column", borderRadius: "10px", border: `1px solid ${isDragging ? C.handleHover : "var(--shouf-border)"}`, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)", background: C.sidebarBg, transition: isDragging ? "none" : "border-color 200ms ease", position: "relative" }}
+          style={{ flex: frameWidth === null ? 1 : undefined, width: frameWidth !== null ? `${frameWidth}px` : undefined, maxWidth: "100%", minWidth: `${BP_MIN}px`, display: "flex", flexDirection: "column", borderRadius: "10px", border: `1px solid ${isDragging ? C.handleHover : "var(--shouf-border)"}`, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)", background: C.sidebarBg, transition: isDragging ? "none" : "border-color 200ms ease", position: "relative" }}
         >
           {/* App layout */}
           <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden", position: "relative" }}>
 
             {/* Desktop sidebar */}
             {!isTablet && (
-              <aside style={{ width: collapsed ? "64px" : "240px", minWidth: collapsed ? "64px" : "240px", background: C.sidebarBg, borderRight: `1px solid ${C.border}`, display: "flex", flexDirection: "column", transition: "width 220ms cubic-bezier(0.4,0,0.2,1), min-width 220ms cubic-bezier(0.4,0,0.2,1)", overflow: "hidden" }}>
+              <aside style={{ width: collapsed ? "60px" : "248px", minWidth: collapsed ? "60px" : "248px", background: C.sidebarBg, borderRight: `1px solid ${C.border}`, display: "flex", flexDirection: "column", transition: "width 220ms cubic-bezier(0.4,0,0.2,1), min-width 220ms cubic-bezier(0.4,0,0.2,1)", overflow: "hidden" }}>
                 <nav ref={navRef} className="rc-nav-scroll" style={{ flex: 1, padding: "10px 8px", overflowY: "auto", overflowX: "hidden", display: "flex", flexDirection: "column", gap: "1px" }}>
                   {NAV_ROWS.map((row, i) => {
                     if (row === "divider") return <hr key={`div-${i}`} style={{ border: "none", borderTop: `1px solid ${C.divider}`, margin: "5px 4px", flexShrink: 0 }} />;
@@ -411,21 +465,21 @@ export function RcGlobalNavCanvas() {
                         />
                         {/* Inline accordion when expanded (desktop non-collapsed) */}
                         {hasSubItems && isExpanded && (
-                          <div style={{ marginLeft: "19px", borderLeft: "1.5px solid #F0F1F3", paddingLeft: "11px", paddingBottom: "4px" }}>
+                          <div style={{ marginLeft: "20px", borderLeft: "1.5px solid #F0F1F3", paddingLeft: "12px", paddingBottom: "4px" }}>
                             {NAV_SUB_ITEMS[row.id].map((sub, si) => {
                               if (sub === "divider") return <hr key={`sd-${si}`} style={{ border: "none", borderTop: "1px solid #F0F1F3", margin: "3px 0" }} />;
                               return (
                                 <button
                                   key={sub.id}
                                   onClick={() => setActiveId(sub.id)}
-                                  style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", height: "34px", padding: "0 8px 0 0", marginLeft: "8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease", animation: "rc-nav-label-in 160ms cubic-bezier(0.2,0,0,1) both" }}
+                                  style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", height: "36px", padding: "0 8px 0 0", marginLeft: "8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease", animation: "rc-nav-label-in 160ms cubic-bezier(0.2,0,0,1) both" }}
                                   onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
                                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
                                 >
-                                  <span style={{ width: "16px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                  <span style={{ width: "18px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                                     <FontAwesomeIcon icon={sub.icon} style={{ width: 15, height: 15, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
                                   </span>
-                                  <span style={{ fontSize: "12px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                  <span style={{ fontSize: "13px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                     {sub.label}
                                   </span>
                                   {sub.count != null && (
@@ -440,14 +494,14 @@ export function RcGlobalNavCanvas() {
                     );
                   })}
                 </nav>
-                <div style={{ padding: "10px 8px 14px", borderTop: `1px solid ${C.border}`, display: "flex", flexDirection: "column", alignItems: collapsed ? "center" : "stretch", gap: "6px", flexShrink: 0 }}>
+                <div style={{ padding: "12px 8px 14px", borderTop: `1px solid ${C.border}`, display: "flex", flexDirection: "column", alignItems: collapsed ? "center" : "stretch", gap: "8px", flexShrink: 0 }}>
                   {/* Avatar row — shows name when expanded */}
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: collapsed ? 0 : "0 4px" }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="https://i.pravatar.cc/64?u=joann" alt="User avatar" width={32} height={32} style={{ width: "32px", height: "32px", borderRadius: "50%", border: `2px solid ${C.avatarBorder}`, objectFit: "cover", flexShrink: 0, display: "block" }} />
+                    <img src="https://i.pravatar.cc/64?u=joann" alt="User avatar" width={36} height={36} style={{ width: "36px", height: "36px", borderRadius: "50%", border: `2px solid ${C.avatarBorder}`, objectFit: "cover", flexShrink: 0, display: "block" }} />
                     {!collapsed && (
                       <div style={{ overflow: "hidden" }}>
-                        <div style={{ fontSize: "13px", fontWeight: 600, color: C.navText, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Jessica Cordovoa</div>
+                        <div style={{ fontSize: "14px", fontWeight: 600, color: C.navText, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Jessica Cordovoa</div>
                         <div style={{ fontSize: "11px", color: "#9CA3AF", whiteSpace: "nowrap" }}>jessica@acme.com</div>
                       </div>
                     )}
@@ -474,10 +528,10 @@ export function RcGlobalNavCanvas() {
                     // ── Nav drawer ────────────────────────────────────────
                     <>
                       {/* Drawer header */}
-                      <div style={{ display: "flex", alignItems: "center", padding: "16px 16px 10px", borderBottom: `1px solid ${C.border}`, flexShrink: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", padding: "18px 16px 12px", borderBottom: `1px solid ${C.border}`, flexShrink: 0 }}>
                         <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src="/desktop.png" alt="bambooHR" style={{ height: "17px", width: "auto", display: "block" }} />
+                          <img src="/desktop.png" alt="bambooHR" style={{ height: "20px", width: "auto", display: "block" }} />
                         </div>
                         <button onClick={() => setDrawerOpen(false)} style={{ width: "30px", height: "30px", borderRadius: "6px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: C.navIcon, flexShrink: 0 }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
                           <FontAwesomeIcon icon={faXmark} style={{ width: 14, height: 14 }} />
@@ -511,21 +565,21 @@ export function RcGlobalNavCanvas() {
                               />
                               {/* Sub-items (expanded) */}
                               {hasSubItems && isExpanded && (
-                                <div style={{ marginLeft: "20px", borderLeft: "1.5px solid #F0F1F3", paddingLeft: "12px", paddingBottom: "4px" }}>
+                                <div style={{ marginLeft: "22px", borderLeft: "1.5px solid #F0F1F3", paddingLeft: "12px", paddingBottom: "4px" }}>
                                   {NAV_SUB_ITEMS[row.id].map((sub, si) => {
                                     if (sub === "divider") return <hr key={`dsd-${si}`} style={{ border: "none", borderTop: "1px solid #F0F1F3", margin: "4px 0" }} />;
                                     return (
                                       <button
                                         key={sub.id}
                                         onClick={() => { setActiveId(sub.id); setDrawerOpen(false); }}
-                                        style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", height: "38px", padding: "0 10px 0 0", marginLeft: "8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
+                                        style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", height: "40px", padding: "0 10px 0 0", marginLeft: "8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
                                         onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
                                         onMouseLeave={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
                                       >
-                                        <span style={{ width: "18px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                          <FontAwesomeIcon icon={sub.icon} style={{ width: 15, height: 15, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
+                                        <span style={{ width: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                          <FontAwesomeIcon icon={sub.icon} style={{ width: 16, height: 16, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
                                         </span>
-                                        <span style={{ fontSize: "13px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                        <span style={{ fontSize: "14px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                           {sub.label}
                                         </span>
                                         {sub.count != null && (
@@ -551,8 +605,8 @@ export function RcGlobalNavCanvas() {
                         onMouseLeave={(e) => { if (isMobile) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src="https://i.pravatar.cc/64?u=jessica" alt="Jessica Cordovoa" width={32} height={32} style={{ width: "32px", height: "32px", borderRadius: "50%", border: `2px solid ${C.avatarBorder}`, objectFit: "cover", flexShrink: 0 }} />
-                        <span style={{ fontSize: "13px", fontWeight: 500, color: C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <img src="https://i.pravatar.cc/64?u=jessica" alt="Jessica Cordovoa" width={36} height={36} style={{ width: "36px", height: "36px", borderRadius: "50%", border: `2px solid ${C.avatarBorder}`, objectFit: "cover", flexShrink: 0 }} />
+                        <span style={{ fontSize: "14px", fontWeight: 500, color: C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           Jessica Cordovoa
                         </span>
                         {isMobile && (
@@ -570,14 +624,14 @@ export function RcGlobalNavCanvas() {
 
               {/* Desktop header */}
               {!isTablet && (
-                <header style={{ height: "60px", minHeight: "60px", background: C.headerBg, borderBottom: `1px solid ${C.border}`, display: "flex", alignItems: "center", padding: "0 20px", gap: "10px", flexShrink: 0, position: "relative", zIndex: 10 }}>
+                <header style={{ height: "64px", minHeight: "64px", background: C.headerBg, borderBottom: `1px solid ${C.border}`, display: "flex", alignItems: "center", padding: "0 20px", gap: "12px", flexShrink: 0, position: "relative", zIndex: 10 }}>
                   <div style={{ display: "flex", alignItems: "center", marginRight: "auto", flexShrink: 0 }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/desktop.png" alt="bambooHR" style={{ height: "18px", width: "auto", display: "block" }} />
+                    <img src="/desktop.png" alt="bambooHR" style={{ height: "20px", width: "auto", display: "block" }} />
                   </div>
                   <SearchBar />
-                  <button style={{ width: "34px", height: "34px", borderRadius: "50%", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 100ms ease" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
-                    <FontAwesomeIcon icon={faInbox} style={{ width: 16, height: 16, color: C.navIcon }} />
+                  <button style={{ width: "36px", height: "36px", borderRadius: "50%", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 100ms ease" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+                    <FontAwesomeIcon icon={faInbox} style={{ width: 17, height: 17, color: C.navIcon }} />
                   </button>
                   <AskButton />
                 </header>
@@ -593,8 +647,8 @@ export function RcGlobalNavCanvas() {
               )}
 
               {/* Content */}
-              <div style={{ flex: 1, padding: "16px", overflow: "auto", background: "#FAFAFA" }}>
-                <div style={{ width: "100%", height: "100%", minHeight: "180px", borderRadius: "14px", background: C.contentBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ flex: 1, padding: "16px", overflow: "auto", background: "#F8F8F6" }}>
+                <div style={{ width: "100%", height: "100%", minHeight: "180px", borderRadius: "12px", background: C.contentBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <span style={{ fontSize: "12px", fontFamily: "var(--font-mono)", color: "#B5AFA7", letterSpacing: "0.03em" }}>
                     {activeEntry?.label ?? "Content area"}
                   </span>
@@ -628,7 +682,7 @@ export function RcGlobalNavCanvas() {
           onMouseDown={onHandleMouseDown}
           onTouchStart={onHandleTouchStart}
           title="Drag to resize"
-          style={{ position: "absolute", left: frameWidth !== null ? `calc(${frameWidth}px - 4px)` : "calc(100% - 4px)", top: "50%", transform: "translateY(-50%)", width: "8px", height: "40px", borderRadius: "4px", background: isDragging ? C.handleHover : C.handleBg, cursor: "col-resize", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "center", transition: isDragging ? "none" : "background 150ms ease", boxShadow: isDragging ? `0 0 0 3px rgba(61, 122, 48, 0.20)` : "none", touchAction: "none" }}
+          style={{ position: "absolute", left: frameWidth !== null ? `min(${frameWidth}px, 100%) ` : "100%", top: "50%", transform: "translate(-50%, -50%)", width: "8px", height: "40px", borderRadius: "4px", background: isDragging ? C.handleHover : C.handleBg, cursor: "col-resize", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "center", transition: isDragging ? "none" : "background 150ms ease", boxShadow: isDragging ? `0 0 0 3px rgba(61, 122, 48, 0.20)` : "none", touchAction: "none" }}
           onMouseEnter={(e) => { if (!isDragging) e.currentTarget.style.background = C.handleHover; }}
           onMouseLeave={(e) => { if (!isDragging) e.currentTarget.style.background = C.handleBg; }}
         >
@@ -652,8 +706,8 @@ function AccountPanel({ onClose }: { onClose: () => void }) {
       {/* Header: avatar + name + × */}
       <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "14px 16px", borderBottom: `1px solid ${C.border}`, flexShrink: 0 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="https://i.pravatar.cc/64?u=jessica" alt="Jessica Cordovoa" width={36} height={36} style={{ width: "36px", height: "36px", borderRadius: "50%", border: `2px solid ${C.avatarBorder}`, objectFit: "cover", flexShrink: 0 }} />
-        <span style={{ fontSize: "14px", fontWeight: 600, color: C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        <img src="https://i.pravatar.cc/64?u=jessica" alt="Jessica Cordovoa" width={40} height={40} style={{ width: "40px", height: "40px", borderRadius: "50%", border: `2px solid ${C.avatarBorder}`, objectFit: "cover", flexShrink: 0 }} />
+        <span style={{ fontSize: "15px", fontWeight: 600, color: C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           Jessica Cordovoa
         </span>
         <button onClick={onClose} style={{ width: "30px", height: "30px", borderRadius: "6px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: C.navIcon, flexShrink: 0 }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
@@ -831,15 +885,15 @@ function DrawerNavButton({
   return (
     <button
       onClick={onClick}
-      style={{ display: "flex", alignItems: "center", gap: "12px", height: "44px", padding: "0 10px", borderRadius: "7px", border: "none", cursor: "pointer", width: "100%", textAlign: "left", background: isActive ? C.activeBg : "transparent", color: isActive ? C.activeText : C.navText, transition: "background 80ms ease", flexShrink: 0, animation: `rc-nav-label-in 200ms cubic-bezier(0.2,0,0,1) ${labelIndex * 8}ms both` }}
+      style={{ display: "flex", alignItems: "center", gap: "12px", height: "46px", padding: "0 10px", borderRadius: "8px", border: "none", cursor: "pointer", width: "100%", textAlign: "left", background: isActive ? C.activeBg : "transparent", color: isActive ? C.activeText : C.navText, transition: "background 80ms ease", flexShrink: 0, animation: `rc-nav-label-in 200ms cubic-bezier(0.2,0,0,1) ${labelIndex * 8}ms both` }}
       onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
       onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
     >
-      <span style={{ width: "18px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: isActive ? C.activeIcon : C.navIcon }}>
-        <FontAwesomeIcon icon={row.icon} style={{ width: 15, height: 15 }} />
+      <span style={{ width: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: isActive ? C.activeIcon : C.navIcon }}>
+        <FontAwesomeIcon icon={row.icon} style={{ width: 17, height: 17 }} />
       </span>
       <span style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
-        <span style={{ fontSize: "13px", fontWeight: isActive ? 500 : 400, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{row.label}</span>
+        <span style={{ fontSize: "14px", fontWeight: isActive ? 600 : 400, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{row.label}</span>
         {row.sublabel && <span style={{ fontSize: "10px", color: "#9CA3AF", lineHeight: 1.3 }}>{row.sublabel}</span>}
       </span>
       {hasSubItems && (
@@ -918,10 +972,10 @@ function SearchBar() {
 
   return (
     <>
-      <div ref={wrapperRef} style={{ position: "relative", flexShrink: 0, width: "260px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", border: `1.5px solid ${focused ? C.searchFocus : C.border}`, borderRadius: "20px", padding: "0 14px", height: "34px", width: "100%", background: focused ? "#FFFFFF" : "#F3F4F6", transition: "border-color 120ms ease, background 120ms ease, box-shadow 120ms ease", cursor: "text", boxShadow: focused ? `0 0 0 3px rgba(61, 122, 48, 0.12)` : "none" }} onClick={() => { setFocused(true); updateRect(); }}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} style={{ width: 12, height: 12, color: focused ? C.searchFocus : "#9CA3AF", flexShrink: 0, transition: "color 120ms ease" }} />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => { setFocused(true); updateRect(); }} placeholder="Search..." style={{ border: "none", outline: "none", background: "transparent", fontSize: "13px", color: "#374151", width: "100%", fontFamily: "inherit" }} />
+      <div ref={wrapperRef} style={{ position: "relative", flexShrink: 1, width: "300px", minWidth: "140px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", border: `1.5px solid ${focused ? C.searchFocus : C.border}`, borderRadius: "20px", padding: "0 16px", height: "36px", width: "100%", background: focused ? "#FFFFFF" : "#F3F4F6", transition: "border-color 120ms ease, background 120ms ease, box-shadow 120ms ease", cursor: "text", boxShadow: focused ? `0 0 0 3px rgba(61, 122, 48, 0.12)` : "none" }} onClick={() => { setFocused(true); updateRect(); }}>
+          <FontAwesomeIcon icon={faMagnifyingGlass} style={{ width: 13, height: 13, color: focused ? C.searchFocus : "#9CA3AF", flexShrink: 0, transition: "color 120ms ease" }} />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => { setFocused(true); updateRect(); }} placeholder="Search..." style={{ border: "none", outline: "none", background: "transparent", fontSize: "14px", color: "#374151", width: "100%", fontFamily: "inherit" }} />
           {query && (
             <button onMouseDown={(e) => { e.preventDefault(); setQuery(""); }} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", padding: 0, flexShrink: 0, color: "#9CA3AF" }}>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
@@ -1021,15 +1075,15 @@ function NavButton({
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ display: "flex", alignItems: "center", gap: "12px", height: "42px", padding: collapsed ? "0" : "0 10px", borderRadius: "7px", border: "none", cursor: "pointer", width: "100%", textAlign: "left", background: (!collapsed && (isActive || isExpanded)) ? C.activeBg : "transparent", color: isActive ? C.activeText : C.navText, justifyContent: collapsed ? "center" : "flex-start", transition: "background 80ms ease", flexShrink: 0 }}
+      style={{ display: "flex", alignItems: "center", gap: "12px", height: "44px", padding: collapsed ? "0" : "0 10px", borderRadius: "8px", border: "none", cursor: "pointer", width: "100%", textAlign: "left", background: (!collapsed && (isActive || isExpanded)) ? C.activeBg : "transparent", color: isActive ? C.activeText : C.navText, justifyContent: collapsed ? "center" : "flex-start", transition: "background 80ms ease", flexShrink: 0 }}
     >
-      <span style={{ width: collapsed ? "40px" : "18px", height: collapsed ? "40px" : "auto", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: isActive ? C.activeIcon : C.navIcon, transition: "color 80ms ease", borderRadius: (collapsed && isActive) ? "8px" : "0", background: (collapsed && isActive) ? C.activeBg : "transparent" }}>
-        <FontAwesomeIcon icon={row.icon} style={{ width: 15, height: 15 }} />
+      <span style={{ width: collapsed ? "42px" : "20px", height: collapsed ? "42px" : "auto", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: isActive ? C.activeIcon : C.navIcon, transition: "color 80ms ease", borderRadius: (collapsed && isActive) ? "10px" : "0", background: (collapsed && isActive) ? C.activeBg : "transparent" }}>
+        <FontAwesomeIcon icon={row.icon} style={{ width: 17, height: 17 }} />
       </span>
       {!collapsed && (
         <>
           <span style={{ display: "flex", flexDirection: "column", overflow: "hidden", whiteSpace: "nowrap", flex: 1, animation: "rc-nav-label-in 200ms cubic-bezier(0.2,0,0,1) both", animationDelay: `${labelIndex * 10}ms` }}>
-            <span style={{ fontSize: "13px", fontWeight: isActive ? 500 : 400, lineHeight: 1.3 }}>{row.label}</span>
+            <span style={{ fontSize: "14px", fontWeight: isActive ? 600 : 400, lineHeight: 1.3 }}>{row.label}</span>
             {row.sublabel && <span style={{ fontSize: "10px", color: "#9CA3AF", lineHeight: 1.3 }}>{row.sublabel}</span>}
           </span>
           {hasSubItems && (
@@ -1089,14 +1143,14 @@ function NavFlyout({
           <button
             key={sub.id}
             onClick={() => onSelect(sub.id)}
-            style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", padding: "9px 14px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
+            style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", padding: "10px 14px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
             onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
           >
             <span style={{ width: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <FontAwesomeIcon icon={sub.icon} style={{ width: 13, height: 13, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
+              <FontAwesomeIcon icon={sub.icon} style={{ width: 14, height: 14, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
             </span>
-            <span style={{ fontSize: "13px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1 }}>{sub.label}</span>
+            <span style={{ fontSize: "14px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1 }}>{sub.label}</span>
             {sub.count != null && <span style={{ fontSize: "11px", color: "#9CA3AF", flexShrink: 0 }}>({sub.count})</span>}
           </button>
         );
@@ -1113,12 +1167,12 @@ function CollapseButton({ collapsed, onClick }: { collapsed: boolean; onClick: (
     <button
       onClick={onClick}
       title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-      style={{ width: collapsed ? "40px" : "100%", height: "32px", borderRadius: "6px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start", flexShrink: 0, transition: "background 100ms ease, width 220ms cubic-bezier(0.4,0,0.2,1)", gap: "8px", color: C.navIcon, padding: collapsed ? 0 : "0 10px" }}
+      style={{ width: collapsed ? "42px" : "100%", height: "34px", borderRadius: "7px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start", flexShrink: 0, transition: "background 100ms ease, width 220ms cubic-bezier(0.4,0,0.2,1)", gap: "8px", color: C.navIcon, padding: collapsed ? 0 : "0 10px" }}
       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
     >
-      <FontAwesomeIcon icon={collapsed ? faAnglesRight : faAnglesLeft} style={{ width: 12, height: 12, flexShrink: 0 }} />
-      {!collapsed && <span style={{ fontSize: "12px", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden" }}>Collapse</span>}
+      <FontAwesomeIcon icon={collapsed ? faAnglesRight : faAnglesLeft} style={{ width: 13, height: 13, flexShrink: 0 }} />
+      {!collapsed && <span style={{ fontSize: "13px", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden" }}>Collapse</span>}
     </button>
   );
 }
@@ -1128,12 +1182,12 @@ function CollapseButton({ collapsed, onClick }: { collapsed: boolean; onClick: (
 function AskButton() {
   return (
     <button
-      style={{ display: "flex", alignItems: "center", gap: "7px", background: "#FFFFFF", color: "#3D7A30", border: "1.5px solid #3D7A30", borderRadius: "20px", padding: "0 16px", height: "34px", fontSize: "13px", fontWeight: 500, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", transition: "background 100ms ease, color 100ms ease" }}
+      style={{ display: "flex", alignItems: "center", gap: "7px", background: "#FFFFFF", color: "#3D7A30", border: "1.5px solid #3D7A30", borderRadius: "20px", padding: "0 16px", height: "36px", fontSize: "14px", fontWeight: 500, cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", transition: "background 100ms ease, color 100ms ease" }}
       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(61,122,48,0.06)"; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "#FFFFFF"; }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/icon.png" alt="" aria-hidden="true" style={{ width: "13px", height: "13px", display: "block", flexShrink: 0 }} />
+      <img src="/icon.png" alt="" aria-hidden="true" style={{ width: "14px", height: "14px", display: "block", flexShrink: 0 }} />
       Ask
     </button>
   );

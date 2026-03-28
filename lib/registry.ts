@@ -14,6 +14,7 @@ import { PDS_COLOR_TOKENS_REGISTRATION }  from "@/components/portfolio-design-sy
 import { PDS_INPUT_REGISTRATION }         from "@/components/portfolio-design-system/PdsInput/definition";
 import { PdsInputRenderer }               from "@/components/portfolio-design-system/PdsInput/PdsInput";
 import { WELCOME_REGISTRATION }           from "@/components/canvas/WelcomeDefinition";
+import { RC_GLOBAL_NAV_REGISTRATION }    from "@/components/canvas/RcGlobalNavDefinition";
 
 // ─── Registry maps ─────────────────────────────────────────────────────────────
 // Add each new component here. The renderer is kept separate from the
@@ -28,6 +29,7 @@ export const COMPONENT_REGISTRY: Record<string, ComponentRegistration> = {
   "pds-spacing":          PDS_SPACING_REGISTRATION,
   "eu-statuses":          EU_STATUSES_REGISTRATION,
   "eu-folder-container":  EU_FOLDER_CONTAINER_REGISTRATION,
+  "rc-global-nav":        RC_GLOBAL_NAV_REGISTRATION,
 };
 
 export const COMPONENT_RENDERERS: Record<
