@@ -16,7 +16,7 @@ export function AccordionSection({
   headerDelay = 0,
   itemDelays = [],
 }: AccordionSectionProps) {
-  const { expandedSections, toggleSection, launched } = useAppStore();
+  const { expandedSections, toggleSection, selectSection, selectComponent, setActiveMobilePanel, launched } = useAppStore();
   const isExpanded = expandedSections.has(section.id);
 
   // Sub-groups start expanded
@@ -32,11 +32,6 @@ export function AccordionSection({
     });
   }
 
-  // Total count across top-level entries and all groups
-  const totalCount =
-    section.entries.length +
-    (section.groups ?? []).reduce((acc, g) => acc + g.entries.length, 0);
-
   // Delays are ordered: top-level entries first, then groups in order
   let delayIdx = 0;
 
@@ -44,10 +39,19 @@ export function AccordionSection({
     <div className="flex flex-col">
       {/* Section header */}
       <button
-        onClick={() => toggleSection(section.id)}
-        className="group w-full flex items-center gap-1.5 px-3 py-2 text-left transition-colors"
+        onClick={() => {
+          toggleSection(section.id);
+          // Navigate to section index page when clicking header
+          if (section.navigateOnClick) {
+            selectComponent(null);
+            selectSection(section.id);
+            setActiveMobilePanel("canvas");
+          }
+        }}
+        className="group w-full flex items-center gap-1.5 px-3 py-[6px] text-left transition-colors"
         style={{
           color: "var(--shouf-text)",
+          borderRadius: "6px",
           animationName:           "intro-reveal",
           animationDuration:       "220ms",
           animationTimingFunction: "ease",
@@ -64,8 +68,8 @@ export function AccordionSection({
       >
         {/* Chevron */}
         <svg
-          width="10"
-          height="10"
+          width="9"
+          height="9"
           viewBox="0 0 10 10"
           fill="none"
           className="shrink-0 transition-transform duration-150"
@@ -84,26 +88,16 @@ export function AccordionSection({
         </svg>
 
         <span
-          className="text-[12px] font-semibold uppercase tracking-wider truncate"
-          style={{ color: "var(--shouf-text-muted)", letterSpacing: "0.06em" }}
+          className="text-[11px] font-medium uppercase tracking-wider truncate"
+          style={{ color: "var(--shouf-text-muted)", letterSpacing: "0.08em" }}
         >
           {section.title}
-        </span>
-
-        <span
-          className="ml-auto shrink-0 text-[12px] font-medium px-1.5 py-0.5 rounded"
-          style={{
-            backgroundColor: "var(--shouf-badge-bg)",
-            color: "var(--shouf-text-faint)",
-          }}
-        >
-          {totalCount}
         </span>
       </button>
 
       {/* Expanded content */}
       {isExpanded && (
-        <div className="flex flex-col pl-2 pr-1 pb-1 gap-px">
+        <div className="flex flex-col gap-[1px] mt-[2px] mb-1">
 
           {/* Top-level entries */}
           {section.entries.map((entry) => {
@@ -118,11 +112,11 @@ export function AccordionSection({
             const groupDelays = group.entries.map(() => itemDelays[delayIdx++] ?? headerDelay + 60);
 
             return (
-              <div key={group.label} className="flex flex-col mt-0.5">
+              <div key={group.label} className="flex flex-col mt-1">
                 {/* Sub-group header */}
                 <button
                   onClick={() => toggleGroup(group.label)}
-                  className="w-full flex items-center gap-1.5 px-3 py-1 text-left rounded-sm transition-colors"
+                  className="w-full flex items-center gap-1.5 px-3 py-1 text-left rounded-md transition-colors"
                   style={{ color: "var(--shouf-text-faint)" }}
                   onMouseEnter={(e) =>
                     ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover)")
@@ -148,7 +142,7 @@ export function AccordionSection({
                     />
                   </svg>
                   <span
-                    className="text-[11px] font-semibold uppercase tracking-wider"
+                    className="text-[11px] font-medium uppercase tracking-wider"
                     style={{ letterSpacing: "0.06em" }}
                   >
                     {group.label}

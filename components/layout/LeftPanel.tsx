@@ -311,7 +311,7 @@ function SearchBar() {
     >
       <PdsInput
         ref={inputRef}
-        size="sm"
+        size="md"
         withLabel={false}
         withIcon={true}
         withHelper={false}

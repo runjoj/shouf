@@ -155,12 +155,12 @@ function MobileView() {
 }
 
 // Pages that should NOT show controls/inspect panels (guides, landing, about).
-const NO_PANELS = new Set(["about", "pds-guide", "rc-guide", "eu-guide", "eu-embedded", "pds-color-tokens"]);
+const NO_PANELS = new Set(["about", "pds-guide", "pds-overview", "rc-guide", "rc-case-study", "eu-guide", "eu-overview", "eu-embedded", "pds-color-tokens"]);
 
 // ─── Desktop three-panel view ─────────────────────────────────────────────────
 
 // Width of the right panel in px — must match RightPanel's own width style.
-const RIGHT_PANEL_W = 280;
+const RIGHT_PANEL_W = 250;
 
 function DesktopView() {
   const { selectedComponentId, selectedSectionId, launched } = useAppStore();
@@ -182,7 +182,7 @@ function DesktopView() {
       }}
     >
       {/* ── Left panel — space always in layout; content slides in on launch ─── */}
-      <div style={{ flexShrink: 0, overflow: "hidden", width: 260 }}>
+      <div style={{ flexShrink: 0, overflow: "hidden", width: 240 }}>
         <div
           style={{
             height:     "100%",

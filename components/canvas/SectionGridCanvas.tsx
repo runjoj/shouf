@@ -436,16 +436,18 @@ function ComponentTile({ entry, isSelected, tileIndex, onClick }: TileProps) {
 
 // ─── SectionGridCanvas ────────────────────────────────────────────────────────
 
-export function SectionGridCanvas({ sectionId }: { sectionId: string }) {
+export function SectionGridCanvas({ sectionId, excludeIds, noSelection }: { sectionId: string; excludeIds?: string[]; noSelection?: boolean }) {
   const { selectedComponentId, selectComponent, selectSection } = useAppStore();
   const section = navSections.find((s) => s.id === sectionId);
 
   if (!section) return null;
 
+  const excludeSet = excludeIds ? new Set(excludeIds) : null;
+
   // Flatten top-level entries + all group entries, excluding the Overview entry itself
   const allEntries = [
-    ...section.entries.filter((e) => !e.overviewFor),
-    ...(section.groups ?? []).flatMap((g) => g.entries),
+    ...section.entries.filter((e) => !e.overviewFor && (!excludeSet || !excludeSet.has(e.id))),
+    ...(section.groups ?? []).flatMap((g) => g.entries.filter((e) => !excludeSet || !excludeSet.has(e.id))),
   ];
 
   const registeredCount   = allEntries.filter((e) => e.id in COMPONENT_REGISTRY || e.id in CUSTOM_TILE_PREVIEWS).length;
@@ -501,7 +503,7 @@ export function SectionGridCanvas({ sectionId }: { sectionId: string }) {
           <ComponentTile
             key={entry.id}
             entry={entry}
-            isSelected={selectedComponentId === entry.id}
+            isSelected={!noSelection && selectedComponentId === entry.id}
             tileIndex={i}
             onClick={() => { selectSection(null); selectComponent(entry.id); }}
           />

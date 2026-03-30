@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 // ─── Layout constants — mirror AppShell / IntroAnimation panel widths ─────────
-const LEFT_W = 260;
+const LEFT_W = 240;
 
 // ─── Animation timing (ms from launch) ───────────────────────────────────────
 const BASE_DELAY  = 800;  // first annotation starts this long after launched=true
@@ -32,15 +32,27 @@ type AnnotationDef = {
 
 const ANNOTATIONS: AnnotationDef[] = [
   {
-    // Arrow curves from inside canvas leftward into the nav accordion items
+    // Arrow curves from inside canvas leftward into the Work nav item
     id:           "nav",
-    label:        "explore pages here",
+    label:        "view case studies",
     svgFirst:     true,
     direction:    "row",
     alignItems:   "center",
-    containerPos: { position: "absolute", left: LEFT_W - 38, top: 118 },
-    svgW: 96, svgH: 36,
-    arrowPath:  "M 92 18 C 68 16 40 10 4 18",
+    containerPos: { position: "absolute", left: LEFT_W - 6, top: 118 },
+    svgW: 60, svgH: 36,
+    arrowPath:  "M 56 18 C 40 16 24 10 4 18",
+    tipPoints:  "14,10 4,18 14,26",
+  },
+  {
+    // Arrow curves from inside canvas leftward into the design system sections
+    id:           "ds",
+    label:        "explore design\nsystems",
+    svgFirst:     true,
+    direction:    "row",
+    alignItems:   "center",
+    containerPos: { position: "absolute", left: LEFT_W - 6, top: 295 },
+    svgW: 60, svgH: 36,
+    arrowPath:  "M 56 18 C 40 20 24 26 4 18",
     tipPoints:  "14,10 4,18 14,26",
   },
   {
@@ -54,8 +66,8 @@ const ANNOTATIONS: AnnotationDef[] = [
     direction:    "column",
     alignItems:   "flex-end",
     containerPos: { position: "absolute", right: 316, top: 46 },
-    svgW: 24, svgH: 64,
-    arrowPath:  "M 18 60 C 16 44 20 26 20 4",
+    svgW: 24, svgH: 44,
+    arrowPath:  "M 18 40 C 16 28 20 16 20 4",
     tipPoints:  "12,14 20,4 26,14",
   },
   {
@@ -67,8 +79,8 @@ const ANNOTATIONS: AnnotationDef[] = [
     direction:    "column",
     alignItems:   "flex-end",
     containerPos: { position: "absolute", right: 520, top: 46 },
-    svgW: 24, svgH: 64,
-    arrowPath:  "M 18 60 C 20 44 16 26 18 4",
+    svgW: 24, svgH: 44,
+    arrowPath:  "M 18 40 C 20 28 16 16 18 4",
     tipPoints:  "10,14 18,4 24,14",
   },
   {
@@ -91,9 +103,9 @@ const ANNOTATIONS: AnnotationDef[] = [
     direction:    "column",
     alignItems:   "flex-start",
     containerPos: { position: "absolute", bottom: 102, left: `calc(${LEFT_W}px + 4%)` },
-    svgW: 38, svgH: 68,
-    arrowPath:  "M 19 4 C 16 22 14 46 16 64",
-    tipPoints:  "8,54 16,64 24,54",
+    svgW: 38, svgH: 48,
+    arrowPath:  "M 19 4 C 16 16 14 32 16 44",
+    tipPoints:  "8,34 16,44 24,34",
   },
 ];
 

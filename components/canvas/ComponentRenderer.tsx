@@ -14,11 +14,16 @@ import { RcGlobalNavCanvas }   from "./RcGlobalNavCanvas";
 import { RcGuideCanvas }       from "./RcGuideCanvas";
 import { AboutCanvas }         from "./AboutCanvas";
 import { EuEmbeddedCanvas }   from "./EuEmbeddedCanvas";
+import { EuCaseStudyCanvas } from "./EuCaseStudyCanvas";
+import { WorkIndexCanvas }   from "./WorkIndexCanvas";
+import { RcCaseStudyCanvas } from "./RcCaseStudyCanvas";
+import { EuOverviewCanvas } from "./EuOverviewCanvas";
+import { PdsOverviewCanvas } from "./PdsOverviewCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
 
 const HEADLINE_STR =
-  "I\u2019m Jo, a designer and engineer who specializes in design systems";
+  "I\u2019m Jo, a designer + engineer with a love of design systems.";
 
 // Natural per-character delays — deterministic jitter so timing is consistent
 // across renders but looks organic.
@@ -31,6 +36,7 @@ const CHAR_DELAYS   = Array.from(HEADLINE_STR).map((ch, i) => charDelay(ch, i));
 const TOTAL_CHAR_MS = CHAR_DELAYS.reduce((a, b) => a + b, 0);
 // Hide cursor just before border-draw sequence starts
 const CURSOR_HIDE_MS = TOTAL_CHAR_MS + 500 - 80;
+
 
 // ─── Welcome canvas ───────────────────────────────────────────────────────────
 
@@ -97,10 +103,10 @@ function WelcomeCanvas() {
   const headlineTransition = launched ? "color 700ms ease"  : "none";
 
   return (
-    // Text column — sits in the flex welcome row; preview card is a sibling.
+    // Text column — centered in the canvas area.
     <div
-      className="flex flex-col gap-8 select-none"
-      style={{ maxWidth: "590px", flex: "1 1 320px", minWidth: 0 }}
+      className="flex flex-col select-none"
+      style={{ width: "min(590px, 100%)", gap: "2px", textAlign: "center" }}
     >
 
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -157,20 +163,6 @@ function WelcomeCanvas() {
             press any key to skip
           </p>
 
-          {/* Subhead */}
-          <p
-            style={{
-              fontSize:   "16px",
-              lineHeight: 1.75,
-              color:      "var(--shouf-text-muted)",
-              margin:     0,
-              opacity:    launched ? 1 : 0,
-              transition: launched ? "opacity 400ms ease 100ms" : "none",
-            }}
-          >
-            From tokens to components to documentation, I turn design decisions
-            into production-ready code so teams ship faster and stay consistent.
-          </p>
         </div>
 
       {/* Differentiator — elevated prominence */}
@@ -178,6 +170,7 @@ function WelcomeCanvas() {
         style={{
           fontSize:      "13px",
           fontFamily:    "var(--font-mono)",
+          fontWeight:    700,
           letterSpacing: "0.06em",
           textTransform: "uppercase",
           lineHeight:    1.6,
@@ -319,6 +312,7 @@ function LiveComponentCanvas({ componentId }: { componentId: string }) {
 export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }) {
   const { selectedComponentId, selectedSectionId, launched } = useAppStore();
 
+
   // During intro, WelcomeCanvas renders above the dark overlay (z-index 50)
   // by elevating this wrapper to z-index 55.  After launch the stacking order
   // returns to normal (z-index: auto = no isolated stacking context).
@@ -338,7 +332,10 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
     selectedComponentId === "eu-guide"         ||
     selectedComponentId === "eu-embedded"      ||
     selectedComponentId === "rc-guide"         ||
+    selectedComponentId === "rc-case-study"   ||
     selectedComponentId === "rc-global-nav"    ||
+    selectedComponentId === "eu-overview"     ||
+    selectedComponentId === "pds-overview"    ||
     selectedComponentId === "about"            ||
     isGridCanvas
   );
@@ -385,31 +382,17 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           justifyContent: isFullCanvas ? "flex-start" : "center",
         }}
       >
-        {/* Welcome row */}
-        {showWelcome && (
-          <div
-            style={{
-              display:        "flex",
-              flexWrap:       "wrap-reverse",
-              alignItems:     "center",
-              justifyContent: "center",
-              gap:            "48px",
-              // Fixed padding — CenterPanel width is stable from launch (right panel
-              // space is pre-reserved), so no intro offset hack needed.
-              padding:        "24px 48px",
-              width:          "100%",
-              boxSizing:      "border-box",
-            }}
-          >
-            <WelcomeCanvas />
-          </div>
-        )}
+        {/* Welcome text — rendered in normal flex flow, centered by parent */}
+        {showWelcome && <WelcomeCanvas />}
 
         {!showWelcome && !selectedComponentId && !selectedSectionId && <NoSelectionState />}
 
         {/* ── Section grid view ────────────────────────────────────────────── */}
         {/* Grid takes priority — individual component canvas is suppressed    */}
-        {isGridCanvas && (
+        {isGridCanvas && selectedSectionId === "work" && (
+          <WorkIndexCanvas />
+        )}
+        {isGridCanvas && selectedSectionId !== "work" && (
           <SectionGridCanvas sectionId={selectedSectionId!} />
         )}
 
@@ -432,6 +415,9 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
         {!showWelcome && !isGridCanvas && selectedComponentId === "rc-guide" && (
           <RcGuideCanvas />
         )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "rc-case-study" && (
+          <RcCaseStudyCanvas />
+        )}
         {!showWelcome && !isGridCanvas && selectedComponentId === "rc-global-nav" && (
           <RcGlobalNavCanvas />
         )}
@@ -439,7 +425,13 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           <AboutCanvas />
         )}
         {!showWelcome && !isGridCanvas && selectedComponentId === "eu-embedded" && (
-          <EuEmbeddedCanvas />
+          <EuCaseStudyCanvas />
+        )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "eu-overview" && (
+          <EuOverviewCanvas />
+        )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "pds-overview" && (
+          <PdsOverviewCanvas />
         )}
 
         {/* ── Registered components via LiveComponentCanvas ─────────────── */}
@@ -451,7 +443,10 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "eu-guide"         &&
           selectedComponentId !== "eu-embedded"      &&
           selectedComponentId !== "rc-guide"         &&
+          selectedComponentId !== "rc-case-study"   &&
           selectedComponentId !== "rc-global-nav"    &&
+          selectedComponentId !== "eu-overview"     &&
+          selectedComponentId !== "pds-overview"    &&
           isRegistered(selectedComponentId) && (
           <LiveComponentCanvas componentId={selectedComponentId} />
         )}
@@ -465,7 +460,10 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "eu-guide"         &&
           selectedComponentId !== "eu-embedded"      &&
           selectedComponentId !== "rc-guide"         &&
+          selectedComponentId !== "rc-case-study"   &&
           selectedComponentId !== "rc-global-nav"    &&
+          selectedComponentId !== "eu-overview"     &&
+          selectedComponentId !== "pds-overview"    &&
           selectedComponentId !== "about"            &&
           !isRegistered(selectedComponentId) && (
           <PlaceholderState componentId={selectedComponentId} />
