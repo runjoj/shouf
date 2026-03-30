@@ -10,7 +10,7 @@ export function RightPanel() {
       style={{
         backgroundColor: "var(--shouf-panel)",
         borderLeft: "1px solid var(--shouf-border-sub)",
-        width: "280px",
+        width: "250px",
       }}
     >
       <InspectPanel />

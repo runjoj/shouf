@@ -6,6 +6,12 @@ export type ComponentEntry = {
   sectionId: string;
   /** When set, clicking this entry navigates to the section grid for this sectionId */
   overviewFor?: string;
+  /** Small muted descriptor shown after the name (e.g. "built with Eucalyptus") */
+  tag?: string;
+  /** When true, the item is dimmed and not clickable */
+  disabled?: boolean;
+  /** Label shown when disabled (e.g. "coming soon") */
+  disabledLabel?: string;
 };
 
 export type NavSubGroup = {
@@ -18,6 +24,8 @@ export type NavSection = {
   title: string;
   entries: ComponentEntry[];   // top-level items (not in any sub-group)
   groups?: NavSubGroup[];      // optional collapsible sub-groups
+  /** When true, clicking the section header also navigates to the section index page */
+  navigateOnClick?: boolean;
 };
 
 // ─── Panel ─────────────────────────────────────────────────────────────────────

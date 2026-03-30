@@ -175,7 +175,7 @@ export function ControlsBar() {
       </div>
 
       {/* Controls row */}
-      <div className="flex items-center gap-3 px-4 py-3 overflow-x-auto">
+      <div className="flex items-center gap-3 px-4 pt-3 pb-4 overflow-x-auto">
         {registration && selectedComponentId ? (
           <>
             {selects.map((c) => (

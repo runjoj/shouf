@@ -298,8 +298,8 @@ function CanvasHeader({
 // selected. Controls bar slides up into view; slides back down for guide/welcome
 // pages so the canvas can use the full height.
 
-// Measured height of the controls bar (header ~32px + row ~50px + 1px border).
-const CONTROLS_H = 88;
+// Measured height of the controls bar (header ~32px + row ~54px + 1px border).
+const CONTROLS_H = 92;
 
 export function CenterPanel({ showControls = false, skipIntro = false }: { showControls?: boolean; skipIntro?: boolean }) {
   const [zoom, setZoom] = useState(100);

@@ -17,13 +17,13 @@ const LH    = 1.1;
 
 const HEADLINE_SERIF = (
   <>
-    I&rsquo;m Jo, a designer and engineer who specializes in
-    design systems
+    I&rsquo;m Jo, a designer + engineer with a love of
+    design systems.
   </>
 );
 
 const HEADLINE_STR =
-  "I'm Jo, a designer and engineer who specializes in design systems";
+  "I'm Jo, a designer + engineer with a love of design systems.";
 
 
 // ─── Animation timing (ms) ────────────────────────────────────────────────────
@@ -273,7 +273,9 @@ export function LandingScreen() {
             display:        "flex",
             flexDirection:  "column",
             justifyContent: "center",
+            alignSelf:      "center",
             maxWidth:       "560px",
+            width:          "100%",
           }}
         >
           {/* ── Headline crossfade container ──────────────────────────────── */}

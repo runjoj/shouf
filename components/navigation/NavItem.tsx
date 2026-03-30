@@ -18,13 +18,16 @@ export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
     launched,
   } = useAppStore();
 
+  const isDisabled = entry.disabled === true;
+
   // Overview entries navigate to the section grid; regular entries to their canvas
   const isOverview = !!entry.overviewFor;
-  const isSelected = isOverview
+  const isSelected = !isDisabled && (isOverview
     ? selectedSectionId === entry.overviewFor
-    : selectedComponentId === entry.id;
+    : selectedComponentId === entry.id);
 
   function handleClick() {
+    if (isDisabled) return;
     if (isOverview) {
       selectSection(entry.overviewFor!);
     } else {
@@ -37,10 +40,15 @@ export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
   return (
     <button
       onClick={handleClick}
-      className="w-full flex items-center gap-2 px-3 py-[5px] text-left rounded-sm transition-colors cursor-default"
+      className="w-full flex items-center gap-2 text-left transition-colors cursor-default"
       style={{
+        padding:         "5px 12px 5px 20px",
+        borderRadius:    "6px",
         backgroundColor: isSelected ? "var(--shouf-accent-sel)" : "transparent",
-        color:           isSelected ? "var(--shouf-accent)" : "var(--shouf-text-muted)",
+        color:           isDisabled ? "var(--shouf-text-faint)" : isSelected ? "var(--shouf-accent)" : "var(--shouf-text-muted)",
+        opacity:         isDisabled ? 0.45 : 1,
+        cursor:          isDisabled ? "default" : undefined,
+        position:        "relative",
         ...(launched ? {} : {
           animationName:           "intro-reveal",
           animationDuration:       "220ms",
@@ -51,23 +59,48 @@ export function NavItem({ entry, introDelay = 0 }: NavItemProps) {
         }),
       }}
       onMouseEnter={(e) => {
-        if (!isSelected)
+        if (!isSelected && !isDisabled)
           (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover)";
       }}
       onMouseLeave={(e) => {
-        if (!isSelected)
+        if (!isSelected && !isDisabled)
           (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
       }}
     >
-      <span
-        className="shrink-0 w-[5px] h-[5px] rounded-full"
-        style={{
-          backgroundColor: isSelected ? "var(--shouf-accent)" : "var(--shouf-text-faint)",
-        }}
-      />
-      <span className="text-[14px] font-medium leading-none truncate">
+      {/* Active indicator — 2px accent bar on the left */}
+      {isSelected && (
+        <span
+          style={{
+            position:        "absolute",
+            left:            "6px",
+            top:             "50%",
+            transform:       "translateY(-50%)",
+            width:           "2px",
+            height:          "14px",
+            borderRadius:    "1px",
+            backgroundColor: "var(--shouf-accent)",
+          }}
+        />
+      )}
+      <span className="text-[14px] leading-tight truncate" style={{ fontWeight: isSelected ? 500 : 400 }}>
         {entry.name}
       </span>
+      {entry.tag && (
+        <span
+          className="shrink-0 text-[10px] leading-none"
+          style={{ color: "var(--shouf-text-faint)", fontStyle: "italic" }}
+        >
+          {entry.tag}
+        </span>
+      )}
+      {isDisabled && entry.disabledLabel && (
+        <span
+          className="shrink-0 text-[10px] leading-none"
+          style={{ color: "var(--shouf-text-faint)", fontStyle: "italic" }}
+        >
+          {entry.disabledLabel}
+        </span>
+      )}
     </button>
   );
 }
