@@ -92,20 +92,11 @@ export function EuCaseStudyCanvas() {
         overflowY:     "auto",
         display:       "flex",
         flexDirection: "column",
-        alignItems:    "center",
+        padding:       "40px 96px 80px",
       }}
     >
-      <div
-        style={{
-          width:         "100%",
-          maxWidth:      "800px",
-          padding:       "40px 48px 80px",
-          display:       "flex",
-          flexDirection: "column",
-        }}
-      >
         {/* ── Back button ──────────────────────────────────────────────── */}
-        <div style={{ marginBottom: "40px" }}>
+        <div style={{ marginBottom: "40px", maxWidth: "800px" }}>
           <button
             onClick={goToWork}
             style={{
@@ -132,7 +123,7 @@ export function EuCaseStudyCanvas() {
         </div>
 
         {/* ── Overview ───────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px" }}>
+        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
           <div style={{ marginBottom: "48px" }}>
             <div
               style={{
@@ -195,7 +186,7 @@ export function EuCaseStudyCanvas() {
         <Divider />
 
         {/* ── Problem ────────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px" }}>
+        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
           <SectionLabel>Problem</SectionLabel>
           <SectionHeading>Qualiti used a lot of old, legacy code.</SectionHeading>
           <Body>
@@ -215,7 +206,7 @@ export function EuCaseStudyCanvas() {
         <Divider />
 
         {/* ── Solution ───────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px" }}>
+        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
           <SectionLabel>Solution</SectionLabel>
           <SectionHeading>The introduction of embedding manual and suggested test creation.</SectionHeading>
           <Body>
@@ -235,7 +226,7 @@ export function EuCaseStudyCanvas() {
         <Divider />
 
         {/* ── Research ───────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px" }}>
+        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
           <SectionLabel>Research</SectionLabel>
           <SectionHeading>Competitive Analysis</SectionHeading>
           <Body>
@@ -254,7 +245,7 @@ export function EuCaseStudyCanvas() {
         <Divider />
 
         {/* ── Design ─────────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px" }}>
+        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
           <SectionLabel>Design</SectionLabel>
           <SectionHeading>Building Components</SectionHeading>
           <Body>
@@ -275,7 +266,7 @@ export function EuCaseStudyCanvas() {
         <Divider />
 
         {/* ── Takeaways ──────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px" }}>
+        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
           <SectionLabel>Takeaways</SectionLabel>
           <SectionHeading>Learnings</SectionHeading>
           <Body>
@@ -342,6 +333,7 @@ export function EuCaseStudyCanvas() {
             display:        "flex",
             justifyContent: "flex-start",
             alignItems:     "center",
+            maxWidth:       "800px",
           }}
         >
           <button
@@ -367,7 +359,6 @@ export function EuCaseStudyCanvas() {
             <span>Back to Work</span>
           </button>
         </div>
-      </div>
     </div>
   );
 }

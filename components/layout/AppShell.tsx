@@ -157,6 +157,9 @@ function MobileView() {
 // Pages that should NOT show controls/inspect panels (guides, landing, about).
 const NO_PANELS = new Set(["about", "pds-guide", "pds-overview", "rc-guide", "rc-case-study", "eu-guide", "eu-overview", "eu-embedded", "pds-color-tokens"]);
 
+// Work case study pages — hide left nav entirely for immersive full-page layout.
+const NO_LEFT_PANEL = new Set(["rc-case-study", "eu-embedded"]);
+
 // ─── Desktop three-panel view ─────────────────────────────────────────────────
 
 // Width of the right panel in px — must match RightPanel's own width style.
@@ -167,6 +170,9 @@ function DesktopView() {
 
   // Hide panels on landing/about/guide pages and section overview grids.
   const showPanels = !!selectedComponentId && !NO_PANELS.has(selectedComponentId) && selectedSectionId === null;
+
+  // Hide left nav on immersive work case study pages.
+  const hideLeftPanel = !!selectedComponentId && NO_LEFT_PANEL.has(selectedComponentId);
 
   // Reserve right panel width before launch (prevents headline shift) and
   // whenever panels are active. Collapses smoothly on NO_PANELS pages.
@@ -182,11 +188,19 @@ function DesktopView() {
       }}
     >
       {/* ── Left panel — space always in layout; content slides in on launch ─── */}
-      <div style={{ flexShrink: 0, overflow: "hidden", width: 240 }}>
+      <div
+        style={{
+          flexShrink: 0,
+          overflow:   "hidden",
+          width:      (launched && hideLeftPanel) ? 0 : 240,
+          transition: "width 400ms cubic-bezier(0.25, 0, 0, 1)",
+        }}
+      >
         <div
           style={{
             height:     "100%",
-            transform:  launched ? "translateX(0)" : "translateX(-100%)",
+            width:      240,
+            transform:  (launched && !hideLeftPanel) ? "translateX(0)" : "translateX(-100%)",
             transition: "transform 500ms cubic-bezier(0.25, 0, 0, 1) 50ms",
           }}
         >
