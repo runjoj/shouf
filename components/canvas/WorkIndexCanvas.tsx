@@ -7,9 +7,10 @@
 // Card interaction: hover lifts with accent border, click navigates to the
 // project page. Framer Motion handles entrance stagger and hover spring.
 
-import { useCallback } from "react";
+import { useCallback, useRef, useState, useEffect, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
+import { RcGlobalNavCanvas } from "./RcGlobalNavCanvas";
 
 // ─── Project data ────────────────────────────────────────────────────────────
 
@@ -21,6 +22,8 @@ type WorkProject = {
   company: string;
   extraTag?: string;
   disabled?: boolean;
+  thumbnail?: string;
+  livePreview?: ReactNode;
 };
 
 const PROJECTS: WorkProject[] = [
@@ -31,15 +34,17 @@ const PROJECTS: WorkProject[] = [
     description:
       "A strategic shift toward a responsive, mobile-aware platform at BambooHR — from desktop-only to fully adaptive.",
     company: "BambooHR",
+    livePreview: <RcGlobalNavCanvas />,
   },
   {
     id: "eu-embedded",
     tag: "UX · Design System",
-    title: "Embedded Experience",
+    title: "Seamless Test Creation",
     description:
       "An in-platform embedded experience built entirely with Eucalyptus components — design system in production.",
     company: "BambooHR",
     extraTag: "built with Eucalyptus",
+    thumbnail: "/preview.png",
   },
   {
     id: "especialty",
@@ -50,6 +55,55 @@ const PROJECTS: WorkProject[] = [
     disabled: true,
   },
 ];
+
+// ─── LivePreviewThumb ────────────────────────────────────────────────────────
+// Renders a live component scaled down to fit the card thumbnail area.
+// Measures the container width and computes a scale factor so the 1200px
+// virtual canvas fills the thumbnail exactly. Non-interactive (pointer-events: none).
+
+const VIRTUAL_W = 1200;
+const VIRTUAL_H = 750;
+
+function LivePreviewThumb({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const w = entry.contentRect.width;
+      if (w > 0) setScale(w / VIRTUAL_W);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        position: "absolute",
+        inset: 0,
+        pointerEvents: "none",
+        overflow: "hidden",
+      }}
+    >
+      {scale > 0 && (
+        <div
+          style={{
+            width: `${VIRTUAL_W}px`,
+            height: `${VIRTUAL_H}px`,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+          }}
+        >
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ─── Card ────────────────────────────────────────────────────────────────────
 
@@ -114,30 +168,56 @@ function WorkCard({
         e.currentTarget.style.boxShadow = "none";
       }}
     >
-      {/* Thumbnail placeholder */}
+      {/* Thumbnail */}
       <div
         style={{
           width: "100%",
           aspectRatio: "16 / 10",
           background: "var(--shouf-hover)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
           borderBottom: "1px solid var(--shouf-border)",
           flexShrink: 0,
+          overflow: "hidden",
+          position: "relative",
         }}
       >
-        <span
-          style={{
-            fontSize: "13px",
-            fontFamily: "var(--font-mono)",
-            color: "var(--shouf-text-faint)",
-            letterSpacing: "0.04em",
-            userSelect: "none",
-          }}
-        >
-          {project.title} — thumbnail
-        </span>
+        {project.livePreview ? (
+          <LivePreviewThumb>{project.livePreview}</LivePreviewThumb>
+        ) : project.thumbnail ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={project.thumbnail}
+            alt={`${project.title} preview`}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "left top",
+              display: "block",
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "13px",
+                fontFamily: "var(--font-mono)",
+                color: "var(--shouf-text-faint)",
+                letterSpacing: "0.04em",
+                userSelect: "none",
+              }}
+            >
+              Coming soon
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Card body */}

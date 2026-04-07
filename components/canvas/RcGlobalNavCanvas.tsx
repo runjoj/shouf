@@ -410,16 +410,16 @@ export function RcGlobalNavCanvas() {
   return (
     <div
       ref={canvasRef}
-      style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden", padding: "20px 24px 24px", background: "var(--shouf-canvas)", position: "relative", userSelect: isDragging ? "none" : undefined }}
+      style={{ flex: 1, height: "100%", display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden", padding: "20px 24px 24px", background: "var(--shouf-canvas)", position: "relative", userSelect: isDragging ? "none" : undefined }}
     >
       {/* Canvas label */}
-      <div style={{ fontSize: "11px", fontFamily: "var(--font-mono)", color: "var(--shouf-text)", marginBottom: "14px", letterSpacing: "0.04em", flexShrink: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+      <div style={{ fontSize: "13px", fontFamily: "var(--font-mono)", color: "var(--shouf-text)", marginBottom: "14px", letterSpacing: "0.04em", flexShrink: 0, display: "flex", alignItems: "center", gap: "10px" }}>
         <span>
           Responsive Components / Global Navigation — click items and the{" "}
           <span style={{ color: "var(--shouf-accent)" }}>«</span> toggle to interact
         </span>
         {showBadge ? (
-          <span style={{ fontSize: "10px", fontFamily: "var(--font-mono)", padding: "2px 8px", borderRadius: "4px", background: isMobile ? "rgba(200,160,0,0.12)" : isTablet ? "rgba(61, 122, 48, 0.12)" : "var(--shouf-hover)", color: isMobile ? "#9B6F00" : isTablet ? "#3D7A30" : "var(--shouf-text)", border: `1px solid ${isMobile ? "rgba(200,160,0,0.25)" : isTablet ? "rgba(61,122,48,0.25)" : "var(--shouf-border)"}`, whiteSpace: "nowrap" }}>
+          <span style={{ fontSize: "10px", fontFamily: "var(--font-mono)", padding: "2px 8px", borderRadius: "4px", background: "var(--shouf-hover)", color: isMobile ? "var(--shouf-accent)" : isTablet ? "var(--shouf-accent)" : "var(--shouf-text)", border: `1px solid var(--shouf-border)`, whiteSpace: "nowrap" }}>
             {frameWidth !== null ? `${frameWidth}px` : `${measuredWidth}px`}
             {isMobile ? " · mobile" : isTablet ? " · tablet" : " · desktop"}
           </span>
@@ -436,7 +436,7 @@ export function RcGlobalNavCanvas() {
         {/* ── Browser frame ─────────────────────────────────────────────────── */}
         <div
           ref={frameRef}
-          style={{ flex: frameWidth === null ? 1 : undefined, width: frameWidth !== null ? `${frameWidth}px` : undefined, maxWidth: "100%", minWidth: `${BP_MIN}px`, display: "flex", flexDirection: "column", borderRadius: "10px", border: `1px solid ${isDragging ? C.handleHover : "var(--shouf-border)"}`, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)", background: C.sidebarBg, transition: isDragging ? "none" : "border-color 200ms ease", position: "relative" }}
+          style={{ flex: frameWidth === null ? 1 : "0 0 auto", width: frameWidth !== null ? `${frameWidth}px` : undefined, maxWidth: "100%", minWidth: `${BP_MIN}px`, height: "100%", display: "flex", flexDirection: "column", borderRadius: "10px", border: `1px solid ${isDragging ? C.handleHover : "var(--shouf-border)"}`, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)", background: C.sidebarBg, transition: isDragging ? "none" : "border-color 200ms ease", position: "relative" }}
         >
           {/* App layout */}
           <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden", position: "relative" }}>

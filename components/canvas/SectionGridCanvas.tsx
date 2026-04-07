@@ -260,7 +260,7 @@ function EmbeddedPreview() {
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src="/embedded.gif"
-      alt="Embedded Experience"
+      alt="Seamless Test Creation"
       style={{
         width:        "100%",
         maxWidth:     "192px",

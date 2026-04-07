@@ -1,7 +1,7 @@
 "use client";
 
 // ─── EuCaseStudyCanvas ──────────────────────────────────────────────────────
-// Combined case study page for Embedded Experience.
+// Combined case study page for Seamless Test Creation.
 // Full-canvas, scrollable, no sidebar. Breadcrumb → case study content →
 // end navigation. Same template as RcCaseStudyCanvas.
 
@@ -17,7 +17,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
     <div
       style={{
         fontFamily:    MONO,
-        fontSize:      "12px",
+        fontSize:      "22px",
         fontWeight:    800,
         letterSpacing: "0.12em",
         textTransform: "uppercase",
@@ -34,7 +34,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <h2
       style={{
-        fontSize:      "20px",
+        fontSize:      "28px",
         fontWeight:    600,
         color:         "var(--shouf-text)",
         margin:        "0 0 20px",
@@ -51,7 +51,7 @@ function Body({ children }: { children: React.ReactNode }) {
   return (
     <p
       style={{
-        fontSize:   "14px",
+        fontSize:   "16px",
         color:      "var(--shouf-text-muted)",
         lineHeight: 1.75,
         margin:     "0 0 16px",
@@ -92,7 +92,7 @@ export function EuCaseStudyCanvas() {
         overflowY:     "auto",
         display:       "flex",
         flexDirection: "column",
-        padding:       "40px 96px 80px",
+        padding:       "40px 192px 80px",
       }}
     >
         {/* ── Back button ──────────────────────────────────────────────── */}
@@ -122,9 +122,18 @@ export function EuCaseStudyCanvas() {
           </button>
         </div>
 
-        {/* ── Overview ───────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
-          <div style={{ marginBottom: "48px" }}>
+        {/* ── Hero — two-column overview ─────────────────────────────────── */}
+        <section
+          style={{
+            marginBottom:        "48px",
+            display:             "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap:                 "64px",
+            alignItems:          "start",
+          }}
+        >
+          {/* Left column — label + display headline */}
+          <div>
             <div
               style={{
                 fontFamily:    MONO,
@@ -133,22 +142,22 @@ export function EuCaseStudyCanvas() {
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
                 color:         "var(--shouf-accent)",
-                marginBottom:  "14px",
+                marginBottom:  "18px",
               }}
             >
               Eucalyptus Design System
             </div>
             <h1
               style={{
-                fontSize:      "28px",
+                fontSize:      "58px",
                 fontWeight:    600,
                 color:         "var(--shouf-text)",
                 margin:        "0 0 12px",
-                letterSpacing: "-0.025em",
-                lineHeight:    1.15,
+                letterSpacing: "-0.03em",
+                lineHeight:    1.1,
               }}
             >
-              Embedded Experience
+              Seamless Test Creation
             </h1>
             <span
               style={{
@@ -156,23 +165,28 @@ export function EuCaseStudyCanvas() {
                 fontStyle:  "italic",
                 color:      "var(--shouf-text-faint)",
                 display:    "block",
-                marginBottom: "20px",
               }}
             >
               built with Eucalyptus
             </span>
+          </div>
+
+          {/* Right column — overview body text */}
+          <div style={{ paddingTop: "36px" }}>
             <Body>
               Adding tests to the test library was not an ideal experience due to its heavy use of
               modals. This was originally chosen due to legacy code, but when the time became
               available to rewrite the old code — an embedded experience became possible.
             </Body>
           </div>
+        </section>
 
-          {/* Gif */}
+        {/* ── Gif ────────────────────────────────────────────────────────── */}
+        <section style={{ marginBottom: "72px" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/embedded.gif"
-            alt="Embedded Experience interaction recording"
+            alt="Seamless Test Creation interaction recording"
             style={{
               width:        "100%",
               display:      "block",

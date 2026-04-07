@@ -17,7 +17,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
     <div
       style={{
         fontFamily:    MONO,
-        fontSize:      "12px",
+        fontSize:      "22px",
         fontWeight:    800,
         letterSpacing: "0.12em",
         textTransform: "uppercase",
@@ -34,7 +34,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <h2
       style={{
-        fontSize:      "20px",
+        fontSize:      "28px",
         fontWeight:    600,
         color:         "var(--shouf-text)",
         margin:        "0 0 20px",
@@ -51,7 +51,7 @@ function Body({ children }: { children: React.ReactNode }) {
   return (
     <p
       style={{
-        fontSize:   "14px",
+        fontSize:   "16px",
         color:      "var(--shouf-text-muted)",
         lineHeight: 1.75,
         margin:     "0 0 16px",
@@ -69,7 +69,7 @@ function BulletList({ items }: { items: string[] }) {
         <li
           key={i}
           style={{
-            fontSize:     "14px",
+            fontSize:     "16px",
             color:        "var(--shouf-text-muted)",
             lineHeight:   1.75,
             marginBottom: "6px",
@@ -86,7 +86,7 @@ function SubHeading({ children }: { children: React.ReactNode }) {
   return (
     <h3
       style={{
-        fontSize:      "14px",
+        fontSize:      "16px",
         fontWeight:    600,
         color:         "var(--shouf-text)",
         margin:        "0 0 10px",
@@ -134,7 +134,7 @@ export function RcCaseStudyCanvas() {
         overflowY:     "auto",
         display:       "flex",
         flexDirection: "column",
-        padding:       "40px 96px 80px",
+        padding:       "40px 192px 80px",
       }}
     >
       {/* ── Back button ──────────────────────────────────────────────── */}
@@ -164,9 +164,18 @@ export function RcCaseStudyCanvas() {
         </button>
       </div>
 
-      {/* ── Overview ───────────────────────────────────────────────────── */}
-      <section style={{ marginBottom: "48px", maxWidth: "800px" }}>
-        <div style={{ marginBottom: "24px" }}>
+      {/* ── Hero — two-column overview ─────────────────────────────────── */}
+      <section
+        style={{
+          marginBottom:        "48px",
+          display:             "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap:                 "64px",
+          alignItems:          "start",
+        }}
+      >
+        {/* Left column — label + display headline */}
+        <div>
           <div
             style={{
               fontFamily:    MONO,
@@ -175,23 +184,27 @@ export function RcCaseStudyCanvas() {
               letterSpacing: "0.12em",
               textTransform: "uppercase",
               color:         "var(--shouf-accent)",
-              marginBottom:  "14px",
+              marginBottom:  "18px",
             }}
           >
             Responsive Components
           </div>
           <h1
             style={{
-              fontSize:      "28px",
+              fontSize:      "58px",
               fontWeight:    600,
               color:         "var(--shouf-text)",
-              margin:        "0 0 20px",
-              letterSpacing: "-0.025em",
-              lineHeight:    1.15,
+              margin:        0,
+              letterSpacing: "-0.03em",
+              lineHeight:    1.1,
             }}
           >
             Responsive Site Development
           </h1>
+        </div>
+
+        {/* Right column — overview body text */}
+        <div style={{ paddingTop: "36px" }}>
           <Body>
             BambooHR&apos;s in-platform experience was built desktop-first, with over 95% of the
             product lacking responsive behavior. This initiative proposes a strategic shift toward
@@ -207,7 +220,7 @@ export function RcCaseStudyCanvas() {
         <div
           style={{
             fontFamily:    MONO,
-            fontSize:      "11px",
+            fontSize:      "14px",
             fontWeight:    600,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
@@ -220,7 +233,7 @@ export function RcCaseStudyCanvas() {
         <div
           style={{
             width:        "100%",
-            height:       "min(75vh, 700px)",
+            height:       "820px",
             border:       "1px solid var(--shouf-border)",
             borderRadius: "12px",
             overflow:     "hidden",
@@ -348,7 +361,7 @@ export function RcCaseStudyCanvas() {
             (e.currentTarget as HTMLElement).style.color = "var(--shouf-text-muted)";
           }}
         >
-          <span>Next: Embedded Experience</span>
+          <span>Next: Seamless Test Creation</span>
           <span>&rarr;</span>
         </button>
       </div>

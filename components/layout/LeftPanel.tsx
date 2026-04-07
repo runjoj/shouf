@@ -84,7 +84,7 @@ function SearchDropdown({
   const r = anchorEl?.getBoundingClientRect();
   if (!r) return null;
 
-  // Align to the input element inside the px-3 (12px) wrapper padding
+  // Align to the input element inside the 12px wrapper padding
   const left  = r.left + 12;
   const width = r.width - 24;
   const top   = r.bottom + 4;
@@ -299,8 +299,8 @@ function SearchBar() {
   return (
     <div
       ref={containerRef}
-      className="px-3 py-2"
       style={{
+        padding:                 "8px 12px",
         animationName:           "intro-reveal",
         animationDuration:       "220ms",
         animationTimingFunction: "ease",
@@ -342,12 +342,12 @@ function SearchBar() {
 export function LeftPanel() {
   return (
     <aside
-      className="flex flex-col h-full overflow-hidden"
+      className="flex flex-col h-full"
       style={{
         backgroundColor: "var(--shouf-panel)",
         borderRight:     "1px solid var(--shouf-border-sub)",
-        width:           "260px",
-        minWidth:        "260px",
+        width:           "240px",
+        minWidth:        "240px",
       }}
     >
       {/* Top bar with logo */}

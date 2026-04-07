@@ -230,7 +230,7 @@ export function EuEmbeddedCanvas() {
                 lineHeight:    1.15,
               }}
             >
-              Embedded Experience
+              Seamless Test Creation
             </h1>
             <Body>
               Adding tests to the test library was not an ideal experience due to its heavy use of
@@ -243,7 +243,7 @@ export function EuEmbeddedCanvas() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/embedded.gif"
-            alt="Embedded Experience interaction recording"
+            alt="Seamless Test Creation interaction recording"
             style={{
               width:        "100%",
               display:      "block",

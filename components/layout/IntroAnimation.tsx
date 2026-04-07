@@ -19,7 +19,7 @@ const T_PICKER_IN    = T_PICKER_START + 200;
 const T_ENTER_IN     = T_PICKER_START + 400;
 
 // Panel geometry — must match actual panel widths / toolbar height
-const LEFT_W     = 260;
+const LEFT_W     = 240;
 const RIGHT_W    = 280;
 const TOOLBAR_H  = 44;
 // Must match WelcomeCanvas maxWidth so picker left edge = h2 left edge
@@ -225,16 +225,16 @@ export function IntroAnimation() {
         <div
           style={{
             position:       "absolute",
-            // Position below the headline with ~40px gap.
-            top:            "calc(50% + 24px)",
+            // Position below the headline with generous gap.
+            top:            "calc(50% + 36px)",
             // Offset by (LEFT_W − RIGHT_W)/2 = −10px so the picker aligns with
             // the headline, which is centered inside CenterPanel (not the viewport).
             left:           "calc(50% - 10px)",
             transform:      "translateX(-50%)",
             display:        "flex",
             flexDirection:  "column",
-            alignItems:     "flex-start",
-            gap:            "24px",
+            alignItems:     "center",
+            gap:            "36px",
             width:          `${CONTENT_W}px`,
             maxWidth:       "calc(100% - 96px)",
           }}
@@ -245,13 +245,13 @@ export function IntroAnimation() {
               fontSize:   "15px",
               lineHeight: 1.65,
               color:      "rgba(255,255,255,0.72)",
-              textAlign:  "left",
+              textAlign:  "center",
               margin:     0,
               opacity:    showOneLiner ? 1 : 0,
               transition: "opacity 500ms ease",
             }}
           >
-            This portfolio is built on Shouf — a design system I designed and coded from scratch.
+            This portfolio is built on Shouf: a design system I designed and coded.
           </p>
 
           {/* Color picker + label */}
@@ -259,8 +259,8 @@ export function IntroAnimation() {
             style={{
               display:       "flex",
               flexDirection: "column",
-              alignItems:    "flex-start",
-              gap:           "16px",
+              alignItems:    "center",
+              gap:           "20px",
               opacity:       showPicker ? 1 : 0,
               transition:    "opacity 500ms ease",
             }}
@@ -276,11 +276,7 @@ export function IntroAnimation() {
             >
               Make it yours — pick an accent color
             </span>
-            {/* -4px compensates for the 4px hit-area padding on each dot button,
-                aligning the visible dot left edge with the Enter button left border. */}
-            <div style={{ marginLeft: "-4px" }}>
-              <AccentPicker size="lg" />
-            </div>
+            <AccentPicker size="lg" />
           </div>
 
           {/* Enter button — explicit primary CTA, styled with Shouf tokens */}
