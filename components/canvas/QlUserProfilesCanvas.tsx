@@ -407,8 +407,15 @@ export function QlUserProfilesCanvas() {
           </Body>
         </section>
 
-        {/* Final solution image — full width */}
-        <CaseStudyImage src="/final_users.png" alt="Final solution with embedded elements" style={{ marginBottom: "56px" }} />
+        {/* Final solution images — 2x3 grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "56px" }}>
+          <CaseStudyImage src="/final_user_1.png" alt="Final solution — user profiles overview" />
+          <CaseStudyImage src="/final_user_2.png" alt="Final solution — create user profile" />
+          <CaseStudyImage src="/final_user_3.png" alt="Final solution — embedded environment" />
+          <CaseStudyImage src="/final_user_4.png" alt="Final solution — embedded credential" />
+          <CaseStudyImage src="/final_user_5.png" alt="Final solution — user detail view" />
+          <CaseStudyImage src="/final_user_6.png" alt="Final solution — manage components" />
+        </div>
 
         <Divider />
 
