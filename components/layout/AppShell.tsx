@@ -157,8 +157,8 @@ function MobileView() {
 // Pages that should NOT show controls/inspect panels (guides, landing, about).
 const NO_PANELS = new Set(["about", "pds-guide", "pds-overview", "rc-guide", "rc-case-study", "eu-guide", "eu-overview", "eu-embedded", "especialty", "pds-color-tokens"]);
 
-// Work case study pages — hide left nav entirely for immersive full-page layout.
-const NO_LEFT_PANEL = new Set(["rc-case-study", "eu-embedded", "especialty"]);
+// Pages that hide the left nav — case studies, about, and work index.
+const NO_LEFT_PANEL = new Set(["rc-case-study", "eu-embedded", "especialty", "about"]);
 
 // ─── Desktop three-panel view ─────────────────────────────────────────────────
 
@@ -171,8 +171,10 @@ function DesktopView() {
   // Hide panels on landing/about/guide pages and section overview grids.
   const showPanels = !!selectedComponentId && !NO_PANELS.has(selectedComponentId) && selectedSectionId === null;
 
-  // Hide left nav on immersive work case study pages.
-  const hideLeftPanel = !!selectedComponentId && NO_LEFT_PANEL.has(selectedComponentId);
+  // Hide left nav on case studies, about, and work pages.
+  const hideLeftPanel =
+    (!!selectedComponentId && NO_LEFT_PANEL.has(selectedComponentId)) ||
+    (selectedSectionId === "work" && selectedComponentId === null);
 
   // Reserve right panel width before launch (prevents headline shift) and
   // whenever panels are active. Collapses smoothly on NO_PANELS pages.

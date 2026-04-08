@@ -104,7 +104,15 @@ function Divider() {
 
 // ─── ControlsBar ─────────────────────────────────────────────────────────────
 
-export function ControlsBar() {
+export function ControlsBar({
+  zoom = 100,
+  onZoomIn,
+  onZoomOut,
+}: {
+  zoom?: number;
+  onZoomIn?: () => void;
+  onZoomOut?: () => void;
+} = {}) {
   const { selectedComponentId, controlValues, setControlValue } = useAppStore();
   const registration = selectedComponentId ? getRegistration(selectedComponentId) : undefined;
 
@@ -141,6 +149,41 @@ export function ControlsBar() {
         </span>
 
         <div className="ml-auto flex items-center gap-3">
+          {/* Zoom controls */}
+          {onZoomIn && onZoomOut && (
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                onClick={onZoomIn}
+                disabled={zoom >= 200}
+                title="Zoom in"
+                className="flex items-center justify-center w-6 h-6 rounded transition-colors"
+                style={{ color: zoom >= 200 ? "var(--shouf-text-faint)" : "var(--shouf-text-muted)", cursor: zoom >= 200 ? "default" : "pointer" }}
+                onMouseEnter={(e) => { if (zoom < 200) (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"; }}
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M2 5h6M5 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
+              <button
+                onClick={onZoomOut}
+                disabled={zoom <= 50}
+                title="Zoom out"
+                className="flex items-center justify-center w-6 h-6 rounded transition-colors"
+                style={{ color: zoom <= 50 ? "var(--shouf-text-faint)" : "var(--shouf-text-muted)", cursor: zoom <= 50 ? "default" : "pointer" }}
+                onMouseEnter={(e) => { if (zoom > 50) (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"; }}
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M2 5h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
+              <span className="text-[12px] px-1.5 min-w-[40px] text-center" style={{ color: "var(--shouf-text-muted)" }}>
+                {zoom}%
+              </span>
+              <Divider />
+            </div>
+          )}
           {/* Status hint */}
           {!selectedComponentId && (
             <span className="text-[12px]" style={{ color: "var(--shouf-text-faint)" }}>

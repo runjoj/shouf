@@ -32,16 +32,16 @@ type AnnotationDef = {
 
 const ANNOTATIONS: AnnotationDef[] = [
   {
-    // Arrow curves from inside canvas leftward into the Work nav item
+    // Arrow curves upward from canvas into the Work nav link in the top bar
     id:           "nav",
     label:        "view case studies",
     svgFirst:     true,
-    direction:    "row",
-    alignItems:   "center",
-    containerPos: { position: "absolute", left: LEFT_W - 6, top: 118 },
-    svgW: 60, svgH: 36,
-    arrowPath:  "M 56 18 C 40 16 24 10 4 18",
-    tipPoints:  "14,10 4,18 14,26",
+    direction:    "column",
+    alignItems:   "flex-start",
+    containerPos: { position: "absolute", left: LEFT_W + 160, top: 46 },
+    svgW: 24, svgH: 44,
+    arrowPath:  "M 12 40 C 10 28 14 16 12 4",
+    tipPoints:  "4,14 12,4 20,14",
   },
   {
     // Arrow curves from inside canvas leftward into the design system sections
@@ -50,7 +50,7 @@ const ANNOTATIONS: AnnotationDef[] = [
     svgFirst:     true,
     direction:    "row",
     alignItems:   "center",
-    containerPos: { position: "absolute", left: LEFT_W - 6, top: 295 },
+    containerPos: { position: "absolute", left: LEFT_W - 6, top: 200 },
     svgW: 60, svgH: 36,
     arrowPath:  "M 56 18 C 40 20 24 26 4 18",
     tipPoints:  "14,10 4,18 14,26",

@@ -4,7 +4,6 @@ import type { CSSProperties } from "react";
 import { useState, useRef, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { useTheme } from "@/lib/theme";
-import { navSections } from "@/data/navigation";
 import { ComponentRenderer } from "@/components/canvas/ComponentRenderer";
 import { ControlsBar } from "@/components/canvas/ControlsBar";
 import { PdsToggle } from "@/components/ui/PdsToggle";
@@ -18,8 +17,7 @@ const ZOOM_STEP = 10;
 
 // ─── Toolbar element intro delays (ms after launch) ───────────────────────────
 // Elements pop in left → right to reinforce the assembly narrative.
-const D_ZOOM        = 100;
-const D_BREADCRUMB  = 190;
+const D_NAV         = 100;
 const D_THEME       = 390;
 const D_ACCENT_TOOL = 480;
 
@@ -126,43 +124,65 @@ function MobileThemeButton() {
   );
 }
 
+// ─── Top-bar nav link ────────────────────────────────────────────────────────
+// Horizontal nav links for Welcome / About / Work in the top bar.
+
+function TopBarNavLink({
+  label,
+  isSelected,
+  onClick,
+}: {
+  label: string;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="text-[12px] shrink-0 transition-colors"
+      style={{
+        background:    "none",
+        border:        "none",
+        padding:       "4px 8px",
+        borderRadius:  "5px",
+        cursor:        "pointer",
+        fontWeight:    isSelected ? 600 : 500,
+        color:         isSelected ? "var(--shouf-accent)" : "var(--shouf-text-muted)",
+        backgroundColor: isSelected ? "var(--shouf-accent-sel)" : "transparent",
+      }}
+      onMouseEnter={(e) => {
+        if (!isSelected)
+          (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover)";
+      }}
+      onMouseLeave={(e) => {
+        if (!isSelected)
+          (e.currentTarget as HTMLElement).style.backgroundColor = isSelected ? "var(--shouf-accent-sel)" : "transparent";
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 // ─── Breadcrumb bar ──────────────────────────────────────────────────────────
 
 function CanvasHeader({
-  zoom,
-  onZoomIn,
-  onZoomOut,
   skipIntro = false,
 }: {
-  zoom: number;
-  onZoomIn: () => void;
-  onZoomOut: () => void;
   skipIntro?: boolean;
 }) {
-  const { selectedComponentId, selectedSectionId, launched, activeMobilePanel, setActiveMobilePanel } = useAppStore();
+  const { selectedComponentId, selectedSectionId, launched, activeMobilePanel, setActiveMobilePanel, selectComponent, selectSection } = useAppStore();
   const { theme, toggleTheme } = useTheme();
-
-  // Resolve component entry + its owning section (relevant in both grid and solo views)
-  const entry = selectedComponentId && selectedComponentId !== "welcome"
-    ? navSections.flatMap((s) => s.entries).find((e) => e.id === selectedComponentId)
-    : null;
-  const entrySection = entry ? navSections.find((s) => s.id === entry.sectionId) : null;
-
-  // Active grid section (may be set even when no component is selected)
-  const gridSection = selectedSectionId
-    ? navSections.find((s) => s.id === selectedSectionId)
-    : null;
-
-  // Breadcrumb resolution:
-  //   grid + component selected  → "Section Title / Component Name"
-  //   grid + nothing selected    → "Section Title"
-  //   solo canvas with entry     → "Section Title / Component Name"
-  //   welcome                    → "Welcome"
-  //   fallback                   → "Canvas"
-  const activeSection = gridSection ?? entrySection;
 
   // Show inspect button only when a component canvas is active
   const showInspect = !!selectedComponentId && !["welcome","about","pds-guide","rc-guide","eu-guide","eu-embedded","especialty","pds-color-tokens"].includes(selectedComponentId) && selectedSectionId === null;
+
+  // Pages where left panel is hidden — show logo in top bar
+  const NO_LEFT = ["rc-case-study", "eu-embedded", "especialty", "about", "work"];
+  const isWorkSection = selectedSectionId === "work" && selectedComponentId === null;
+  const showLogo = launched && (
+    (!!selectedComponentId && NO_LEFT.includes(selectedComponentId)) || isWorkSection
+  );
 
   return (
     <div
@@ -183,65 +203,51 @@ function CanvasHeader({
         </svg>
       </button>
 
-      {/* Zoom controls — hidden on mobile */}
-      <div className="hidden sm:flex items-center gap-1" style={introStyle(D_ZOOM, launched, skipIntro)}>
-        <button
-          onClick={onZoomIn}
-          disabled={zoom >= ZOOM_MAX}
-          title="Zoom in"
-          className="flex items-center justify-center w-6 h-6 rounded transition-colors"
-          style={{ color: zoom >= ZOOM_MAX ? "var(--shouf-text-faint)" : "var(--shouf-text-muted)", cursor: zoom >= ZOOM_MAX ? "default" : "pointer" }}
-          onMouseEnter={(e) => { if (zoom < ZOOM_MAX) (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)"; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"; }}
-        >
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M2 5h6M5 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
-        <button
-          onClick={onZoomOut}
-          disabled={zoom <= ZOOM_MIN}
-          title="Zoom out"
-          className="flex items-center justify-center w-6 h-6 rounded transition-colors"
-          style={{ color: zoom <= ZOOM_MIN ? "var(--shouf-text-faint)" : "var(--shouf-text-muted)", cursor: zoom <= ZOOM_MIN ? "default" : "pointer" }}
-          onMouseEnter={(e) => { if (zoom > ZOOM_MIN) (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)"; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"; }}
-        >
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M2 5h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
-        <span className="text-[12px] px-1.5 min-w-[40px] text-center" style={{ color: "var(--shouf-text-muted)" }}>
-          {zoom}%
-        </span>
-      </div>
-
-      {/* Divider — hidden on mobile with zoom */}
-      <div className="hidden sm:block w-px h-4" style={{ backgroundColor: "var(--shouf-border)", ...introStyle(D_ZOOM, launched, skipIntro) }} />
-
-      {/* Breadcrumb */}
-      <div
-        className="flex items-center gap-1.5 text-[12px] flex-1 min-w-0"
-        style={introStyle(D_BREADCRUMB, launched, skipIntro)}
-      >
-        {activeSection && entry ? (
-          /* Section Name / Component Name */
-          <>
-            <span style={{ color: "var(--shouf-text-faint)" }}>{activeSection.title}</span>
-            <span style={{ color: "var(--shouf-border)", fontSize: "12px" }}>/</span>
-            <span className="font-medium truncate" style={{ color: "var(--shouf-text)" }}>
-              {entry.name}
+      {/* Logo — shown on far left when left panel is hidden (case studies, about, work) */}
+      {showLogo && (
+        <>
+          <button
+            onClick={() => { selectSection(null); selectComponent("welcome"); }}
+            className="hidden lg:flex"
+            style={{
+              background:    "none",
+              border:        "none",
+              padding:       0,
+              cursor:        "pointer",
+              alignItems:    "center",
+              flexShrink:    0,
+            }}
+            title="Back to Welcome"
+          >
+            <span className="text-[13px] font-bold" style={{ color: "var(--shouf-text)", fontFamily: "var(--font-manrope)", letterSpacing: "0.5px" }}>
+              helloitsjo
             </span>
-          </>
-        ) : activeSection ? (
-          /* Grid view — section selected but no component yet */
-          <span style={{ color: "var(--shouf-text-faint)" }}>{activeSection.title}</span>
-        ) : selectedComponentId === "welcome" ? (
-          <span style={{ color: "var(--shouf-text-faint)" }}>Welcome</span>
-        ) : (
-          <span style={{ color: "var(--shouf-text-faint)" }}>Canvas</span>
-        )}
+          </button>
+          <div className="hidden lg:block w-px h-4" style={{ backgroundColor: "var(--shouf-border)" }} />
+        </>
+      )}
+
+      {/* Navigation links — Welcome / About / Work — hidden on mobile */}
+      <div className="hidden sm:flex items-center gap-1" style={introStyle(D_NAV, launched, skipIntro)}>
+        <TopBarNavLink
+          label="Welcome"
+          isSelected={selectedComponentId === "welcome"}
+          onClick={() => { selectSection(null); selectComponent("welcome"); }}
+        />
+        <TopBarNavLink
+          label="About"
+          isSelected={selectedComponentId === "about"}
+          onClick={() => { selectSection(null); selectComponent("about"); }}
+        />
+        <TopBarNavLink
+          label="Work"
+          isSelected={isWorkSection}
+          onClick={() => { selectComponent(null); selectSection("work"); }}
+        />
       </div>
+
+      {/* Spacer — pushes theme/accent controls to far right */}
+      <div style={{ flex: 1 }} />
 
       {/* Theme toggle — desktop only */}
       <div className="hidden lg:flex items-center gap-2" style={introStyle(D_THEME, launched, skipIntro)}>
@@ -266,6 +272,7 @@ function CanvasHeader({
       <div className="hidden lg:block" style={introStyle(D_ACCENT_TOOL, launched, skipIntro)}>
         <AccentPicker size="sm" />
       </div>
+
 
       {/* ── Mobile right controls: inspect + condensed theme (hidden on desktop) ── */}
       <div className="flex lg:hidden items-center gap-2 shrink-0">
@@ -328,19 +335,11 @@ export function CenterPanel({ showControls = false, skipIntro = false }: { showC
             transition: skipIntro ? "none" : "transform 500ms cubic-bezier(0.25, 0, 0, 1) 150ms",
           }}
         >
-          <CanvasHeader zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} skipIntro={skipIntro} />
+          <CanvasHeader skipIntro={skipIntro} />
         </div>
       </div>
 
-      {/* Canvas area — two-layer approach:
-          1. Outer: flex:1 block provides height; position:relative anchors inner.
-          2. Inner: position:absolute inset:0 gives the scroll container an explicit
-             pixel height so min-height:100% on the zoom wrapper always resolves.
-          CSS zoom is layout-aware:
-          - zoom > 1 → layout box grows beyond scroll viewport → scrolls ✓
-          - zoom < 1 → layout box shrinks from top-left → no drift ✓
-          flex column on zoom wrapper lets ComponentRenderer's flex:1 fill height,
-          restoring vertical centering on Welcome and full-canvas stretch elsewhere. */}
+      {/* Canvas area */}
       <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
         <div style={{ position: "absolute", inset: 0, overflow: "auto" }}>
           <div style={{ zoom: scale, width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
@@ -364,7 +363,7 @@ export function CenterPanel({ showControls = false, skipIntro = false }: { showC
             transition: skipIntro ? "none" : "transform 500ms cubic-bezier(0.25, 0, 0, 1) 300ms",
           }}
         >
-          <ControlsBar />
+          <ControlsBar zoom={zoom} onZoomIn={zoomIn} onZoomOut={zoomOut} />
         </div>
       </div>
     </main>
