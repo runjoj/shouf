@@ -6,6 +6,7 @@
 
 import { useCallback } from "react";
 import { useAppStore } from "@/lib/store";
+import { CaseStudyImage } from "./CaseStudyImage";
 
 // ─── Shared typography ──────────────────────────────────────────────────────
 
@@ -220,46 +221,21 @@ export function EsCaseStudyCanvas() {
             }}
           >
             {/* Tall image spans both rows on the left */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <CaseStudyImage
               src="/especialty_old_1.png"
               alt="Original eSpecialty form — full page view"
-              style={{
-                width:        "100%",
-                height:       "100%",
-                objectFit:    "cover",
-                borderRadius: "8px",
-                border:       "1px solid var(--shouf-border-sub)",
-                gridRow:      "1 / 3",
-                display:      "block",
-              }}
+              style={{ height: "100%", objectFit: "cover", borderRadius: "8px", border: "1px solid var(--shouf-border-sub)", gridRow: "1 / 3" }}
             />
             {/* Two landscape images stacked on the right */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <CaseStudyImage
               src="/especialty_old_2.png"
               alt="Original eSpecialty quotes page"
-              style={{
-                width:        "100%",
-                height:       "100%",
-                objectFit:    "cover",
-                borderRadius: "8px",
-                border:       "1px solid var(--shouf-border-sub)",
-                display:      "block",
-              }}
+              style={{ height: "100%", objectFit: "cover", borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }}
             />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <CaseStudyImage
               src="/especialty_old_3.png"
               alt="Original eSpecialty account page"
-              style={{
-                width:        "100%",
-                height:       "100%",
-                objectFit:    "cover",
-                borderRadius: "8px",
-                border:       "1px solid var(--shouf-border-sub)",
-                display:      "block",
-              }}
+              style={{ height: "100%", objectFit: "cover", borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }}
             />
           </div>
         </section>
@@ -286,39 +262,9 @@ export function EsCaseStudyCanvas() {
 
         {/* ── After ───────────────────────────────────────────────────────── */}
         <section style={{ marginBottom: "56px", display: "flex", flexDirection: "column", gap: "40px" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/especialty_new_2.png"
-            alt="Redesigned eSpecialty form with stepper navigation"
-            style={{
-              width:        "100%",
-              display:      "block",
-              borderRadius: "8px",
-              border:       "1px solid var(--shouf-border-sub)",
-            }}
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/especialty_new_1.png"
-            alt="Redesigned eSpecialty landing page"
-            style={{
-              width:        "100%",
-              display:      "block",
-              borderRadius: "8px",
-              border:       "1px solid var(--shouf-border-sub)",
-            }}
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/especialty_new_3.png"
-            alt="Redesigned eSpecialty quotes page"
-            style={{
-              width:        "100%",
-              display:      "block",
-              borderRadius: "8px",
-              border:       "1px solid var(--shouf-border-sub)",
-            }}
-          />
+          <CaseStudyImage src="/especialty_new_2.png" alt="Redesigned eSpecialty form with stepper navigation" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }} />
+          <CaseStudyImage src="/especialty_new_1.png" alt="Redesigned eSpecialty landing page" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }} />
+          <CaseStudyImage src="/especialty_new_3.png" alt="Redesigned eSpecialty quotes page" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }} />
         </section>
 
         <Divider />

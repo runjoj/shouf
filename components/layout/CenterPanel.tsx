@@ -175,10 +175,10 @@ function CanvasHeader({
   const { theme, toggleTheme } = useTheme();
 
   // Show inspect button only when a component canvas is active
-  const showInspect = !!selectedComponentId && !["welcome","about","pds-guide","rc-guide","eu-guide","eu-embedded","especialty","pds-color-tokens"].includes(selectedComponentId) && selectedSectionId === null;
+  const showInspect = !!selectedComponentId && !["welcome","about","pds-guide","rc-guide","eu-guide","eu-embedded","especialty","ql-redesign","ql-user-profiles","pds-color-tokens"].includes(selectedComponentId) && selectedSectionId === null;
 
   // Pages where left panel is hidden — show logo in top bar
-  const NO_LEFT = ["rc-case-study", "eu-embedded", "especialty", "about", "work"];
+  const NO_LEFT = ["rc-case-study", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "about", "work"];
   const isWorkSection = selectedSectionId === "work" && selectedComponentId === null;
   const showLogo = launched && (
     (!!selectedComponentId && NO_LEFT.includes(selectedComponentId)) || isWorkSection

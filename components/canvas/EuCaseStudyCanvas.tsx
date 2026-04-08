@@ -7,6 +7,7 @@
 
 import { useCallback } from "react";
 import { useAppStore } from "@/lib/store";
+import { CaseStudyImage } from "./CaseStudyImage";
 
 // ─── Shared typography ──────────────────────────────────────────────────────
 
@@ -217,28 +218,8 @@ export function EuCaseStudyCanvas() {
 
         {/* ── Problem images ─────────────────────────────────────────────── */}
         <section style={{ marginBottom: "56px", display: "flex", flexDirection: "column", gap: "40px" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/add_test_1.png"
-            alt="Legacy add test flow — step 1"
-            style={{
-              width: "100%",
-              display: "block",
-              borderRadius: "8px",
-              border: "1px solid var(--shouf-border-sub)",
-            }}
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/add_test_2.png"
-            alt="Legacy add test flow — step 2"
-            style={{
-              width: "100%",
-              display: "block",
-              borderRadius: "8px",
-              border: "1px solid var(--shouf-border-sub)",
-            }}
-          />
+          <CaseStudyImage src="/add_test_1.png" alt="Legacy add test flow — step 1" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }} />
+          <CaseStudyImage src="/add_test_2.png" alt="Legacy add test flow — step 2" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }} />
         </section>
 
         <Divider />
@@ -304,18 +285,7 @@ export function EuCaseStudyCanvas() {
 
         </section>
 
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/1. Library.png"
-          alt="Test library design"
-          style={{
-            width:        "100%",
-            display:      "block",
-            borderRadius: "8px",
-            border:       "1px solid var(--shouf-border-sub)",
-            marginBottom: "56px",
-          }}
-        />
+        <CaseStudyImage src="/1. Library.png" alt="Test library design" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)", marginBottom: "56px" }} />
 
         <Divider />
 

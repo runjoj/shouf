@@ -7,10 +7,9 @@
 // Card interaction: hover lifts with accent border, click navigates to the
 // project page. Framer Motion handles entrance stagger and hover spring.
 
-import { useCallback, useRef, useState, useEffect, type ReactNode } from "react";
+import { useCallback } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
-import { RcGlobalNavCanvas } from "./RcGlobalNavCanvas";
 
 // ─── Project data ────────────────────────────────────────────────────────────
 
@@ -23,32 +22,57 @@ type WorkProject = {
   extraTag?: string;
   disabled?: boolean;
   thumbnail?: string;
-  livePreview?: ReactNode;
+
 };
 
 const PROJECTS: WorkProject[] = [
   {
+    id: "project-artemis",
+    tag: "Coming Soon",
+    title: "Project Artemis",
+    description: "",
+    company: "",
+    disabled: true,
+  },
+  {
     id: "rc-case-study",
-    tag: "UX · Frontend",
+    tag: "Product Design · Design System",
     title: "Responsive Site Development",
     description:
       "A strategic shift toward a responsive, mobile-aware platform at BambooHR — from desktop-only to fully adaptive.",
     company: "BambooHR",
-    livePreview: <RcGlobalNavCanvas />,
+    thumbnail: "/responsive_component.png",
   },
   {
     id: "eu-embedded",
-    tag: "UX · Design System",
+    tag: "Product Design · Frontend",
     title: "Seamless Test Creation",
     description:
       "An in-platform embedded experience built entirely with Eucalyptus components — design system in production.",
-    company: "BambooHR",
+    company: "Qualiti",
     extraTag: "built with Eucalyptus",
     thumbnail: "/preview.png",
   },
   {
+    id: "ql-user-profiles",
+    tag: "Product Design",
+    title: "User Profiles",
+    description: "",
+    company: "Qualiti",
+    thumbnail: "/all_users.jpg",
+  },
+  {
+    id: "ql-redesign",
+    tag: "Product Design",
+    title: "Qualiti Portal Redesign",
+    description:
+      "A full redesign of an AI-powered test management portal — from internal prototype to a user-centered product.",
+    company: "Qualiti",
+    thumbnail: "/dashboard.png",
+  },
+  {
     id: "especialty",
-    tag: "UX · Frontend · Code",
+    tag: "Product Design · Frontend · Code",
     title: "eSpecialty Insurance",
     description:
       "A full redesign and rebuild of an insurance quoting platform — from MVP to a polished, scalable product with guided navigation and dynamic form architecture.",
@@ -57,54 +81,7 @@ const PROJECTS: WorkProject[] = [
   },
 ];
 
-// ─── LivePreviewThumb ────────────────────────────────────────────────────────
-// Renders a live component scaled down to fit the card thumbnail area.
-// Measures the container width and computes a scale factor so the 1200px
-// virtual canvas fills the thumbnail exactly. Non-interactive (pointer-events: none).
 
-const VIRTUAL_W = 1200;
-const VIRTUAL_H = 750;
-
-function LivePreviewThumb({ children }: { children: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(0);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => {
-      const w = entry.contentRect.width;
-      if (w > 0) setScale(w / VIRTUAL_W);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        position: "absolute",
-        inset: 0,
-        pointerEvents: "none",
-        overflow: "hidden",
-      }}
-    >
-      {scale > 0 && (
-        <div
-          style={{
-            width: `${VIRTUAL_W}px`,
-            height: `${VIRTUAL_H}px`,
-            transform: `scale(${scale})`,
-            transformOrigin: "top left",
-          }}
-        >
-          {children}
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ─── Card ────────────────────────────────────────────────────────────────────
 
@@ -173,17 +150,14 @@ function WorkCard({
       <div
         style={{
           width: "100%",
-          aspectRatio: "16 / 10",
+          aspectRatio: "16 / 11.7",
           background: "var(--shouf-hover)",
-          borderBottom: "1px solid var(--shouf-border)",
           flexShrink: 0,
           overflow: "hidden",
           position: "relative",
         }}
       >
-        {project.livePreview ? (
-          <LivePreviewThumb>{project.livePreview}</LivePreviewThumb>
-        ) : project.thumbnail ? (
+        {project.thumbnail ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={project.thumbnail}
@@ -224,18 +198,17 @@ function WorkCard({
       {/* Card body */}
       <div
         style={{
-          padding: "20px 22px 22px",
+          padding: "16px 20px 18px",
           display: "flex",
           flexDirection: "column",
-          gap: "10px",
-          flex: 1,
+          gap: "6px",
         }}
       >
         {/* Tag row */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
           <span
             style={{
-              fontSize: "11px",
+              fontSize: "13px",
               fontFamily: "var(--font-mono)",
               letterSpacing: "0.06em",
               textTransform: "uppercase",
@@ -247,7 +220,7 @@ function WorkCard({
           {project.company && (
             <span
               style={{
-                fontSize: "11px",
+                fontSize: "13px",
                 fontFamily: "var(--font-mono)",
                 color: "var(--shouf-text-faint)",
               }}
@@ -260,7 +233,7 @@ function WorkCard({
         {/* Title */}
         <h3
           style={{
-            fontSize: "18px",
+            fontSize: "20px",
             fontWeight: 600,
             lineHeight: 1.3,
             color: "var(--shouf-text)",
@@ -269,32 +242,6 @@ function WorkCard({
         >
           {project.title}
         </h3>
-
-        {/* Description */}
-        <p
-          style={{
-            fontSize: "14px",
-            lineHeight: 1.6,
-            color: "var(--shouf-text-muted)",
-            margin: 0,
-          }}
-        >
-          {project.description}
-        </p>
-
-        {/* Extra tag */}
-        {project.extraTag && (
-          <span
-            style={{
-              fontSize: "11px",
-              fontStyle: "italic",
-              color: "var(--shouf-text-faint)",
-              marginTop: "2px",
-            }}
-          >
-            {project.extraTag}
-          </span>
-        )}
       </div>
     </motion.button>
   );
@@ -322,14 +269,14 @@ export function WorkIndexCanvas() {
         padding: "40px 48px 60px",
         display: "flex",
         flexDirection: "column",
-        gap: "36px",
+        gap: "20px",
       }}
     >
       {/* Page header */}
       <div>
         <h1
           style={{
-            fontSize: "clamp(2.2rem, 3vw, 3rem)",
+            fontSize: "58px",
             fontWeight: 700,
             color: "var(--shouf-text)",
             margin: 0,

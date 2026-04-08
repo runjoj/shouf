@@ -20,6 +20,8 @@ import { RcCaseStudyCanvas } from "./RcCaseStudyCanvas";
 import { EuOverviewCanvas } from "./EuOverviewCanvas";
 import { PdsOverviewCanvas } from "./PdsOverviewCanvas";
 import { EsCaseStudyCanvas } from "./EsCaseStudyCanvas";
+import { QlCaseStudyCanvas } from "./QlCaseStudyCanvas";
+import { QlUserProfilesCanvas } from "./QlUserProfilesCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
 
@@ -338,6 +340,8 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
     selectedComponentId === "eu-overview"     ||
     selectedComponentId === "pds-overview"    ||
     selectedComponentId === "especialty"      ||
+    selectedComponentId === "ql-redesign"     ||
+    selectedComponentId === "ql-user-profiles" ||
     selectedComponentId === "about"            ||
     isGridCanvas
   );
@@ -432,6 +436,12 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
         {!showWelcome && !isGridCanvas && selectedComponentId === "especialty" && (
           <EsCaseStudyCanvas />
         )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "ql-redesign" && (
+          <QlCaseStudyCanvas />
+        )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "ql-user-profiles" && (
+          <QlUserProfilesCanvas />
+        )}
         {!showWelcome && !isGridCanvas && selectedComponentId === "eu-overview" && (
           <EuOverviewCanvas />
         )}
@@ -453,6 +463,8 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "eu-overview"     &&
           selectedComponentId !== "pds-overview"    &&
           selectedComponentId !== "especialty"      &&
+          selectedComponentId !== "ql-redesign"     &&
+          selectedComponentId !== "ql-user-profiles" &&
           isRegistered(selectedComponentId) && (
           <LiveComponentCanvas componentId={selectedComponentId} />
         )}
@@ -471,6 +483,8 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "eu-overview"     &&
           selectedComponentId !== "pds-overview"    &&
           selectedComponentId !== "especialty"      &&
+          selectedComponentId !== "ql-redesign"     &&
+          selectedComponentId !== "ql-user-profiles" &&
           selectedComponentId !== "about"            &&
           !isRegistered(selectedComponentId) && (
           <PlaceholderState componentId={selectedComponentId} />
