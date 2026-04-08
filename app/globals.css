@@ -441,7 +441,7 @@ body,
   --shouf-inp-bg:          #F0F0F0;
   --shouf-inp-border:      #E5E5E5;
   --shouf-inp-color:       #111111;
-  --shouf-inp-placeholder: #AAAAAA;
+  --shouf-inp-placeholder: #666666;
 
   /* Focused state — border and ring are accent-derived so they react to the
      accent picker in real time. Demonstrates the runtime token system. */
@@ -466,7 +466,7 @@ body,
     --shouf-inp-bg:          #222222;
     --shouf-inp-border:      #464646;
     --shouf-inp-color:       #F5F5F5;
-    --shouf-inp-placeholder: #606060;
+    --shouf-inp-placeholder: #999999;
     --shouf-inp-bg-focus:    #1A1A1A;
     --shouf-inp-label-color: #F5F5F5;
     --shouf-inp-helper-color: #888888;
@@ -476,7 +476,7 @@ body,
   --shouf-inp-bg:          #222222;
   --shouf-inp-border:      #464646;
   --shouf-inp-color:       #F5F5F5;
-  --shouf-inp-placeholder: #606060;
+  --shouf-inp-placeholder: #999999;
   --shouf-inp-bg-focus:    #1A1A1A;
   --shouf-inp-label-color: #F5F5F5;
   --shouf-inp-helper-color: #888888;

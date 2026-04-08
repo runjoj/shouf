@@ -26,7 +26,7 @@ function rIntroStyle(delay: number, launched: boolean): CSSProperties {
 
 function SectionHeader({ label }: { label: string }) {
   return (
-    <div className="flex items-center px-3 py-2" style={{ borderBottom: "1px solid var(--shouf-border-sub)" }}>
+    <div className="flex items-center px-3" style={{ height: "44px", borderBottom: "1px solid var(--shouf-border-sub)" }}>
       <span
         className="text-[12px] font-semibold uppercase tracking-wider"
         style={{ color: "var(--shouf-text-faint)", letterSpacing: "0.08em" }}
@@ -202,25 +202,25 @@ function VariantChip({ componentId }: { componentId: string }) {
 // ─── InspectPanel ─────────────────────────────────────────────────────────────
 
 export function InspectPanel() {
-  const { selectedComponentId, launched } = useAppStore();
+  const { selectedComponentId, controlValues, launched } = useAppStore();
   const registered = selectedComponentId ? isRegistered(selectedComponentId) : false;
+  const hasVariant = !!(selectedComponentId && registered && controlValues[selectedComponentId]?.variant);
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      {/* Header — 44px, aligns with the top toolbar height across all panels.
-          No tabs. Shows variant chip when a component with variants is selected. */}
-      <div
-        className="shrink-0 flex items-center px-3 gap-2"
-        style={{
-          borderBottom: "1px solid var(--shouf-border-sub)",
-          height: "44px",
-          ...rIntroStyle(D_HEADER, launched),
-        }}
-      >
-        {selectedComponentId && registered && (
-          <VariantChip componentId={selectedComponentId} />
-        )}
-      </div>
+      {/* Header — only visible when a variant chip is actually present */}
+      {hasVariant && (
+        <div
+          className="shrink-0 flex items-center px-3 gap-2"
+          style={{
+            borderBottom: "1px solid var(--shouf-border-sub)",
+            height: "44px",
+            ...rIntroStyle(D_HEADER, launched),
+          }}
+        >
+          <VariantChip componentId={selectedComponentId!} />
+        </div>
+      )}
 
       {/* Inspect content */}
       <div

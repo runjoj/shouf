@@ -223,7 +223,7 @@ function LogoMark() {
       }}
       title="Back to Welcome"
     >
-      <span className="text-[14px] font-bold" style={{ color: "var(--shouf-text)", fontFamily: "var(--font-manrope)", letterSpacing: "0.75px" }}>
+      <span className="text-[17px] font-bold" style={{ color: "var(--shouf-text)", fontFamily: "var(--font-manrope)", letterSpacing: "0.75px" }}>
         helloitsjo
       </span>
     </button>

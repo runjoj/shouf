@@ -65,7 +65,7 @@ const SIZE_RAD  = { sm: "var(--shouf-inp-radius-sm)", md: "var(--shouf-inp-radiu
 const LABEL_FONT = { sm: "11px", md: "12px", lg: "13px" };
 const LABEL_GAP  = { sm: "4px",  md: "5px",  lg: "6px"  };
 // kbd badge font scales with input size
-const KBD_FONT   = { sm: "10px", md: "11px", lg: "12px" };
+const KBD_FONT   = { sm: "10.5px", md: "12px", lg: "13px" };
 const KBD_PX     = { sm: "4px",  md: "5px",  lg: "6px"  };
 
 // ─── Helper text per state ────────────────────────────────────────────────────
@@ -207,10 +207,13 @@ export const PdsInput = forwardRef<HTMLInputElement, PdsInputProps>(
       fontSize:        KBD_FONT[size],
       fontFamily:      "inherit",
       lineHeight:      1,
-      color:           "var(--shouf-inp-placeholder)",
+      color:           "var(--shouf-inp-color)",
+      opacity:         0.5,
       backgroundColor: "var(--shouf-border)",
+      border:          "1px solid var(--shouf-border)",
       padding:         `2px ${KBD_PX[size]}`,
       borderRadius:    "4px",
+      fontWeight:      500,
       userSelect:      "none",
     };
 

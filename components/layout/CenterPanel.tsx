@@ -139,12 +139,12 @@ function TopBarNavLink({
   return (
     <button
       onClick={onClick}
-      className="text-[12px] shrink-0 transition-colors"
+      className="text-[14px] shrink-0 transition-colors"
       style={{
         background:    "none",
         border:        "none",
-        padding:       "4px 8px",
-        borderRadius:  "5px",
+        padding:       "6px 12px",
+        borderRadius:  "6px",
         cursor:        "pointer",
         fontWeight:    isSelected ? 600 : 500,
         color:         isSelected ? "var(--shouf-accent)" : "var(--shouf-text-muted)",
@@ -219,7 +219,7 @@ function CanvasHeader({
             }}
             title="Back to Welcome"
           >
-            <span className="text-[13px] font-bold" style={{ color: "var(--shouf-text)", fontFamily: "var(--font-manrope)", letterSpacing: "0.5px" }}>
+            <span className="text-[17px] font-bold" style={{ color: "var(--shouf-text)", fontFamily: "var(--font-manrope)", letterSpacing: "0.75px" }}>
               helloitsjo
             </span>
           </button>
@@ -306,7 +306,7 @@ function CanvasHeader({
 // pages so the canvas can use the full height.
 
 // Measured height of the controls bar (header ~32px + row ~54px + 1px border).
-const CONTROLS_H = 92;
+const CONTROLS_H = 100;
 
 export function CenterPanel({ showControls = false, skipIntro = false }: { showControls?: boolean; skipIntro?: boolean }) {
   const [zoom, setZoom] = useState(100);
