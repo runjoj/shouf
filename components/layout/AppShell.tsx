@@ -155,10 +155,10 @@ function MobileView() {
 }
 
 // Pages that should NOT show controls/inspect panels (guides, landing, about).
-const NO_PANELS = new Set(["about", "pds-guide", "pds-overview", "rc-guide", "rc-case-study", "eu-guide", "eu-overview", "eu-embedded", "pds-color-tokens"]);
+const NO_PANELS = new Set(["about", "pds-guide", "pds-overview", "rc-guide", "rc-case-study", "eu-guide", "eu-overview", "eu-embedded", "especialty", "pds-color-tokens"]);
 
 // Work case study pages — hide left nav entirely for immersive full-page layout.
-const NO_LEFT_PANEL = new Set(["rc-case-study", "eu-embedded"]);
+const NO_LEFT_PANEL = new Set(["rc-case-study", "eu-embedded", "especialty"]);
 
 // ─── Desktop three-panel view ─────────────────────────────────────────────────
 

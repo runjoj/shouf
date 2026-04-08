@@ -239,11 +239,13 @@ export function EuEmbeddedCanvas() {
             </Body>
           </div>
 
-          {/* Gif */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/embedded.gif"
-            alt="Seamless Test Creation interaction recording"
+          {/* Video */}
+          <video
+            src="/seamlesss_test_experience.mov"
+            autoPlay
+            loop
+            muted
+            playsInline
             style={{
               width:        "100%",
               display:      "block",

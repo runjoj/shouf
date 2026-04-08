@@ -159,16 +159,6 @@ export function EuCaseStudyCanvas() {
             >
               Seamless Test Creation
             </h1>
-            <span
-              style={{
-                fontSize:   "11px",
-                fontStyle:  "italic",
-                color:      "var(--shouf-text-faint)",
-                display:    "block",
-              }}
-            >
-              built with Eucalyptus
-            </span>
           </div>
 
           {/* Right column — overview body text */}
@@ -183,24 +173,32 @@ export function EuCaseStudyCanvas() {
 
         {/* ── Gif ────────────────────────────────────────────────────────── */}
         <section style={{ marginBottom: "72px" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/embedded.gif"
-            alt="Seamless Test Creation interaction recording"
+          <div
             style={{
-              width:        "100%",
-              display:      "block",
+              overflow:     "hidden",
               borderRadius: "8px",
               border:       "1px solid var(--shouf-border-sub)",
-              marginBottom: "0",
             }}
-          />
+          >
+            <video
+              src="/seamlesss_test_experience.mov"
+              autoPlay
+              loop
+              muted
+              playsInline
+              style={{
+                width:     "100%",
+                display:   "block",
+                marginTop: "-1px",
+              }}
+            />
+          </div>
         </section>
 
         <Divider />
 
         {/* ── Problem ────────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
+        <section style={{ marginBottom: "32px", maxWidth: "800px" }}>
           <SectionLabel>Problem</SectionLabel>
           <SectionHeading>Qualiti used a lot of old, legacy code.</SectionHeading>
           <Body>
@@ -217,10 +215,36 @@ export function EuCaseStudyCanvas() {
           </Body>
         </section>
 
+        {/* ── Problem images ─────────────────────────────────────────────── */}
+        <section style={{ marginBottom: "56px", display: "flex", flexDirection: "column", gap: "40px" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/add_test_1.png"
+            alt="Legacy add test flow — step 1"
+            style={{
+              width: "100%",
+              display: "block",
+              borderRadius: "8px",
+              border: "1px solid var(--shouf-border-sub)",
+            }}
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/add_test_2.png"
+            alt="Legacy add test flow — step 2"
+            style={{
+              width: "100%",
+              display: "block",
+              borderRadius: "8px",
+              border: "1px solid var(--shouf-border-sub)",
+            }}
+          />
+        </section>
+
         <Divider />
 
         {/* ── Solution ───────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
+        <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Solution</SectionLabel>
           <SectionHeading>The introduction of embedding manual and suggested test creation.</SectionHeading>
           <Body>
@@ -240,7 +264,7 @@ export function EuCaseStudyCanvas() {
         <Divider />
 
         {/* ── Research ───────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
+        <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Research</SectionLabel>
           <SectionHeading>Competitive Analysis</SectionHeading>
           <Body>
@@ -258,29 +282,8 @@ export function EuCaseStudyCanvas() {
 
         <Divider />
 
-        {/* ── Design ─────────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
-          <SectionLabel>Design</SectionLabel>
-          <SectionHeading>Building Components</SectionHeading>
-          <Body>
-            After starting with the foundational elements, such as branding, spacing, and colors, I
-            then added components and elements to this library slowly over time while working on the
-            Qualiti Portal redesign. I prioritized creating clean and clear reusable elements in the
-            designs and made sure any changes were made on the master component that lives in the
-            library.
-          </Body>
-          <Body>
-            I wanted to create an experience that felt both within the user&apos;s workflow and was
-            efficient and as clear as possible. It was important to me to ensure the user both could
-            work quickly and could understand what they were adding, and could easily distinguish it
-            from what was already there.
-          </Body>
-        </section>
-
-        <Divider />
-
         {/* ── Takeaways ──────────────────────────────────────────────────── */}
-        <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
+        <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Takeaways</SectionLabel>
           <SectionHeading>Learnings</SectionHeading>
           <Body>
@@ -299,44 +302,36 @@ export function EuCaseStudyCanvas() {
             to the detail view.
           </Body>
 
-          <div
-            style={{
-              marginTop:       "40px",
-              padding:         "24px",
-              borderRadius:    "8px",
-              backgroundColor: "var(--shouf-panel)",
-              border:          "1px solid var(--shouf-border-sub)",
-            }}
-          >
-            <div
-              style={{
-                fontFamily:    MONO,
-                fontSize:      "10px",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color:         "var(--shouf-text-faint)",
-                marginBottom:  "12px",
-              }}
-            >
-              Next Steps
-            </div>
-            <p
-              style={{
-                fontSize:   "14px",
-                color:      "var(--shouf-text-muted)",
-                lineHeight: 1.75,
-                margin:     0,
-              }}
-            >
-              Some use cases were not addressed in this design — is a user able to add multiple
-              manual tests at once? Is there a way for them to add more than three suggested tests
-              at once? If they edit a suggested test, does the AI learn from that and is it still
-              able to generate steps? To further refine this design, I would address these scenarios
-              along with a few others not listed here. I would also add specific tags to tests that
-              are generated by the AI versus ones that are made manually. Ideally I would do user
-              research and see if there is a need to distinguish the two before proceeding.
-            </p>
-          </div>
+        </section>
+
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/1. Library.png"
+          alt="Test library design"
+          style={{
+            width:        "100%",
+            display:      "block",
+            borderRadius: "8px",
+            border:       "1px solid var(--shouf-border-sub)",
+            marginBottom: "56px",
+          }}
+        />
+
+        <Divider />
+
+        {/* ── Next Steps ────────────────────────────────────────────────── */}
+        <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
+          <SectionLabel>Looking Ahead</SectionLabel>
+          <SectionHeading>Next Steps</SectionHeading>
+          <Body>
+            Some use cases were not addressed in this design — is a user able to add multiple
+            manual tests at once? Is there a way for them to add more than three suggested tests
+            at once? If they edit a suggested test, does the AI learn from that and is it still
+            able to generate steps? To further refine this design, I would address these scenarios
+            along with a few others not listed here. I would also add specific tags to tests that
+            are generated by the AI versus ones that are made manually. Ideally I would do user
+            research and see if there is a need to distinguish the two before proceeding.
+          </Body>
         </section>
 
         <Divider />

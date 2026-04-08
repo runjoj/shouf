@@ -50,9 +50,10 @@ const PROJECTS: WorkProject[] = [
     id: "especialty",
     tag: "UX · Frontend · Code",
     title: "eSpecialty Insurance",
-    description: "Coming soon",
-    company: "",
-    disabled: true,
+    description:
+      "A full redesign and rebuild of an insurance quoting platform — from MVP to a polished, scalable product with guided navigation and dynamic form architecture.",
+    company: "eSpecialty",
+    thumbnail: "/especialty_new_3.png",
   },
 ];
 

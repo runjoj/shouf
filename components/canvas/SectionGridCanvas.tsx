@@ -257,10 +257,12 @@ function GlobalNavPreview() {
 
 function EmbeddedPreview() {
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/embedded.gif"
-      alt="Seamless Test Creation"
+    <video
+      src="/seamlesss_test_experience.mov"
+      autoPlay
+      loop
+      muted
+      playsInline
       style={{
         width:        "100%",
         maxWidth:     "192px",

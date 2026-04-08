@@ -162,7 +162,7 @@ function CanvasHeader({
   const activeSection = gridSection ?? entrySection;
 
   // Show inspect button only when a component canvas is active
-  const showInspect = !!selectedComponentId && !["welcome","about","pds-guide","rc-guide","eu-guide","eu-embedded","pds-color-tokens"].includes(selectedComponentId) && selectedSectionId === null;
+  const showInspect = !!selectedComponentId && !["welcome","about","pds-guide","rc-guide","eu-guide","eu-embedded","especialty","pds-color-tokens"].includes(selectedComponentId) && selectedSectionId === null;
 
   return (
     <div

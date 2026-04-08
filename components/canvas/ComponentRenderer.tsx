@@ -19,6 +19,7 @@ import { WorkIndexCanvas }   from "./WorkIndexCanvas";
 import { RcCaseStudyCanvas } from "./RcCaseStudyCanvas";
 import { EuOverviewCanvas } from "./EuOverviewCanvas";
 import { PdsOverviewCanvas } from "./PdsOverviewCanvas";
+import { EsCaseStudyCanvas } from "./EsCaseStudyCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
 
@@ -336,6 +337,7 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
     selectedComponentId === "rc-global-nav"    ||
     selectedComponentId === "eu-overview"     ||
     selectedComponentId === "pds-overview"    ||
+    selectedComponentId === "especialty"      ||
     selectedComponentId === "about"            ||
     isGridCanvas
   );
@@ -427,6 +429,9 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
         {!showWelcome && !isGridCanvas && selectedComponentId === "eu-embedded" && (
           <EuCaseStudyCanvas />
         )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "especialty" && (
+          <EsCaseStudyCanvas />
+        )}
         {!showWelcome && !isGridCanvas && selectedComponentId === "eu-overview" && (
           <EuOverviewCanvas />
         )}
@@ -447,6 +452,7 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "rc-global-nav"    &&
           selectedComponentId !== "eu-overview"     &&
           selectedComponentId !== "pds-overview"    &&
+          selectedComponentId !== "especialty"      &&
           isRegistered(selectedComponentId) && (
           <LiveComponentCanvas componentId={selectedComponentId} />
         )}
@@ -464,6 +470,7 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "rc-global-nav"    &&
           selectedComponentId !== "eu-overview"     &&
           selectedComponentId !== "pds-overview"    &&
+          selectedComponentId !== "especialty"      &&
           selectedComponentId !== "about"            &&
           !isRegistered(selectedComponentId) && (
           <PlaceholderState componentId={selectedComponentId} />
