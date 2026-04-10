@@ -1,20 +1,21 @@
 "use client";
 
 import { useAppStore } from "@/lib/store";
+import { ScrollReveal } from "./CaseStudyShared";
 
 // ─── Font family data ─────────────────────────────────────────────────────────
 // Each entry drives both the By Font specimen and the By Scale family labels.
 
 const FONT_FAMILIES = [
   {
-    id:          "playfair",
-    name:        "Playfair Display",
+    id:          "manrope",
+    name:        "Manrope",
     purpose:     "Display",
-    purposeDesc: "Headings and expressive moments",
-    stack:       "var(--font-playfair), Georgia, serif",
+    purposeDesc: "Headings and branding",
+    stack:       "var(--font-manrope), sans-serif",
     pangram:     "A wizard's job is to vex chumps quickly in fog.",
-    weights:     [400, 500, 600, 700] as number[],
-    weightLabels: ["Regular", "Medium", "Semibold", "Bold"],
+    weights:     [400, 500, 600, 700, 800] as number[],
+    weightLabels: ["Regular", "Medium", "Semibold", "Bold", "ExtraBold"],
   },
   {
     id:          "inter",
@@ -83,7 +84,7 @@ function ByFontView({
   onSelect: (id: string) => void;
 }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "72px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {FONT_FAMILIES.map((family, index) => {
         const itemKey    = `family:${family.id}`;
         const isSelected = selectedItem === itemKey;
@@ -95,21 +96,31 @@ function ByFontView({
             style={{
               ...revealStyle(index),
               cursor:        "pointer",
-              paddingLeft:   isSelected ? "16px" : "0",
-              borderLeft:    isSelected ? "2px solid var(--shouf-accent)" : "2px solid transparent",
-              transition:    "padding-left 160ms ease, border-color 160ms ease",
+              padding:       "20px 16px",
+              borderRadius:  "10px",
+              border:        isSelected ? "1px solid var(--shouf-border)" : "1px solid transparent",
+              backgroundColor: "transparent",
+              transition:    "background-color 160ms ease, border-color 160ms ease",
+            }}
+            onMouseEnter={(e) => {
+              if (!isSelected) (e.currentTarget as HTMLElement).style.backgroundColor = "var(--shouf-hover-str)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
             }}
           >
             {/* Purpose label — small caps monospace */}
             <div
               style={{
-                fontSize:      "10px",
+                fontSize:      "12px",
                 fontFamily:    "var(--font-mono)",
-                letterSpacing: "0.14em",
+                letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color:         "var(--shouf-text-faint)",
+                color:         isSelected ? "var(--shouf-accent)" : "var(--shouf-text-muted)",
+                fontWeight:    600,
                 marginBottom:  "16px",
                 userSelect:    "none",
+                transition:    "color 160ms ease",
               }}
             >
               {family.purpose} — {family.purposeDesc}
@@ -118,7 +129,7 @@ function ByFontView({
             {/* Font name — large, in that font */}
             <div
               style={{
-                fontSize:     "40px",
+                fontSize:     "44px",
                 fontFamily:   family.stack,
                 fontWeight:   400,
                 lineHeight:   1,
@@ -133,11 +144,11 @@ function ByFontView({
             {/* Pangram */}
             <div
               style={{
-                fontSize:     "17px",
+                fontSize:     "18px",
                 fontFamily:   family.stack,
                 fontWeight:   400,
                 lineHeight:   1.55,
-                color:        "var(--shouf-text-muted)",
+                color:        "var(--shouf-text)",
                 marginBottom: "28px",
               }}
             >
@@ -145,15 +156,15 @@ function ByFontView({
             </div>
 
             {/* Weight specimens */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "32px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "36px" }}>
               {family.weights.map((weight, wi) => (
                 <div
                   key={weight}
-                  style={{ display: "flex", flexDirection: "column", gap: "4px" }}
+                  style={{ display: "flex", flexDirection: "column", gap: "6px" }}
                 >
                   <div
                     style={{
-                      fontSize:   "16px",
+                      fontSize:   "20px",
                       fontFamily: family.stack,
                       fontWeight: weight,
                       color:      "var(--shouf-text)",
@@ -164,9 +175,9 @@ function ByFontView({
                   </div>
                   <div
                     style={{
-                      fontSize:   "10px",
+                      fontSize:   "12px",
                       fontFamily: "var(--font-mono)",
-                      color:      "var(--shouf-text-faint)",
+                      color:      "var(--shouf-text-muted)",
                       lineHeight: 1.4,
                     }}
                   >
@@ -239,9 +250,9 @@ function ByScaleView({
             {/* Token name */}
             <div
               style={{
-                fontSize:   "12px",
+                fontSize:   "13px",
                 fontFamily: "var(--font-mono)",
-                color:      "var(--shouf-text-muted)",
+                color:      "var(--shouf-text)",
                 flexShrink: 0,
                 minWidth:   "120px",
               }}
@@ -252,9 +263,9 @@ function ByScaleView({
             {/* px value */}
             <div
               style={{
-                fontSize:   "12px",
+                fontSize:   "13px",
                 fontFamily: "var(--font-mono)",
-                color:      "var(--shouf-text-faint)",
+                color:      "var(--shouf-text-muted)",
                 flexShrink: 0,
                 minWidth:   "32px",
                 textAlign:  "right",
@@ -266,11 +277,11 @@ function ByScaleView({
             {/* Family label */}
             <div
               style={{
-                fontSize:      "10px",
+                fontSize:      "12px",
                 fontFamily:    "var(--font-mono)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color:         "var(--shouf-text-faint)",
+                color:         "var(--shouf-text-muted)",
                 flexShrink:    0,
                 minWidth:      "60px",
                 textAlign:     "right",
@@ -305,13 +316,14 @@ export function TypographyCanvas() {
       <div style={{ maxWidth: "680px", margin: "0 auto" }}>
 
         {/* ── Page header ─────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <div style={{ marginBottom: "56px", ...revealStyle(0) }}>
           <h1
             style={{
-              fontSize:      "22px",
+              fontSize:      "26px",
               fontWeight:    600,
               color:         "var(--shouf-text)",
-              margin:        "0 0 6px",
+              margin:        "0 0 8px",
               letterSpacing: "-0.02em",
             }}
           >
@@ -319,15 +331,26 @@ export function TypographyCanvas() {
           </h1>
           <p
             style={{
-              fontSize:   "14px",
+              fontSize:   "15px",
               fontFamily: "var(--font-mono)",
-              color:      "var(--shouf-text-faint)",
+              color:      "var(--shouf-text-muted)",
               margin:     0,
             }}
           >
             Shouf Design System — four families, one scale
           </p>
+          <p
+            style={{
+              fontSize:   "13px",
+              color:      "var(--shouf-text-faint)",
+              margin:     "12px 0 0",
+              lineHeight: 1.5,
+            }}
+          >
+            Click a family or scale step to inspect its tokens in the right panel.
+          </p>
         </div>
+        </ScrollReveal>
 
         {/* ── Content ─────────────────────────────────────────────────────── */}
         {view === "by-font"  && (

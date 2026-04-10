@@ -4,6 +4,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import React from "react";
+import { ScrollReveal } from "./CaseStudyShared";
 
 const BIO_PARAGRAPHS = [
   "I started my career as an Army Captain, leading large teams through fast-moving missions with limited resources. It taught me how to make good decisions quickly and communicate effectively across different teams.",
@@ -411,14 +412,13 @@ export function AboutCanvas() {
             className="ab-hero"
             style={{ display: "flex", gap: "64px", alignItems: "flex-start" }}
           >
+            <ScrollReveal style={{ width: "300px", minWidth: "300px", alignSelf: "stretch", flexShrink: 0 }}>
             <div
               className="ab-photo"
               style={{
-                width:        "300px",
-                minWidth:     "300px",
-                alignSelf:    "stretch",
+                width:        "100%",
+                height:       "100%",
                 borderRadius: "14px",
-                flexShrink:   0,
                 overflow:     "hidden",
                 position:     "relative",
               }}
@@ -430,11 +430,12 @@ export function AboutCanvas() {
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
               />
             </div>
+            </ScrollReveal>
 
             <div style={{ flex: 1, paddingTop: "4px", maxWidth: "540px" }}>
               {BIO_PARAGRAPHS.map((para, i) => (
+                <ScrollReveal key={i} delay={i * 120}>
                 <p
-                  key={i}
                   style={{
                     fontSize:      "16px",
                     fontWeight:    400,
@@ -447,7 +448,36 @@ export function AboutCanvas() {
                 >
                   {para}
                 </p>
+                </ScrollReveal>
               ))}
+
+              {/* Resume download */}
+              <ScrollReveal delay={BIO_PARAGRAPHS.length * 120}>
+              <a
+                href="/Jo_Ann_Saab_Resume.pdf"
+                download
+                style={{
+                  display:         "inline-flex",
+                  alignItems:      "center",
+                  gap:             "8px",
+                  marginTop:       "32px",
+                  fontSize:        "13px",
+                  fontFamily:      "var(--font-mono)",
+                  fontWeight:      500,
+                  color:           "var(--shouf-accent)",
+                  textDecoration:  "none",
+                  letterSpacing:   "0.02em",
+                  transition:      "opacity 160ms ease",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.7"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M8 2v9M4.5 7.5 8 11l3.5-3.5M3 13h10" />
+                </svg>
+                Download Resume
+              </a>
+              </ScrollReveal>
             </div>
           </section>
 

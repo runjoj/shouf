@@ -7,72 +7,7 @@
 import { useCallback } from "react";
 import { useAppStore } from "@/lib/store";
 import { CaseStudyImage } from "./CaseStudyImage";
-
-// ─── Shared typography ──────────────────────────────────────────────────────
-
-const MONO = "var(--font-mono)";
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        fontFamily:    MONO,
-        fontSize:      "22px",
-        fontWeight:    800,
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        color:         "var(--shouf-text-faint)",
-        marginBottom:  "10px",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h2
-      style={{
-        fontSize:      "28px",
-        fontWeight:    600,
-        color:         "var(--shouf-text)",
-        margin:        "0 0 20px",
-        letterSpacing: "-0.02em",
-        lineHeight:    1.2,
-      }}
-    >
-      {children}
-    </h2>
-  );
-}
-
-function Body({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      style={{
-        fontSize:   "16px",
-        color:      "var(--shouf-text-muted)",
-        lineHeight: 1.75,
-        margin:     "0 0 16px",
-      }}
-    >
-      {children}
-    </p>
-  );
-}
-
-function Divider() {
-  return (
-    <div
-      style={{
-        height:          "1px",
-        backgroundColor: "var(--shouf-border-sub)",
-        margin:          "0 0 48px",
-      }}
-    />
-  );
-}
+import { MONO, SectionLabel, SectionHeading, Body, Divider, BackButton, ScrollReveal } from "./CaseStudyShared";
 
 // ─── QlUserProfilesCanvas ──────────────────────────────────────────────────
 
@@ -96,31 +31,7 @@ export function QlUserProfilesCanvas() {
       }}
     >
         {/* ── Back button ──────────────────────────────────────────────── */}
-        <div style={{ marginBottom: "40px", maxWidth: "800px" }}>
-          <button
-            onClick={goToWork}
-            style={{
-              all:           "unset",
-              cursor:        "pointer",
-              fontSize:      "15px",
-              fontFamily:    MONO,
-              color:         "var(--shouf-text-faint)",
-              letterSpacing: "0.02em",
-              display:       "inline-flex",
-              alignItems:    "center",
-              gap:           "8px",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.color = "var(--shouf-accent)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.color = "var(--shouf-text-faint)";
-            }}
-          >
-            <span style={{ fontSize: "17px" }}>&larr;</span>
-            <span>Back</span>
-          </button>
-        </div>
+        <BackButton onClick={goToWork} />
 
         {/* ── Hero — two-column overview ─────────────────────────────────── */}
         <section
@@ -174,6 +85,7 @@ export function QlUserProfilesCanvas() {
         <Divider />
 
         {/* ── Problems ──────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Problems</SectionLabel>
           <SectionHeading>Too many selections to run a test.</SectionHeading>
@@ -189,7 +101,9 @@ export function QlUserProfilesCanvas() {
             options every time slows down the customer unnecessarily.
           </Body>
         </section>
+        </ScrollReveal>
 
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionHeading>Customer unaware when set up is broken.</SectionHeading>
           <Body>
@@ -205,10 +119,12 @@ export function QlUserProfilesCanvas() {
             their tests passing again.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Solution ──────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Solution</SectionLabel>
           <SectionHeading>A User Profile object that can be reused.</SectionHeading>
@@ -225,10 +141,12 @@ export function QlUserProfilesCanvas() {
             just wants to add their own manual test, they have that option as well.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Research: Competitive Analysis ─────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Research</SectionLabel>
           <SectionHeading>Competitive Analysis</SectionHeading>
@@ -259,10 +177,12 @@ export function QlUserProfilesCanvas() {
             project.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Ideation: Flows and Wireframes ─────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Ideation</SectionLabel>
           <SectionHeading>Potential flows and wireframes.</SectionHeading>
@@ -280,13 +200,17 @@ export function QlUserProfilesCanvas() {
             environments and credentials here, while also choosing other settings.
           </Body>
         </section>
+        </ScrollReveal>
 
         {/* Ideation image — full width */}
+        <ScrollReveal>
         <CaseStudyImage src="/ideation.jpg" alt="Ideation flows and wireframes" style={{ marginBottom: "56px" }} />
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Design: Building Components ────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Design</SectionLabel>
           <SectionHeading>Building Components</SectionHeading>
@@ -297,13 +221,17 @@ export function QlUserProfilesCanvas() {
             team. The tab views also kept a similar flow to our plans and runs pages.
           </Body>
         </section>
+        </ScrollReveal>
 
         {/* Early solution image — full width */}
+        <ScrollReveal>
         <CaseStudyImage src="/early_solution.jpg" alt="Early solution components" style={{ marginBottom: "56px" }} />
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Design: Problems ───────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Design</SectionLabel>
           <SectionHeading>Problems</SectionHeading>
@@ -321,10 +249,12 @@ export function QlUserProfilesCanvas() {
             configuration they made.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Refinement: A Simpler Solution ─────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Refinement</SectionLabel>
           <SectionHeading>A simpler solution.</SectionHeading>
@@ -353,10 +283,12 @@ export function QlUserProfilesCanvas() {
             application, and those should always be the same.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Ideation: Wireframes and AI's ──────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Ideation</SectionLabel>
           <SectionHeading>Wireframes and AI&apos;s</SectionHeading>
@@ -373,13 +305,17 @@ export function QlUserProfilesCanvas() {
             all of their Users, and then a view where they can manage the components of a User.
           </Body>
         </section>
+        </ScrollReveal>
 
         {/* Claude wireframes image — full width */}
+        <ScrollReveal>
         <CaseStudyImage src="/claude_wireframes.jpg" alt="Wireframes and AI collaboration" style={{ marginBottom: "56px" }} />
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Design: Final Solution ─────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Design</SectionLabel>
           <SectionHeading>Final solution with embedded elements.</SectionHeading>
@@ -406,8 +342,10 @@ export function QlUserProfilesCanvas() {
             would embed into that page at the top in a similar way.
           </Body>
         </section>
+        </ScrollReveal>
 
         {/* Final solution images — 2x3 grid */}
+        <ScrollReveal>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "56px" }}>
           <CaseStudyImage src="/final_user_1.png" alt="Final solution — user profiles overview" />
           <CaseStudyImage src="/final_user_2.png" alt="Final solution — create user profile" />
@@ -416,10 +354,12 @@ export function QlUserProfilesCanvas() {
           <CaseStudyImage src="/final_user_5.png" alt="Final solution — user detail view" />
           <CaseStudyImage src="/final_user_6.png" alt="Final solution — manage components" />
         </div>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Takeaways: Learnings ───────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Takeaways</SectionLabel>
           <SectionHeading>Learnings</SectionHeading>
@@ -439,10 +379,12 @@ export function QlUserProfilesCanvas() {
             solve the problem.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Next Steps ─────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Next Steps</SectionLabel>
           <SectionHeading>Future improvements</SectionHeading>
@@ -457,6 +399,7 @@ export function QlUserProfilesCanvas() {
             improves the user&apos;s experience.
           </Body>
         </section>
+        </ScrollReveal>
     </div>
   );
 }

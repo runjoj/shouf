@@ -3,12 +3,13 @@ import type { ComponentRegistration, TokenRow } from "@/lib/types";
 // ─── Token data for each font family ──────────────────────────────────────────
 
 const FAMILY_TOKENS: Record<string, TokenRow[]> = {
-  playfair: [
-    { id: "ff",   property: "font-family",       cssValue: "Playfair Display",  tokenName: "--font-playfair", category: "typography" },
+  manrope: [
+    { id: "ff",   property: "font-family",       cssValue: "Manrope",           tokenName: "--font-manrope",  category: "typography" },
     { id: "fw1",  property: "font-weight / Regular",  cssValue: "400",          tokenName: "—",               category: "typography" },
     { id: "fw2",  property: "font-weight / Medium",   cssValue: "500",          tokenName: "—",               category: "typography" },
     { id: "fw3",  property: "font-weight / Semibold", cssValue: "600",          tokenName: "—",               category: "typography" },
     { id: "fw4",  property: "font-weight / Bold",     cssValue: "700",          tokenName: "—",               category: "typography" },
+    { id: "fw5",  property: "font-weight / ExtraBold", cssValue: "800",         tokenName: "—",               category: "typography" },
   ],
   inter: [
     { id: "ff",   property: "font-family",       cssValue: "Inter",             tokenName: "--font-inter",    category: "typography" },
@@ -68,7 +69,7 @@ const SCALE_TOKENS: Record<string, TokenRow[]> = {
 // ─── Default tokens shown before any selection ────────────────────────────────
 
 const DEFAULT_TOKENS: TokenRow[] = [
-  { id: "fp", property: "font-family / Display",   cssValue: "Playfair Display",           tokenName: "--font-playfair", category: "typography" },
+  { id: "fp", property: "font-family / Display",   cssValue: "Manrope",                    tokenName: "--font-manrope",  category: "typography" },
   { id: "fi", property: "font-family / UI",        cssValue: "Inter",                      tokenName: "--font-inter",    category: "typography" },
   { id: "ff", property: "font-family / Component", cssValue: "Figtree",                    tokenName: "--font-figtree",  category: "typography" },
   { id: "fm", property: "font-family / Technical", cssValue: "ui-monospace",               tokenName: "--font-mono",     category: "typography" },

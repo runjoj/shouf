@@ -3,112 +3,12 @@
 // ─── RcCaseStudyCanvas ──────────────────────────────────────────────────────
 // Combined case study page for Responsive Components.
 // Full-page, no left nav, no max-width constraint. Content spans full width.
+// Uses shared case study primitives for consistent storytelling.
 
 import { useCallback } from "react";
 import { useAppStore } from "@/lib/store";
 import { RcGlobalNavCanvas } from "./RcGlobalNavCanvas";
-
-// ─── Shared typography ──────────────────────────────────────────────────────
-
-const MONO = "var(--font-mono)";
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        fontFamily:    MONO,
-        fontSize:      "22px",
-        fontWeight:    800,
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        color:         "var(--shouf-text-faint)",
-        marginBottom:  "10px",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h2
-      style={{
-        fontSize:      "28px",
-        fontWeight:    600,
-        color:         "var(--shouf-text)",
-        margin:        "0 0 20px",
-        letterSpacing: "-0.02em",
-        lineHeight:    1.2,
-      }}
-    >
-      {children}
-    </h2>
-  );
-}
-
-function Body({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      style={{
-        fontSize:   "16px",
-        color:      "var(--shouf-text-muted)",
-        lineHeight: 1.75,
-        margin:     "0 0 16px",
-      }}
-    >
-      {children}
-    </p>
-  );
-}
-
-function BulletList({ items }: { items: string[] }) {
-  return (
-    <ul style={{ margin: "0 0 16px", paddingLeft: "20px" }}>
-      {items.map((item, i) => (
-        <li
-          key={i}
-          style={{
-            fontSize:     "16px",
-            color:        "var(--shouf-text-muted)",
-            lineHeight:   1.75,
-            marginBottom: "6px",
-          }}
-        >
-          {item}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function SubHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h3
-      style={{
-        fontSize:      "16px",
-        fontWeight:    600,
-        color:         "var(--shouf-text)",
-        margin:        "0 0 10px",
-        letterSpacing: "-0.01em",
-      }}
-    >
-      {children}
-    </h3>
-  );
-}
-
-function Divider() {
-  return (
-    <div
-      style={{
-        height:          "1px",
-        backgroundColor: "var(--shouf-border-sub)",
-        margin:          "0 0 48px",
-      }}
-    />
-  );
-}
+import { MONO, SectionLabel, SectionHeading, Body, Divider, BackButton, ScrollReveal } from "./CaseStudyShared";
 
 // ─── RcCaseStudyCanvas ──────────────────────────────────────────────────────
 
@@ -138,31 +38,7 @@ export function RcCaseStudyCanvas() {
       }}
     >
       {/* ── Back button ──────────────────────────────────────────────── */}
-      <div style={{ marginBottom: "40px", maxWidth: "800px" }}>
-        <button
-          onClick={goToWork}
-          style={{
-            all:           "unset",
-            cursor:        "pointer",
-            fontSize:      "15px",
-            fontFamily:    MONO,
-            color:         "var(--shouf-text-faint)",
-            letterSpacing: "0.02em",
-            display:       "inline-flex",
-            alignItems:    "center",
-            gap:           "8px",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.color = "var(--shouf-accent)";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.color = "var(--shouf-text-faint)";
-          }}
-        >
-          <span style={{ fontSize: "17px" }}>&larr;</span>
-          <span>Back</span>
-        </button>
-      </div>
+      <BackButton onClick={goToWork} />
 
       {/* ── Hero — two-column overview ─────────────────────────────────── */}
       <section
@@ -216,6 +92,7 @@ export function RcCaseStudyCanvas() {
       </section>
 
       {/* ── Live Component — full width, immersive ───────────────────────── */}
+      <ScrollReveal>
       <section style={{ marginBottom: "48px" }}>
         <div
           style={{
@@ -243,11 +120,13 @@ export function RcCaseStudyCanvas() {
           <RcGlobalNavCanvas />
         </div>
       </section>
+      </ScrollReveal>
 
       <Divider />
 
       {/* ── Problem ────────────────────────────────────────────────────── */}
-      <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
+      <ScrollReveal>
+      <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
         <SectionLabel>Problem</SectionLabel>
         <SectionHeading>
           BambooHR&apos;s desktop-only approach introduced growing strategic and operational risk.
@@ -260,11 +139,13 @@ export function RcCaseStudyCanvas() {
           ~2300px screen widths — that excluded the vast majority of users.
         </Body>
       </section>
+      </ScrollReveal>
 
       <Divider />
 
       {/* ── Solution ───────────────────────────────────────────────────── */}
-      <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
+      <ScrollReveal>
+      <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
         <SectionLabel>Solution</SectionLabel>
         <SectionHeading>
           Establish responsiveness as a built-in platform standard, not a one-off exception.
@@ -277,11 +158,13 @@ export function RcCaseStudyCanvas() {
           addressing a 40:1 web-to-mobile engineering gap.
         </Body>
       </section>
+      </ScrollReveal>
 
       <Divider />
 
       {/* ── Research ───────────────────────────────────────────────────── */}
-      <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
+      <ScrollReveal>
+      <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
         <SectionLabel>Research</SectionLabel>
         <SectionHeading>User Interviews</SectionHeading>
         <Body>
@@ -292,11 +175,13 @@ export function RcCaseStudyCanvas() {
           through the experience across screen sizes.
         </Body>
       </section>
+      </ScrollReveal>
 
       <Divider />
 
       {/* ── Next Steps ─────────────────────────────────────────────────── */}
-      <section style={{ marginBottom: "72px", maxWidth: "800px" }}>
+      <ScrollReveal>
+      <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
         <SectionLabel>Next Steps</SectionLabel>
         <SectionHeading>Pilot surface enablement</SectionHeading>
         <Body>
@@ -305,6 +190,7 @@ export function RcCaseStudyCanvas() {
           alignment to follow.
         </Body>
       </section>
+      </ScrollReveal>
 
       <Divider />
 

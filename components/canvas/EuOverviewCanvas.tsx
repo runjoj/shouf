@@ -10,29 +10,17 @@ import { SectionGridCanvas } from "./SectionGridCanvas";
 
 const MONO = "var(--font-mono)";
 
+import { SectionLabel as CaseStudySectionLabel } from "./CaseStudyShared";
+
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        fontFamily:    MONO,
-        fontSize:      "12px",
-        fontWeight:    800,
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        color:         "var(--shouf-text-faint)",
-        marginBottom:  "10px",
-      }}
-    >
-      {children}
-    </div>
-  );
+  return <CaseStudySectionLabel>{children}</CaseStudySectionLabel>;
 }
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <h2
       style={{
-        fontSize:      "20px",
+        fontSize:      "26px",
         fontWeight:    600,
         color:         "var(--shouf-text)",
         margin:        "0 0 20px",
@@ -49,7 +37,7 @@ function Body({ children }: { children: React.ReactNode }) {
   return (
     <p
       style={{
-        fontSize:   "14px",
+        fontSize:   "16px",
         color:      "var(--shouf-text-muted)",
         lineHeight: 1.75,
         margin:     "0 0 16px",
@@ -64,9 +52,9 @@ function Divider() {
   return (
     <div
       style={{
-        height:          "1px",
-        backgroundColor: "var(--shouf-border-sub)",
-        margin:          "0 0 48px",
+        height:     "1px",
+        margin:     "0 0 48px",
+        background: "linear-gradient(to right, transparent, var(--shouf-border-sub) 20%, var(--shouf-border-sub) 80%, transparent)",
       }}
     />
   );
@@ -91,71 +79,49 @@ export function EuOverviewCanvas() {
       </div>
 
       {/* ── Divider between tiles and case study ─────────────────────────── */}
-      <div
-        style={{
-          width:           "100%",
-          display:         "flex",
-          justifyContent:  "center",
-        }}
-      >
+      <div style={{ padding: "0 192px" }}>
         <div
           style={{
-            width:           "100%",
-            maxWidth:        "800px",
-            padding:         "0 48px",
+            height:     "1px",
+            marginBottom: "48px",
+            background: "linear-gradient(to right, transparent, var(--shouf-border-sub) 20%, var(--shouf-border-sub) 80%, transparent)",
           }}
-        >
-          <div
-            style={{
-              height:          "1px",
-              backgroundColor: "var(--shouf-border-sub)",
-              marginBottom:    "48px",
-            }}
-          />
-        </div>
+        />
       </div>
 
-      {/* ── Case study content — centered at 800px ───────────────────────── */}
+      {/* ── Case study content — matches case study padding ─────────────── */}
       <div
         style={{
           width:         "100%",
+          padding:       "0 192px 80px",
           display:       "flex",
-          justifyContent: "center",
+          flexDirection: "column",
         }}
       >
-        <div
-          style={{
-            width:         "100%",
-            maxWidth:      "800px",
-            padding:       "0 48px 80px",
-            display:       "flex",
-            flexDirection: "column",
-          }}
-        >
           {/* ── Overview ───────────────────────────────────────────────────── */}
           <section style={{ marginBottom: "72px" }}>
             <div style={{ marginBottom: "48px" }}>
               <div
                 style={{
                   fontFamily:    MONO,
-                  fontSize:      "12px",
-                  fontWeight:    800,
+                  fontSize:      "14px",
+                  fontWeight:    700,
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
                   color:         "var(--shouf-accent)",
-                  marginBottom:  "14px",
+                  marginBottom:  "18px",
                 }}
               >
                 Eucalyptus Design System
               </div>
               <h1
                 style={{
-                  fontSize:      "28px",
+                  fontSize:      "42px",
                   fontWeight:    600,
                   color:         "var(--shouf-text)",
                   margin:        "0 0 20px",
-                  letterSpacing: "-0.025em",
-                  lineHeight:    1.15,
+                  letterSpacing: "-0.03em",
+                  lineHeight:    1.1,
                 }}
               >
                 The Eucalyptus Design Library was created for the Qualiti product and engineering team.
@@ -165,55 +131,6 @@ export function EuOverviewCanvas() {
               </Body>
             </div>
 
-            {/* Role / Duration row */}
-            <div
-              style={{
-                display:             "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap:                 "1px",
-                backgroundColor:     "var(--shouf-border-sub)",
-                border:              "1px solid var(--shouf-border-sub)",
-                borderRadius:        "8px",
-                overflow:            "hidden",
-                marginBottom:        "0",
-              }}
-            >
-              {[
-                { label: "Role",     value: "Product Designer"                        },
-                { label: "Duration", value: "6 weeks to establish, continuously updated" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  style={{
-                    backgroundColor: "var(--shouf-panel)",
-                    padding:         "20px 24px",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily:    MONO,
-                      fontSize:      "10px",
-                      letterSpacing: "0.12em",
-                      textTransform: "uppercase",
-                      color:         "var(--shouf-text-faint)",
-                      marginBottom:  "8px",
-                    }}
-                  >
-                    {item.label}
-                  </div>
-                  <div
-                    style={{
-                      fontSize:   "13px",
-                      fontWeight: 500,
-                      color:      "var(--shouf-text)",
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {item.value}
-                  </div>
-                </div>
-              ))}
-            </div>
           </section>
 
           <Divider />
@@ -296,42 +213,20 @@ export function EuOverviewCanvas() {
               I also quickly learned when I made an element that was not responsive. For example, some of my buttons were not automatically resizing with text changes unless they were detached. This helped me learn how to properly use auto layout and ensure that all elements were flexible and responsive.
             </Body>
 
-            <div
-              style={{
-                marginTop:       "40px",
-                padding:         "24px",
-                borderRadius:    "8px",
-                backgroundColor: "var(--shouf-panel)",
-                border:          "1px solid var(--shouf-border-sub)",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily:    MONO,
-                  fontSize:      "10px",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color:         "var(--shouf-text-faint)",
-                  marginBottom:  "12px",
-                }}
-              >
-                Next Steps
-              </div>
-              <p
-                style={{
-                  fontSize:   "14px",
-                  color:      "var(--shouf-text-muted)",
-                  lineHeight: 1.75,
-                  margin:     0,
-                }}
-              >
-                The Eucalyptus Design Library remains a work in progress. It is constantly being updated and added to as designs progress and are refined. The Engineering and Product teams know that this is a resource that is the source of truth for design specifications and it is added as a library to each design file within the team space.
-              </p>
-            </div>
+          </section>
+
+          <Divider />
+
+          {/* ── Next Steps ─────────────────────────────────────────────────── */}
+          <section style={{ marginBottom: "72px" }}>
+            <SectionLabel>Next Steps</SectionLabel>
+            <SectionHeading>The library continues to evolve alongside the product.</SectionHeading>
+            <Body>
+              The Eucalyptus Design Library remains a work in progress. It is constantly being updated and added to as designs progress and are refined. The Engineering and Product teams know that this is a resource that is the source of truth for design specifications and it is added as a library to each design file within the team space.
+            </Body>
           </section>
 
         </div>
-      </div>
     </div>
   );
 }

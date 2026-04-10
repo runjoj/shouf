@@ -208,20 +208,6 @@ export function InspectPanel() {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      {/* Header — only visible when a variant chip is actually present */}
-      {hasVariant && (
-        <div
-          className="shrink-0 flex items-center px-3 gap-2"
-          style={{
-            borderBottom: "1px solid var(--shouf-border-sub)",
-            height: "44px",
-            ...rIntroStyle(D_HEADER, launched),
-          }}
-        >
-          <VariantChip componentId={selectedComponentId!} />
-        </div>
-      )}
-
       {/* Inspect content */}
       <div
         className="flex flex-col flex-1 overflow-hidden"

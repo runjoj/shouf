@@ -34,15 +34,16 @@ type VariantId = (typeof VARIANTS)[number]["id"];
 // Phosphor icons — weight="fill" for solid, filled icon style.
 
 function getIcon(id: VariantId, size: number): ReactNode {
-  const props = { size, weight: "fill" } as const;
+  const fill = { size, weight: "fill" } as const;
+  const bold = { size, weight: "bold" } as const;
   switch (id) {
-    case "repaired": return <MagicWand      {...props} />;
-    case "running":  return <PersonSimpleRun {...props} />;
-    case "queued":   return <Rows            {...props} />;
-    case "failed":   return <X               {...props} />;
-    case "passed":   return <Check           {...props} />;
-    case "added":    return <Plus            {...props} />;
-    case "deleted":  return <Trash           {...props} />;
+    case "repaired": return <MagicWand      {...fill} />;
+    case "running":  return <PersonSimpleRun {...fill} />;
+    case "queued":   return <Rows            {...fill} />;
+    case "failed":   return <X               {...bold} />;
+    case "passed":   return <Check           {...bold} />;
+    case "added":    return <Plus            {...bold} />;
+    case "deleted":  return <Trash           {...fill} />;
   }
 }
 
@@ -66,12 +67,12 @@ export function EuStatuses({
     return () => clearTimeout(t);
   }, []);
 
-  const iconSize   = size === "sm" ? 10 : 11;
-  const circleSize = 22; // fixed 22×22 for both sizes
-  const pillPx     = size === "sm" ? "8px"  : "10px";
-  const pillPy     = size === "sm" ? "4px"  : "5px"; // 11+4+4=19 / 12+5+5=22px height
-  const fontSize   = size === "sm" ? "11px" : "12px";
-  const iconGap    = size === "sm" ? "4px"  : "5px";
+  const iconSize   = size === "sm" ? 11 : 14;
+  const circleSize = size === "sm" ? 24 : 28;
+  const pillPx     = size === "sm" ? "9px"  : "12px";
+  const pillPy     = size === "sm" ? "5px"  : "6px";
+  const fontSize   = size === "sm" ? "12px" : "14px";
+  const iconGap    = size === "sm" ? "5px"  : "6px";
 
   // Clicking any badge or circle writes to the store, which flows back in as
   // `values.selected` / `values.selectedType` and updates the inspect panel.
@@ -89,7 +90,7 @@ export function EuStatuses({
       style={{
         display:       "flex",
         flexDirection: "column",
-        gap:           "10px",
+        gap:           "14px",
         alignItems:    "flex-start",
       }}
     >
@@ -100,7 +101,7 @@ export function EuStatuses({
             style={{
               display:    "flex",
               alignItems: "center",
-              gap:        "10px",
+              gap:        "14px",
               // Stagger-in on mount
               opacity:    mounted ? 1 : 0,
               transform:  mounted ? "translateY(0)" : "translateY(5px)",
@@ -116,7 +117,7 @@ export function EuStatuses({
                 gap:             iconGap,
                 paddingLeft:     pillPx,
                 paddingRight:    pillPx,
-                height:          "22px",
+                height:          `${circleSize}px`,
                 backgroundColor: v.bg,
                 color:           v.color,
                 borderRadius:    "4px",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import { MONO, Section, GuideSectionLabel as SectionLabel, GuideSectionHeading as SectionHeading, GuideBody as Body, GuideDivider as Divider, GuideCode as Code, GuideScrollReveal } from "./GuideShared";
 
 // ─── Section map ──────────────────────────────────────────────────────────────
 
@@ -12,103 +13,6 @@ const SECTIONS = [
   { id: "components",   label: "Components"   },
   { id: "craft",        label: "Craft"        },
 ];
-
-const MONO = "var(--font-mono)";
-
-// ─── Shared primitives ────────────────────────────────────────────────────────
-
-function Section({ id, children }: { id: string; children: React.ReactNode }) {
-  return (
-    <section
-      id={`guide-${id}`}
-      style={{ scrollMarginTop: "24px", marginBottom: "72px" }}
-    >
-      {children}
-    </section>
-  );
-}
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        fontFamily:    MONO,
-        fontSize:      "12px",
-        fontWeight:    800,
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        color:         "var(--shouf-text-faint)",
-        marginBottom:  "10px",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h2
-      style={{
-        fontSize:      "20px",
-        fontWeight:    600,
-        color:         "var(--shouf-text)",
-        margin:        "0 0 20px",
-        letterSpacing: "-0.02em",
-        lineHeight:    1.2,
-      }}
-    >
-      {children}
-    </h2>
-  );
-}
-
-function Body({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      style={{
-        fontSize:   "14px",
-        color:      "var(--shouf-text-muted)",
-        lineHeight: 1.75,
-        margin:     "0 0 16px",
-      }}
-    >
-      {children}
-    </p>
-  );
-}
-
-function Divider() {
-  return (
-    <div
-      style={{
-        height:          "1px",
-        backgroundColor: "var(--shouf-border-sub)",
-        margin:          "0 0 48px",
-      }}
-    />
-  );
-}
-
-// ─── Inline code chip ─────────────────────────────────────────────────────────
-
-function Code({ children }: { children: React.ReactNode }) {
-  return (
-    <code
-      style={{
-        fontFamily:      MONO,
-        fontSize:        "12px",
-        backgroundColor: "var(--shouf-hover)",
-        border:          "1px solid var(--shouf-border-sub)",
-        borderRadius:    "4px",
-        padding:         "1px 6px",
-        color:           "var(--shouf-accent)",
-      }}
-    >
-      {children}
-    </code>
-  );
-}
 
 // ─── Token row ────────────────────────────────────────────────────────────────
 
@@ -331,6 +235,7 @@ export function PdsGuideCanvas() {
         <Divider />
 
         {/* ── Motivation ────────────────────────────────────────────────── */}
+        <GuideScrollReveal>
         <Section id="motivation">
           <SectionLabel>Motivation</SectionLabel>
           <SectionHeading>A portfolio that demonstrates the work, not just describes it.</SectionHeading>
@@ -345,10 +250,12 @@ export function PdsGuideCanvas() {
             all legible to anyone who uses it — no case study required.
           </Body>
         </Section>
+        </GuideScrollReveal>
 
         <Divider />
 
         {/* ── Architecture ──────────────────────────────────────────────── */}
+        <GuideScrollReveal>
         <Section id="architecture">
           <SectionLabel>Architecture</SectionLabel>
           <SectionHeading>Zero UI dependencies. Every pixel is intentional.</SectionHeading>
@@ -369,10 +276,12 @@ export function PdsGuideCanvas() {
             <Code>setProperty</Code> call that propagates instantly across the entire UI.
           </Body>
         </Section>
+        </GuideScrollReveal>
 
         <Divider />
 
         {/* ── Tokens ────────────────────────────────────────────────────── */}
+        <GuideScrollReveal>
         <Section id="tokens">
           <SectionLabel>Tokens</SectionLabel>
           <SectionHeading>A structured token layer with semantic prefixes.</SectionHeading>
@@ -416,10 +325,12 @@ export function PdsGuideCanvas() {
             Switching accent updates every token in under a millisecond.
           </Body>
         </Section>
+        </GuideScrollReveal>
 
         <Divider />
 
         {/* ── Components ────────────────────────────────────────────────── */}
+        <GuideScrollReveal>
         <Section id="components">
           <SectionLabel>Components</SectionLabel>
           <SectionHeading>Interactive component canvases with live controls.</SectionHeading>
@@ -440,10 +351,12 @@ export function PdsGuideCanvas() {
             design engineering and component documentation at scale.
           </Body>
         </Section>
+        </GuideScrollReveal>
 
         <Divider />
 
         {/* ── Craft ─────────────────────────────────────────────────────── */}
+        <GuideScrollReveal>
         <Section id="craft">
           <SectionLabel>Craft</SectionLabel>
           <SectionHeading>Every page has at least one expressive moment.</SectionHeading>
@@ -466,6 +379,7 @@ export function PdsGuideCanvas() {
           </Body>
 
         </Section>
+        </GuideScrollReveal>
 
       </div>
 

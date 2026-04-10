@@ -285,6 +285,14 @@ export function WorkIndexCanvas() {
         >
           Work
         </h1>
+        {/* Expressive craft: gradient divider separates heading from content */}
+        <div
+          style={{
+            height:     "1px",
+            marginTop:  "20px",
+            background: "linear-gradient(to right, transparent, var(--shouf-border-sub) 15%, var(--shouf-border-sub) 50%, transparent)",
+          }}
+        />
       </div>
 
       {/* Card grid */}

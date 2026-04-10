@@ -8,7 +8,7 @@ import { useAppStore } from "@/lib/store";
 
 // ─── Typography constants ─────────────────────────────────────────────────────
 
-const SERIF = "var(--font-playfair), Georgia, 'Times New Roman', serif";
+const SERIF = "var(--font-manrope), sans-serif";
 const FS    = "clamp(2.4rem, 3.6vw, 4.2rem)";
 const LH    = 1.1;
 

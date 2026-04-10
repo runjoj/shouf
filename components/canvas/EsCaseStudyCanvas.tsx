@@ -7,72 +7,7 @@
 import { useCallback } from "react";
 import { useAppStore } from "@/lib/store";
 import { CaseStudyImage } from "./CaseStudyImage";
-
-// ─── Shared typography ──────────────────────────────────────────────────────
-
-const MONO = "var(--font-mono)";
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        fontFamily:    MONO,
-        fontSize:      "22px",
-        fontWeight:    800,
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        color:         "var(--shouf-text-faint)",
-        marginBottom:  "10px",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h2
-      style={{
-        fontSize:      "28px",
-        fontWeight:    600,
-        color:         "var(--shouf-text)",
-        margin:        "0 0 20px",
-        letterSpacing: "-0.02em",
-        lineHeight:    1.2,
-      }}
-    >
-      {children}
-    </h2>
-  );
-}
-
-function Body({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      style={{
-        fontSize:   "16px",
-        color:      "var(--shouf-text-muted)",
-        lineHeight: 1.75,
-        margin:     "0 0 16px",
-      }}
-    >
-      {children}
-    </p>
-  );
-}
-
-function Divider() {
-  return (
-    <div
-      style={{
-        height:          "1px",
-        backgroundColor: "var(--shouf-border-sub)",
-        margin:          "0 0 48px",
-      }}
-    />
-  );
-}
+import { MONO, SectionLabel, SectionHeading, Body, Divider, BackButton, ScrollReveal } from "./CaseStudyShared";
 
 // ─── EsCaseStudyCanvas ──────────────────────────────────────────────────────
 
@@ -96,31 +31,7 @@ export function EsCaseStudyCanvas() {
       }}
     >
         {/* ── Back button ──────────────────────────────────────────────── */}
-        <div style={{ marginBottom: "40px", maxWidth: "800px" }}>
-          <button
-            onClick={goToWork}
-            style={{
-              all:           "unset",
-              cursor:        "pointer",
-              fontSize:      "15px",
-              fontFamily:    MONO,
-              color:         "var(--shouf-text-faint)",
-              letterSpacing: "0.02em",
-              display:       "inline-flex",
-              alignItems:    "center",
-              gap:           "8px",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.color = "var(--shouf-accent)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.color = "var(--shouf-text-faint)";
-            }}
-          >
-            <span style={{ fontSize: "17px" }}>&larr;</span>
-            <span>Back</span>
-          </button>
-        </div>
+        <BackButton onClick={goToWork} />
 
         {/* ── Hero — two-column overview ─────────────────────────────────── */}
         <section
@@ -191,6 +102,7 @@ export function EsCaseStudyCanvas() {
         <Divider />
 
         {/* ── Problem ────────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "32px", maxWidth: "800px" }}>
           <SectionLabel>Problem</SectionLabel>
           <SectionHeading>The original build was just a draft.</SectionHeading>
@@ -209,8 +121,10 @@ export function EsCaseStudyCanvas() {
             The account page did not lead to anything.
           </Body>
         </section>
+        </ScrollReveal>
 
         {/* ── Before ──────────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px" }}>
           <div
             style={{
@@ -239,10 +153,12 @@ export function EsCaseStudyCanvas() {
             />
           </div>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Solution ───────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Solution</SectionLabel>
           <SectionHeading>The introduction of embedding manual and suggested test creation.</SectionHeading>
@@ -259,17 +175,21 @@ export function EsCaseStudyCanvas() {
             just wants to add their own manual test, they have that option as well.
           </Body>
         </section>
+        </ScrollReveal>
 
         {/* ── After ───────────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", display: "flex", flexDirection: "column", gap: "40px" }}>
           <CaseStudyImage src="/especialty_new_2.png" alt="Redesigned eSpecialty form with stepper navigation" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }} />
           <CaseStudyImage src="/especialty_new_1.png" alt="Redesigned eSpecialty landing page" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }} />
           <CaseStudyImage src="/especialty_new_3.png" alt="Redesigned eSpecialty quotes page" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }} />
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Research ───────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Research</SectionLabel>
           <SectionHeading>User Testing &amp; Competitive Analysis</SectionHeading>
@@ -281,10 +201,12 @@ export function EsCaseStudyCanvas() {
             of our product — how simple and quick it is to view and purchase.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Design ─────────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Design</SectionLabel>
           <SectionHeading>Process and Highlights</SectionHeading>
@@ -339,10 +261,12 @@ export function EsCaseStudyCanvas() {
             between screens showing those additional quotes.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── The Code ───────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>The Code</SectionLabel>
           <SectionHeading>Technical Architecture</SectionHeading>
@@ -370,6 +294,7 @@ export function EsCaseStudyCanvas() {
             co-founder (also acting as the product manager).
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 

@@ -221,7 +221,7 @@ function LogoMark() {
         animationDelay:          `${LOGO_DELAY}ms`,
         animationPlayState:      launched ? "running" : "paused",
       }}
-      title="Back to Welcome"
+      title="Back to Home"
     >
       <span className="text-[17px] font-bold" style={{ color: "var(--shouf-text)", fontFamily: "var(--font-manrope)", letterSpacing: "0.75px" }}>
         helloitsjo
@@ -300,7 +300,7 @@ function SearchBar() {
     <div
       ref={containerRef}
       style={{
-        padding:                 "8px 12px",
+        padding:                 "8px 8px",
         animationName:           "intro-reveal",
         animationDuration:       "220ms",
         animationTimingFunction: "ease",
@@ -315,7 +315,7 @@ function SearchBar() {
         withLabel={false}
         withIcon={true}
         withHelper={false}
-        placeholder="Search components…"
+        placeholder="Search components"
         kbd={query ? "" : "⌘K"}
         value={query}
         onChange={setQuery}

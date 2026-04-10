@@ -1,6 +1,17 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import {
+  MONO,
+  Section,
+  GuideSectionLabel as SectionLabel,
+  GuideSectionHeading as SectionHeading,
+  GuideBody as Body,
+  GuideDivider as Divider,
+  GuideBulletList as BulletList,
+  GuideSubHeading as SubHeading,
+  GuideScrollReveal,
+} from "./GuideShared";
 
 // ─── Section map ──────────────────────────────────────────────────────────────
 
@@ -12,133 +23,6 @@ const SECTIONS = [
   { id: "design",     label: "Design"     },
   { id: "next-steps", label: "Next Steps" },
 ];
-
-// ─── Shared typography ────────────────────────────────────────────────────────
-
-const MONO = "var(--font-mono)";
-
-// ─── Section anchor wrapper ───────────────────────────────────────────────────
-
-function Section({ id, children }: { id: string; children: React.ReactNode }) {
-  return (
-    <section
-      id={`guide-${id}`}
-      style={{ scrollMarginTop: "24px", marginBottom: "72px" }}
-    >
-      {children}
-    </section>
-  );
-}
-
-// ─── Section label ────────────────────────────────────────────────────────────
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        fontFamily:    MONO,
-        fontSize:      "12px",
-        fontWeight:    800,
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        color:         "var(--shouf-text-faint)",
-        marginBottom:  "10px",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-// ─── Section heading ──────────────────────────────────────────────────────────
-
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h2
-      style={{
-        fontSize:      "20px",
-        fontWeight:    600,
-        color:         "var(--shouf-text)",
-        margin:        "0 0 20px",
-        letterSpacing: "-0.02em",
-        lineHeight:    1.2,
-      }}
-    >
-      {children}
-    </h2>
-  );
-}
-
-// ─── Body copy ────────────────────────────────────────────────────────────────
-
-function Body({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      style={{
-        fontSize:   "14px",
-        color:      "var(--shouf-text-muted)",
-        lineHeight: 1.75,
-        margin:     "0 0 16px",
-      }}
-    >
-      {children}
-    </p>
-  );
-}
-
-// ─── Divider ──────────────────────────────────────────────────────────────────
-
-function Divider() {
-  return (
-    <div
-      style={{
-        height:          "1px",
-        backgroundColor: "var(--shouf-border-sub)",
-        margin:          "0 0 48px",
-      }}
-    />
-  );
-}
-
-// ─── Bullet list ──────────────────────────────────────────────────────────────
-
-function BulletList({ items }: { items: string[] }) {
-  return (
-    <ul style={{ margin: "0 0 16px", paddingLeft: "20px" }}>
-      {items.map((item, i) => (
-        <li
-          key={i}
-          style={{
-            fontSize:   "14px",
-            color:      "var(--shouf-text-muted)",
-            lineHeight: 1.75,
-            marginBottom: "6px",
-          }}
-        >
-          {item}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-// ─── Sub-heading ──────────────────────────────────────────────────────────────
-
-function SubHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h3
-      style={{
-        fontSize:      "14px",
-        fontWeight:    600,
-        color:         "var(--shouf-text)",
-        margin:        "0 0 10px",
-        letterSpacing: "-0.01em",
-      }}
-    >
-      {children}
-    </h3>
-  );
-}
 
 // ─── RcGuideCanvas ────────────────────────────────────────────────────────────
 
@@ -298,6 +182,7 @@ export function RcGuideCanvas() {
         <Divider />
 
         {/* ── Problem ──────────────────────────────────────────────────────── */}
+        <GuideScrollReveal>
         <Section id="problem">
           <SectionLabel>Problem</SectionLabel>
           <SectionHeading>
@@ -311,10 +196,12 @@ export function RcGuideCanvas() {
             ~2300px screen widths — that excluded the vast majority of users.
           </Body>
         </Section>
+        </GuideScrollReveal>
 
         <Divider />
 
         {/* ── Solution ─────────────────────────────────────────────────────── */}
+        <GuideScrollReveal>
         <Section id="solution">
           <SectionLabel>Solution</SectionLabel>
           <SectionHeading>
@@ -328,10 +215,12 @@ export function RcGuideCanvas() {
             addressing a 40:1 web-to-mobile engineering gap.
           </Body>
         </Section>
+        </GuideScrollReveal>
 
         <Divider />
 
         {/* ── Research ─────────────────────────────────────────────────────── */}
+        <GuideScrollReveal>
         <Section id="research">
           <SectionLabel>Research</SectionLabel>
           <SectionHeading>User Interviews</SectionHeading>
@@ -343,10 +232,12 @@ export function RcGuideCanvas() {
             through the experience across screen sizes.
           </Body>
         </Section>
+        </GuideScrollReveal>
 
         <Divider />
 
         {/* ── Design ───────────────────────────────────────────────────────── */}
+        <GuideScrollReveal>
         <Section id="design">
           <SectionLabel>Design</SectionLabel>
           <SectionHeading>Design System–Led Enablement</SectionHeading>
@@ -373,10 +264,12 @@ export function RcGuideCanvas() {
             ]}
           />
         </Section>
+        </GuideScrollReveal>
 
         <Divider />
 
         {/* ── Next Steps ───────────────────────────────────────────────────── */}
+        <GuideScrollReveal>
         <Section id="next-steps">
           <SectionLabel>Next Steps</SectionLabel>
           <SectionHeading>Pilot surface enablement</SectionHeading>
@@ -386,6 +279,7 @@ export function RcGuideCanvas() {
             alignment to follow.
           </Body>
         </Section>
+        </GuideScrollReveal>
 
       </div>
     </div>

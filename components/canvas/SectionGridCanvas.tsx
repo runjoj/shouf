@@ -491,6 +491,14 @@ export function SectionGridCanvas({ sectionId, excludeIds, noSelection }: { sect
           {placeholderCount > 0 && ` · ${placeholderCount} coming soon`}
           {" — click any tile to inspect"}
         </p>
+        {/* Expressive craft: gradient divider separates header from grid */}
+        <div
+          style={{
+            height:     "1px",
+            marginTop:  "16px",
+            background: "linear-gradient(to right, var(--shouf-border-sub) 0%, transparent 50%)",
+          }}
+        />
       </div>
 
       {/* Responsive component grid — CSS intrinsic sizing, no JS breakpoints */}

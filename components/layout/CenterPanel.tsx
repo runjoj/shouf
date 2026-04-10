@@ -217,7 +217,7 @@ function CanvasHeader({
               alignItems:    "center",
               flexShrink:    0,
             }}
-            title="Back to Welcome"
+            title="Back to Home"
           >
             <span className="text-[17px] font-bold" style={{ color: "var(--shouf-text)", fontFamily: "var(--font-manrope)", letterSpacing: "0.75px" }}>
               helloitsjo
@@ -230,7 +230,7 @@ function CanvasHeader({
       {/* Navigation links — Welcome / About / Work — hidden on mobile */}
       <div className="hidden sm:flex items-center gap-1" style={introStyle(D_NAV, launched, skipIntro)}>
         <TopBarNavLink
-          label="Welcome"
+          label="Home"
           isSelected={selectedComponentId === "welcome"}
           onClick={() => { selectSection(null); selectComponent("welcome"); }}
         />

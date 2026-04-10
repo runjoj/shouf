@@ -8,72 +8,7 @@
 import { useCallback } from "react";
 import { useAppStore } from "@/lib/store";
 import { CaseStudyImage } from "./CaseStudyImage";
-
-// ─── Shared typography ──────────────────────────────────────────────────────
-
-const MONO = "var(--font-mono)";
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        fontFamily:    MONO,
-        fontSize:      "22px",
-        fontWeight:    800,
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        color:         "var(--shouf-text-faint)",
-        marginBottom:  "10px",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h2
-      style={{
-        fontSize:      "28px",
-        fontWeight:    600,
-        color:         "var(--shouf-text)",
-        margin:        "0 0 20px",
-        letterSpacing: "-0.02em",
-        lineHeight:    1.2,
-      }}
-    >
-      {children}
-    </h2>
-  );
-}
-
-function Body({ children }: { children: React.ReactNode }) {
-  return (
-    <p
-      style={{
-        fontSize:   "16px",
-        color:      "var(--shouf-text-muted)",
-        lineHeight: 1.75,
-        margin:     "0 0 16px",
-      }}
-    >
-      {children}
-    </p>
-  );
-}
-
-function Divider() {
-  return (
-    <div
-      style={{
-        height:          "1px",
-        backgroundColor: "var(--shouf-border-sub)",
-        margin:          "0 0 48px",
-      }}
-    />
-  );
-}
+import { MONO, SectionLabel, SectionHeading, Body, Divider, BackButton, ScrollReveal } from "./CaseStudyShared";
 
 // ─── EuCaseStudyCanvas ──────────────────────────────────────────────────────
 
@@ -97,31 +32,7 @@ export function EuCaseStudyCanvas() {
       }}
     >
         {/* ── Back button ──────────────────────────────────────────────── */}
-        <div style={{ marginBottom: "40px", maxWidth: "800px" }}>
-          <button
-            onClick={goToWork}
-            style={{
-              all:           "unset",
-              cursor:        "pointer",
-              fontSize:      "15px",
-              fontFamily:    MONO,
-              color:         "var(--shouf-text-faint)",
-              letterSpacing: "0.02em",
-              display:       "inline-flex",
-              alignItems:    "center",
-              gap:           "8px",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.color = "var(--shouf-accent)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.color = "var(--shouf-text-faint)";
-            }}
-          >
-            <span style={{ fontSize: "17px" }}>&larr;</span>
-            <span>Back</span>
-          </button>
-        </div>
+        <BackButton onClick={goToWork} />
 
         {/* ── Hero — two-column overview ─────────────────────────────────── */}
         <section
@@ -173,6 +84,7 @@ export function EuCaseStudyCanvas() {
         </section>
 
         {/* ── Gif ────────────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "72px" }}>
           <div
             style={{
@@ -195,10 +107,12 @@ export function EuCaseStudyCanvas() {
             />
           </div>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Problem ────────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "32px", maxWidth: "800px" }}>
           <SectionLabel>Problem</SectionLabel>
           <SectionHeading>Qualiti used a lot of old, legacy code.</SectionHeading>
@@ -215,16 +129,20 @@ export function EuCaseStudyCanvas() {
             for the user and helps them keep context.
           </Body>
         </section>
+        </ScrollReveal>
 
         {/* ── Problem images ─────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", display: "flex", flexDirection: "column", gap: "40px" }}>
           <CaseStudyImage src="/add_test_1.png" alt="Legacy add test flow — step 1" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }} />
           <CaseStudyImage src="/add_test_2.png" alt="Legacy add test flow — step 2" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)" }} />
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Solution ───────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Solution</SectionLabel>
           <SectionHeading>The introduction of embedding manual and suggested test creation.</SectionHeading>
@@ -241,10 +159,12 @@ export function EuCaseStudyCanvas() {
             user just wants to add their own manual test, they have that option as well.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Research ───────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Research</SectionLabel>
           <SectionHeading>Competitive Analysis</SectionHeading>
@@ -260,10 +180,12 @@ export function EuCaseStudyCanvas() {
             was not prioritized within the team and our restricted resources did not allow for it.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Takeaways ──────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Takeaways</SectionLabel>
           <SectionHeading>Learnings</SectionHeading>
@@ -284,12 +206,16 @@ export function EuCaseStudyCanvas() {
           </Body>
 
         </section>
+        </ScrollReveal>
 
+        <ScrollReveal>
         <CaseStudyImage src="/1. Library.png" alt="Test library design" style={{ borderRadius: "8px", border: "1px solid var(--shouf-border-sub)", marginBottom: "56px" }} />
+        </ScrollReveal>
 
         <Divider />
 
         {/* ── Next Steps ────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
           <SectionLabel>Looking Ahead</SectionLabel>
           <SectionHeading>Next Steps</SectionHeading>
@@ -303,6 +229,7 @@ export function EuCaseStudyCanvas() {
             research and see if there is a need to distinguish the two before proceeding.
           </Body>
         </section>
+        </ScrollReveal>
 
         <Divider />
 

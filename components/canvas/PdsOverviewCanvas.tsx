@@ -10,29 +10,17 @@ import { SectionGridCanvas } from "./SectionGridCanvas";
 
 const MONO = "var(--font-mono)";
 
+import { SectionLabel as CaseStudySectionLabel } from "./CaseStudyShared";
+
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        fontFamily:    MONO,
-        fontSize:      "12px",
-        fontWeight:    800,
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        color:         "var(--shouf-text-faint)",
-        marginBottom:  "10px",
-      }}
-    >
-      {children}
-    </div>
-  );
+  return <CaseStudySectionLabel>{children}</CaseStudySectionLabel>;
 }
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <h2
       style={{
-        fontSize:      "20px",
+        fontSize:      "26px",
         fontWeight:    600,
         color:         "var(--shouf-text)",
         margin:        "0 0 20px",
@@ -49,7 +37,7 @@ function Body({ children }: { children: React.ReactNode }) {
   return (
     <p
       style={{
-        fontSize:   "14px",
+        fontSize:   "16px",
         color:      "var(--shouf-text-muted)",
         lineHeight: 1.75,
         margin:     "0 0 16px",
@@ -64,9 +52,9 @@ function Divider() {
   return (
     <div
       style={{
-        height:          "1px",
-        backgroundColor: "var(--shouf-border-sub)",
-        margin:          "0 0 48px",
+        height:     "1px",
+        margin:     "0 0 48px",
+        background: "linear-gradient(to right, transparent, var(--shouf-border-sub) 20%, var(--shouf-border-sub) 80%, transparent)",
       }}
     />
   );
@@ -77,7 +65,7 @@ function Code({ children }: { children: React.ReactNode }) {
     <code
       style={{
         fontFamily:      MONO,
-        fontSize:        "12px",
+        fontSize:        "13px",
         backgroundColor: "var(--shouf-hover)",
         border:          "1px solid var(--shouf-border-sub)",
         borderRadius:    "4px",
@@ -102,7 +90,7 @@ function TokenRow({ prefix, description }: { prefix: string; description: string
       }}
     >
       <Code>{prefix}</Code>
-      <span style={{ fontSize: "13px", color: "var(--shouf-text-muted)", flex: 1 }}>
+      <span style={{ fontSize: "14px", color: "var(--shouf-text-muted)", flex: 1 }}>
         {description}
       </span>
     </div>
@@ -128,85 +116,53 @@ export function PdsOverviewCanvas() {
       </div>
 
       {/* ── Divider between tiles and case study ─────────────────────────── */}
-      <div
-        style={{
-          width:          "100%",
-          display:        "flex",
-          justifyContent: "center",
-        }}
-      >
+      <div style={{ padding: "0 192px" }}>
         <div
           style={{
-            width:    "100%",
-            maxWidth: "800px",
-            padding:  "0 48px",
+            height:     "1px",
+            marginBottom: "48px",
+            background: "linear-gradient(to right, transparent, var(--shouf-border-sub) 20%, var(--shouf-border-sub) 80%, transparent)",
           }}
-        >
-          <div
-            style={{
-              height:          "1px",
-              backgroundColor: "var(--shouf-border-sub)",
-              marginBottom:    "48px",
-            }}
-          />
-        </div>
+        />
       </div>
 
-      {/* ── Case study content — centered at 800px ───────────────────────── */}
+      {/* ── Case study content — matches case study padding ─────────────── */}
       <div
         style={{
-          width:          "100%",
-          display:        "flex",
-          justifyContent: "center",
+          width:         "100%",
+          padding:       "0 192px 80px",
+          display:       "flex",
+          flexDirection: "column",
         }}
       >
-        <div
-          style={{
-            width:         "100%",
-            maxWidth:      "800px",
-            padding:       "0 48px 80px",
-            display:       "flex",
-            flexDirection: "column",
-          }}
-        >
           {/* ── Overview ───────────────────────────────────────────────────── */}
           <section style={{ marginBottom: "72px" }}>
             <div style={{ marginBottom: "48px" }}>
               <div
                 style={{
                   fontFamily:    MONO,
-                  fontSize:      "12px",
-                  fontWeight:    800,
+                  fontSize:      "14px",
+                  fontWeight:    700,
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
                   color:         "var(--shouf-accent)",
-                  marginBottom:  "14px",
+                  marginBottom:  "18px",
                 }}
               >
                 Shouf Design System
               </div>
               <h1
                 style={{
-                  fontSize:      "28px",
+                  fontSize:      "42px",
                   fontWeight:    600,
                   color:         "var(--shouf-text)",
-                  margin:        "0 0 12px",
-                  letterSpacing: "-0.025em",
-                  lineHeight:    1.15,
+                  margin:        "0 0 20px",
+                  letterSpacing: "-0.03em",
+                  lineHeight:    1.1,
                 }}
               >
                 Shouf is the design system that powers this portfolio — built entirely from scratch.
               </h1>
-              <p
-                style={{
-                  fontSize:  "13px",
-                  fontStyle: "italic",
-                  color:     "var(--shouf-text-faint)",
-                  margin:    "0 0 20px",
-                }}
-              >
-                Shouf powers this portfolio — you&apos;re looking at it right now.
-              </p>
               <Body>
                 Every surface you&apos;re looking at — the shell, the tokens, the components, the
                 animations — was designed and engineered as a cohesive system. Shouf is both the
@@ -214,51 +170,6 @@ export function PdsOverviewCanvas() {
               </Body>
             </div>
 
-            {/* Meta grid */}
-            <div
-              style={{
-                display:             "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap:                 "1px",
-                backgroundColor:     "var(--shouf-border-sub)",
-                border:              "1px solid var(--shouf-border-sub)",
-                borderRadius:        "8px",
-                overflow:            "hidden",
-              }}
-            >
-              {[
-                { label: "Role",    value: "Design Engineer"              },
-                { label: "Stack",   value: "Next.js 16 · React 19 · TS"  },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  style={{ backgroundColor: "var(--shouf-panel)", padding: "20px 24px" }}
-                >
-                  <div
-                    style={{
-                      fontFamily:    MONO,
-                      fontSize:      "10px",
-                      letterSpacing: "0.12em",
-                      textTransform: "uppercase",
-                      color:         "var(--shouf-text-faint)",
-                      marginBottom:  "8px",
-                    }}
-                  >
-                    {item.label}
-                  </div>
-                  <div
-                    style={{
-                      fontSize:   "13px",
-                      fontWeight: 500,
-                      color:      "var(--shouf-text)",
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {item.value}
-                  </div>
-                </div>
-              ))}
-            </div>
           </section>
 
           <Divider />
@@ -400,7 +311,6 @@ export function PdsOverviewCanvas() {
           </section>
 
         </div>
-      </div>
     </div>
   );
 }

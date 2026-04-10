@@ -2,6 +2,7 @@
 
 import { useAppStore } from "@/lib/store";
 import { SPACE_STEPS } from "@/components/portfolio-design-system/PdsSpacing/definition";
+import { ScrollReveal } from "./CaseStudyShared";
 
 // ─── Stagger animation helper ─────────────────────────────────────────────────
 
@@ -52,10 +53,11 @@ function ScaleRow({
       {/* Token name */}
       <code
         style={{
-          fontSize:   "12px",
+          fontSize:   "13px",
           fontFamily: "var(--font-mono)",
-          color:      "var(--shouf-text-faint)",
-          minWidth:   "120px",
+          color:      "var(--shouf-text)",
+          fontWeight: 500,
+          minWidth:   "130px",
           flexShrink: 0,
           transition: "color 160ms ease",
         }}
@@ -68,7 +70,7 @@ function ScaleRow({
         <div
           style={{
             width:           `${step.px}px`,
-            height:          "20px",
+            height:          "24px",
             borderRadius:    "3px",
             backgroundColor: "var(--shouf-accent)",
             opacity:         isActive ? 0.7 : 0.25,
@@ -82,10 +84,10 @@ function ScaleRow({
       {/* px value */}
       <code
         style={{
-          fontSize:   "12px",
+          fontSize:   "13px",
           fontFamily: "var(--font-mono)",
-          color:      "var(--shouf-text-faint)",
-          minWidth:   "32px",
+          color:      "var(--shouf-text-muted)",
+          minWidth:   "36px",
           textAlign:  "right",
           flexShrink: 0,
           fontWeight: 400,
@@ -150,7 +152,7 @@ function DemoCard({
       <div style={{ display: "flex", flexDirection: "column", gap: `${Math.round(gap * 0.4)}px` }}>
         <div
           style={{
-            fontSize:      "14px",
+            fontSize:      "15px",
             fontWeight:    600,
             color:         "var(--shouf-text)",
             lineHeight:    1.2,
@@ -161,8 +163,8 @@ function DemoCard({
         </div>
         <div
           style={{
-            fontSize:   "12px",
-            color:      "var(--shouf-text-muted)",
+            fontSize:   "13px",
+            color:      "var(--shouf-text)",
             lineHeight: 1.55,
           }}
         >
@@ -182,7 +184,7 @@ function DemoCard({
       >
         <code
           style={{
-            fontSize:   "10px",
+            fontSize:   "12px",
             fontFamily: "var(--font-mono)",
             color:      "var(--shouf-accent)",
             letterSpacing: "0.04em",
@@ -233,13 +235,14 @@ export function SpacingCanvas() {
       <div style={{ maxWidth: "680px", margin: "0 auto" }}>
 
         {/* ── Page header ─────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <div style={{ marginBottom: "56px", ...revealStyle(0) }}>
           <h1
             style={{
-              fontSize:      "22px",
+              fontSize:      "26px",
               fontWeight:    600,
               color:         "var(--shouf-text)",
-              margin:        "0 0 6px",
+              margin:        "0 0 8px",
               letterSpacing: "-0.02em",
             }}
           >
@@ -247,15 +250,16 @@ export function SpacingCanvas() {
           </h1>
           <p
             style={{
-              fontSize:   "14px",
+              fontSize:   "15px",
               fontFamily: "var(--font-mono)",
-              color:      "var(--shouf-text-faint)",
+              color:      "var(--shouf-text-muted)",
               margin:     0,
             }}
           >
             Shouf Design System — 4px base unit, nine steps
           </p>
         </div>
+        </ScrollReveal>
 
         {/* ── Scale ───────────────────────────────────────────────────────── */}
         <div style={{ marginBottom: "72px" }}>
@@ -272,14 +276,16 @@ export function SpacingCanvas() {
         </div>
 
         {/* ── Demo card ───────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <div style={{ ...revealStyle(SPACE_STEPS.length + 2) }}>
           <div
             style={{
-              fontSize:      "10px",
+              fontSize:      "12px",
               fontFamily:    "var(--font-mono)",
-              letterSpacing: "0.14em",
+              letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color:         "var(--shouf-text-faint)",
+              fontWeight:    600,
+              color:         "var(--shouf-text-muted)",
               marginBottom:  "24px",
               userSelect:    "none",
             }}
@@ -304,12 +310,12 @@ export function SpacingCanvas() {
               { label: "gap",      value: `${gap}px`,          token: `--shouf-space-${gap}`          },
               { label: "radius",   value: `${borderRadius}px`, token: `--shouf-space-${borderRadius}` },
             ].map((item) => (
-              <div key={item.label} style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+              <div key={item.label} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                 <code
                   style={{
-                    fontSize:   "10px",
+                    fontSize:   "12px",
                     fontFamily: "var(--font-mono)",
-                    color:      "var(--shouf-text-faint)",
+                    color:      "var(--shouf-text-muted)",
                     letterSpacing: "0.04em",
                   }}
                 >
@@ -317,18 +323,19 @@ export function SpacingCanvas() {
                 </code>
                 <code
                   style={{
-                    fontSize:   "12px",
+                    fontSize:   "14px",
                     fontFamily: "var(--font-mono)",
                     color:      "var(--shouf-accent)",
+                    fontWeight: 500,
                   }}
                 >
                   {item.value}
                 </code>
                 <code
                   style={{
-                    fontSize:   "10px",
+                    fontSize:   "12px",
                     fontFamily: "var(--font-mono)",
-                    color:      "var(--shouf-text-faint)",
+                    color:      "var(--shouf-text-muted)",
                   }}
                 >
                   {item.token}
@@ -337,6 +344,7 @@ export function SpacingCanvas() {
             ))}
           </div>
         </div>
+        </ScrollReveal>
 
       </div>
     </div>

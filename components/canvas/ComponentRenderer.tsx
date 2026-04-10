@@ -265,7 +265,7 @@ function LiveComponentCanvas({ componentId }: { componentId: string }) {
   const size    = (values.size    as string) || "";
 
   return (
-    <div className={`flex flex-col items-center gap-8${fullWidth ? " w-full" : ""}`}>
+    <div className={`flex flex-col items-center${fullWidth ? " w-full" : ""}`} style={{ gap: "32px" }}>
       {/* The actual component */}
       <div
         className="flex items-center justify-center"

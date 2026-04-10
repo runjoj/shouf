@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { ACCENT_PRESETS } from "@/lib/accent";
 import { useTheme } from "@/lib/theme";
 import { useAppStore } from "@/lib/store";
+import { ScrollReveal } from "./CaseStudyShared";
 
 
 // ─── Token group definitions ──────────────────────────────────────────────────
@@ -47,23 +48,31 @@ function readCSSVar(name: string): string {
 
 // ─── Section header ───────────────────────────────────────────────────────────
 
-function SectionHeader({ label }: { label: string }) {
+function SectionHeader({ label, isSelected, onClick }: { label: string; isSelected?: boolean; onClick?: () => void }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
+    <div
+      onClick={onClick}
+      style={{
+        display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px",
+        cursor: onClick ? "pointer" : "default",
+      }}
+    >
       <span
         style={{
-          fontSize:      "10px",
+          fontSize:      "12px",
           fontFamily:    "var(--font-mono)",
-          letterSpacing: "0.14em",
-          color:         "var(--shouf-text-faint)",
+          letterSpacing: "0.12em",
+          color:         isSelected ? "var(--shouf-accent)" : "var(--shouf-text-muted)",
           textTransform: "uppercase",
+          fontWeight:    600,
           flexShrink:    0,
           userSelect:    "none",
+          transition:    "color 160ms ease",
         }}
       >
         {label}
       </span>
-      <div style={{ flex: 1, height: "1px", backgroundColor: "var(--shouf-border-sub)" }} />
+      <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, var(--shouf-border-sub), transparent)" }} />
     </div>
   );
 }
@@ -82,51 +91,45 @@ function ColorSwatch({
   hex:       string;
   hasBorder?: boolean;
 }) {
-  const [hov, setHov] = useState(false);
-
   return (
     <div
       style={{ display: "flex", flexDirection: "column", gap: "10px", flexShrink: 0 }}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
     >
       <div
         style={{
-          width:           "80px",
-          height:          "64px",
+          width:           "100px",
+          height:          "80px",
           borderRadius:    "10px",
           backgroundColor: `var(${varName})`,
           border:          hasBorder ? "1px solid var(--shouf-border)" : undefined,
-          transform:       hov ? "scale(1.06) translateY(-3px)" : "scale(1) translateY(0)",
-          boxShadow:       hov ? "0 8px 24px rgba(0,0,0,0.13)" : "0 1px 4px rgba(0,0,0,0.06)",
-          transition:      "transform 160ms ease, box-shadow 160ms ease",
-          cursor:          "default",
+          boxShadow:       "0 1px 4px rgba(0,0,0,0.06)",
         }}
       />
-      <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
         <code
           style={{
-            fontSize:   "10px",
+            fontSize:   "12px",
             fontFamily: "var(--font-mono)",
-            color:      "var(--shouf-text-muted)",
+            color:      "var(--shouf-text)",
             lineHeight: 1.3,
+            fontWeight: 500,
           }}
         >
           {varName}
         </code>
         <code
           style={{
-            fontSize:   "10px",
+            fontSize:   "12px",
             fontFamily: "var(--font-mono)",
-            color:      "var(--shouf-text-faint)",
+            color:      "var(--shouf-text-muted)",
           }}
         >
           {hex || "—"}
         </code>
         <span
           style={{
-            fontSize:   "10px",
-            color:      "var(--shouf-text-faint)",
+            fontSize:   "12px",
+            color:      "var(--shouf-text-muted)",
             lineHeight: 1.4,
           }}
         >
@@ -156,13 +159,13 @@ function PresetSwatch({
         gap:           "10px",
         cursor:        "default",
         flexShrink:    0,
-        width:         "72px",
+        width:         "80px",
       }}
     >
       <div
         style={{
-          width:           "56px",
-          height:          "56px",
+          width:           "64px",
+          height:          "64px",
           borderRadius:    "14px",
           backgroundColor: preset.hex,
           transform:       isActive ? "scale(1.08)" : "scale(1)",
@@ -174,9 +177,9 @@ function PresetSwatch({
       />
       <span
         style={{
-          fontSize:   "10px",
+          fontSize:   "12px",
           fontFamily: "var(--font-mono)",
-          color:      isActive ? "var(--shouf-accent)" : "var(--shouf-text-faint)",
+          color:      isActive ? "var(--shouf-accent)" : "var(--shouf-text-muted)",
           textAlign:  "center",
           lineHeight: 1.4,
           fontWeight: isActive ? 600 : 400,
@@ -256,19 +259,27 @@ export function ColorTokensCanvas() {
 
   const hex = (varName: string) => hexValues[varName] || "";
 
+  const selectedSection = (cv.selectedSection as string) ?? "";
+
+  function selectSection(id: string) {
+    const next = selectedSection === id ? "" : id;
+    setControlValue("pds-color-tokens", "selectedSection", next);
+  }
+
   return (
     /* Full-canvas scrollable wrapper */
     <div className="canvas-scroll-pad">
       <div style={{ maxWidth: "720px", margin: "0 auto" }}>
 
         {/* ── Page header ───────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <div style={{ marginBottom: "52px" }}>
           <h1
             style={{
-              fontSize:      "22px",
+              fontSize:      "26px",
               fontWeight:    600,
               color:         "var(--shouf-text)",
-              margin:        "0 0 6px",
+              margin:        "0 0 8px",
               letterSpacing: "-0.02em",
             }}
           >
@@ -276,23 +287,25 @@ export function ColorTokensCanvas() {
           </h1>
           <p
             style={{
-              fontSize:   "14px",
+              fontSize:   "15px",
               fontFamily: "var(--font-mono)",
-              color:      "var(--shouf-text-faint)",
+              color:      "var(--shouf-text-muted)",
               margin:     0,
             }}
           >
             Shouf Design System — semantic color primitives
           </p>
         </div>
+        </ScrollReveal>
 
         {/* ── Accent Presets ─────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "56px" }}>
           <SectionHeader label="Accent Presets" />
           <p
             style={{
-              fontSize:     "12px",
-              color:        "var(--shouf-text-faint)",
+              fontSize:     "14px",
+              color:        "var(--shouf-text-muted)",
               marginBottom: "28px",
               lineHeight:   1.6,
             }}
@@ -309,10 +322,12 @@ export function ColorTokensCanvas() {
             ))}
           </div>
         </section>
+        </ScrollReveal>
 
         {/* ── Background surface ─────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "48px" }}>
-          <SectionHeader label="Background" />
+          <SectionHeader label="Background" isSelected={selectedSection === "background"} onClick={() => selectSection("background")} />
           <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
             {SURFACE_TOKENS.map((t) => (
               <ColorSwatch
@@ -325,10 +340,12 @@ export function ColorTokensCanvas() {
             ))}
           </div>
         </section>
+        </ScrollReveal>
 
         {/* ── Border ─────────────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "48px" }}>
-          <SectionHeader label="Border" />
+          <SectionHeader label="Border" isSelected={selectedSection === "border"} onClick={() => selectSection("border")} />
           <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
             {BORDER_TOKENS.map((t) => (
               <ColorSwatch
@@ -341,10 +358,12 @@ export function ColorTokensCanvas() {
             ))}
           </div>
         </section>
+        </ScrollReveal>
 
         {/* ── Text ───────────────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "48px" }}>
-          <SectionHeader label="Text" />
+          <SectionHeader label="Text" isSelected={selectedSection === "text"} onClick={() => selectSection("text")} />
           <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
             {TEXT_TOKENS.map((t) => (
               <ColorSwatch
@@ -357,10 +376,12 @@ export function ColorTokensCanvas() {
             ))}
           </div>
         </section>
+        </ScrollReveal>
 
         {/* ── Accent scale ───────────────────────────────────────────────────── */}
+        <ScrollReveal>
         <section style={{ marginBottom: "48px" }}>
-          <SectionHeader label="Accent Scale" />
+          <SectionHeader label="Accent Scale" isSelected={selectedSection === "accent"} onClick={() => selectSection("accent")} />
 
           {/* Primary trio — main / hover / active */}
           <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginBottom: "32px" }}>
@@ -394,6 +415,7 @@ export function ColorTokensCanvas() {
             ))}
           </div>
         </section>
+        </ScrollReveal>
 
       </div>
     </div>

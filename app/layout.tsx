@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree, Inter, Playfair_Display, Space_Grotesk, Instrument_Sans, Manrope, Caveat } from "next/font/google";
+import { Figtree, Inter, Space_Grotesk, Instrument_Sans, Manrope, Caveat } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/store";
 import { ThemeProvider } from "@/lib/theme";
@@ -33,13 +33,6 @@ const manrope = Manrope({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
 const caveat = Caveat({
   subsets: ["latin"],
   variable: "--font-caveat",
@@ -64,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${figtree.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} ${manrope.variable} ${caveat.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${figtree.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} ${manrope.variable} ${caveat.variable}`} suppressHydrationWarning>
       {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         {/* biome-ignore lint: FOUC prevention must run inline before hydration */}
