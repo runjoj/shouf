@@ -8,6 +8,10 @@ import { EU_STATUSES_REGISTRATION } from "@/components/eucalyptus/EuStatuses/def
 import { EuStatusesRenderer } from "@/components/eucalyptus/EuStatuses/EuStatuses";
 import { EU_FOLDER_CONTAINER_REGISTRATION } from "@/components/eucalyptus/EuFolderContainer/definition";
 import { EuFolderContainerRenderer } from "@/components/eucalyptus/EuFolderContainer/EuFolderContainer";
+import { EU_RADIO_REGISTRATION } from "@/components/eucalyptus/EuRadio/definition";
+import { EuRadioRenderer } from "@/components/eucalyptus/EuRadio/EuRadio";
+import { EU_FILTERS_REGISTRATION } from "@/components/eucalyptus/EuFilters/definition";
+import { EuFiltersRenderer } from "@/components/eucalyptus/EuFilters/EuFilters";
 import { PDS_TYPOGRAPHY_REGISTRATION }    from "@/components/portfolio-design-system/PdsTypography/definition";
 import { PDS_SPACING_REGISTRATION }       from "@/components/portfolio-design-system/PdsSpacing/definition";
 import { PDS_COLOR_TOKENS_REGISTRATION }  from "@/components/portfolio-design-system/PdsColorTokens/definition";
@@ -29,6 +33,8 @@ export const COMPONENT_REGISTRY: Record<string, ComponentRegistration> = {
   "pds-spacing":          PDS_SPACING_REGISTRATION,
   "eu-statuses":          EU_STATUSES_REGISTRATION,
   "eu-folder-container":  EU_FOLDER_CONTAINER_REGISTRATION,
+  "eu-radio":             EU_RADIO_REGISTRATION,
+  "eu-filters":           EU_FILTERS_REGISTRATION,
   "rc-global-nav":        RC_GLOBAL_NAV_REGISTRATION,
 };
 
@@ -40,6 +46,8 @@ export const COMPONENT_RENDERERS: Record<
   "pds-input":            PdsInputRenderer,
   "eu-statuses":          EuStatusesRenderer,
   "eu-folder-container":  EuFolderContainerRenderer,
+  "eu-radio":             EuRadioRenderer,
+  "eu-filters":           EuFiltersRenderer,
 };
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────

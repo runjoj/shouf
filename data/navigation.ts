@@ -20,6 +20,8 @@ export const navSections: NavSection[] = [
       { id: "eu-overview",         name: "Overview",         sectionId: "eucalyptus" },
       { id: "eu-statuses",         name: "Statuses",         sectionId: "eucalyptus" },
       { id: "eu-folder-container", name: "Folder Container", sectionId: "eucalyptus" },
+      { id: "eu-radio",            name: "Radio",            sectionId: "eucalyptus" },
+      { id: "eu-filters",          name: "Filters",          sectionId: "eucalyptus" },
     ],
   },
 ];

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import type { ComponentControlValues } from "@/lib/types";
 import type { ReactNode } from "react";
 import { useAppStore } from "@/lib/store";
+import { useTheme } from "@/lib/theme";
 import {
   MagicWand,
   PersonSimpleRun,
@@ -59,7 +60,13 @@ export function EuStatuses({
   size = "md",
 }: EuStatusesProps) {
   const { selectedComponentId, setControlValue } = useAppStore();
+  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
+
+  // Dark-mode-only outline for the near-black "Deleted" chip so it doesn't
+  // disappear against the dark page background.
+  const deletedOutline =
+    theme === "dark" ? "inset 0 0 0 1px #7A8494" : "none";
 
   // Trigger the stagger-in animation shortly after mount
   useEffect(() => {
@@ -131,6 +138,7 @@ export function EuStatuses({
                 whiteSpace:      "nowrap",
                 flexShrink:      0,
                 outline:         "none",
+                boxShadow:       v.id === "deleted" ? deletedOutline : "none",
               }}
             >
               {getIcon(v.id, iconSize)}
@@ -153,6 +161,7 @@ export function EuStatuses({
                 cursor:          "pointer",
                 flexShrink:      0,
                 outline:         "none",
+                boxShadow:       v.id === "deleted" ? deletedOutline : "none",
               }}
             >
               {getIcon(v.id, iconSize)}
