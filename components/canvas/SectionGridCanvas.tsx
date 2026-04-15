@@ -287,6 +287,16 @@ const CUSTOM_TILE_PREVIEWS: Record<string, () => React.ReactElement> = {
   "eu-embedded":      EmbeddedPreview,
 };
 
+// Per-component preview scale factor. Some live renderers (e.g. Filters at
+// 480px wide) overflow the tile's preview area; scaling them down lets the
+// real component show at a glance without clipping.
+const PREVIEW_SCALES: Record<string, number> = {
+  "eu-radio":       0.75,
+  "eu-filters":     0.40,
+  "eu-folder-container": 0.65,
+  "eu-statuses":    0.80,
+};
+
 // ─── Placeholder preview (unregistered components without a custom preview) ───
 
 function PlaceholderPreview() {
@@ -375,20 +385,33 @@ function ComponentTile({ entry, isSelected, tileIndex, onClick }: TileProps) {
       <div
         style={{
           flex:            1,
-          minHeight:       "120px",
+          height:          "200px",
           display:         "flex",
           alignItems:      "center",
           justifyContent:  "center",
-          padding:         "28px 24px 20px",
+          padding:         "20px",
           pointerEvents:   "none",
           userSelect:      "none",
+          overflow:        "hidden",
         }}
       >
-        {renderer
-          ? renderer(values)
-          : CustomPreview
-            ? <CustomPreview />
-            : <PlaceholderPreview />}
+        {renderer ? (
+          <div
+            style={{
+              transform:       `scale(${PREVIEW_SCALES[entry.id] ?? 1})`,
+              transformOrigin: "center center",
+              display:         "flex",
+              alignItems:      "center",
+              justifyContent:  "center",
+            }}
+          >
+            {renderer(values)}
+          </div>
+        ) : CustomPreview ? (
+          <CustomPreview />
+        ) : (
+          <PlaceholderPreview />
+        )}
       </div>
 
       {/* Component name label */}
@@ -505,7 +528,7 @@ export function SectionGridCanvas({ sectionId, excludeIds, noSelection }: { sect
       <div
         style={{
           display:               "grid",
-          gridTemplateColumns:   "repeat(auto-fill, minmax(220px, 1fr))",
+          gridTemplateColumns:   "repeat(auto-fill, minmax(260px, 1fr))",
           gap:                   "14px",
         }}
       >

@@ -260,7 +260,7 @@ export function IntroAnimation() {
               display:       "flex",
               flexDirection: "column",
               alignItems:    "center",
-              gap:           "20px",
+              gap:           "12px",
               opacity:       showPicker ? 1 : 0,
               transition:    "opacity 500ms ease",
             }}

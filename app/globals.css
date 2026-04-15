@@ -557,6 +557,72 @@ body,
   --eu-status-circle-md: 22px;
 }
 
+/* ─── Eucalyptus — Radio button tokens ────────────────────────────────────── */
+:root {
+  /* Selected state */
+  --eu-radio-selected-border:    #052942;
+  --eu-radio-selected-bg:        rgba(21, 89, 136, 0.12);
+  --eu-radio-selected-text:      #052942;
+  --eu-radio-selected-indicator: #052942;
+  /* Unselected state */
+  --eu-radio-unselected-border:    #D1D5DB;
+  --eu-radio-unselected-bg:        #FFFFFF;
+  --eu-radio-unselected-text:      #525151;
+  --eu-radio-unselected-indicator: #D1D5DB;
+  /* Shared */
+  --eu-radio-radius:         3px;
+  --eu-radio-font-size:      16px;
+  --eu-radio-fw:             400;
+  --eu-radio-p:              14px 16px;
+  --eu-radio-gap:            12px;
+  --eu-radio-indicator-size: 20px;
+}
+[data-theme="dark"] {
+  --eu-radio-selected-border:    #FFFFFF;
+  --eu-radio-selected-bg:        #FFFFFF;
+  --eu-radio-selected-text:      #052942;
+  --eu-radio-selected-indicator: #052942;
+  --eu-radio-unselected-border:    #7A8494;
+  --eu-radio-unselected-bg:        #26292F;
+  --eu-radio-unselected-text:      #DBE4F2;
+  --eu-radio-unselected-indicator: #7A8494;
+}
+
+/* ─── Eucalyptus — Filters tokens ─────────────────────────────────────────── */
+:root {
+  --eu-filter-container-bg:      #FFFFFF;
+  --eu-filter-container-border:  #E5E7EB;
+  --eu-filter-label-color:       #052942;
+  --eu-filter-text-color:        #052942;
+  --eu-filter-muted-color:       #6B7280;
+  --eu-filter-chip-bg:           #E5E7EB;
+  --eu-filter-chip-color:        #374151;
+  --eu-filter-input-border:      #D1D5DB;
+  --eu-filter-input-bg:          #FFFFFF;
+  --eu-filter-btn-primary-bg:    #052942;
+  --eu-filter-btn-primary-text:  #FFFFFF;
+  --eu-filter-container-radius:  8px;
+  --eu-filter-chip-radius:       4px;
+  --eu-filter-font-size:         14px;
+  --eu-filter-fw:                500;
+  --eu-filter-container-pad:     16px;
+  --eu-filter-row-gap:           12px;
+  --eu-filter-inner-gap:         16px;
+}
+[data-theme="dark"] {
+  --eu-filter-container-bg:      #26292F;
+  --eu-filter-container-border:  #7A8494;
+  --eu-filter-label-color:       #DBE4F2;
+  --eu-filter-text-color:        #DBE4F2;
+  --eu-filter-muted-color:       #A6AAB6;
+  --eu-filter-chip-bg:           #343842;
+  --eu-filter-chip-color:        #DBE4F2;
+  --eu-filter-input-border:      #7A8494;
+  --eu-filter-input-bg:          #1A1C20;
+  --eu-filter-btn-primary-bg:    #DBE4F2;
+  --eu-filter-btn-primary-text:  #1A1C20;
+}
+
 /* ─── Spacing scale tokens ───────────────────────────────────────────────────── */
 :root {
   --shouf-space-4:  4px;
