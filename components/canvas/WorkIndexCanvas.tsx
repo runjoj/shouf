@@ -22,26 +22,45 @@ type WorkProject = {
   extraTag?: string;
   disabled?: boolean;
   thumbnail?: string;
-
+  thumbnailZoom?: number; // scale factor to crop outer padding/chrome from screenshots
 };
 
 const PROJECTS: WorkProject[] = [
   {
-    id: "project-artemis",
+    id: "product-sandbox",
     tag: "Coming Soon",
-    title: "Project Artemis",
+    title: "Product Sandbox",
     description: "",
     company: "",
     disabled: true,
   },
   {
+    id: "project-artemis",
+    tag: "Product Design · Design System",
+    title: "Project Artemis",
+    description:
+      "A 90-day initiative to accelerate the hypothesis-to-impact loop through AI-orchestrated workflows — shipping production-ready features at high velocity without compromising design craft.",
+    company: "BambooHR",
+    thumbnail: "/artemis_tile_2.png",
+  },
+  {
     id: "rc-case-study",
     tag: "Product Design · Design System",
-    title: "Responsive Site Development",
+    title: "Responsive Navigation",
     description:
       "A strategic shift toward a responsive, mobile-aware platform at BambooHR — from desktop-only to fully adaptive.",
     company: "BambooHR",
     thumbnail: "/responsive_component.png",
+    thumbnailZoom: 1.02,
+  },
+  {
+    id: "onboarding-flow",
+    tag: "Product Design",
+    title: "Onboarding Flow",
+    description:
+      "A streamlined first-run experience that took users from sign-up to a successful test run in 15 minutes — lifting completion from 12% to 78%.",
+    company: "Qualiti",
+    thumbnail: "/overview_flow.png",
   },
   {
     id: "eu-embedded",
@@ -168,6 +187,9 @@ function WorkCard({
               objectFit: "cover",
               objectPosition: "left top",
               display: "block",
+              ...(project.thumbnailZoom
+                ? { transform: `scale(${project.thumbnailZoom})`, transformOrigin: "center center" }
+                : {}),
             }}
           />
         ) : (

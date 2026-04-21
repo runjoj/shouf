@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#09090b;--bg1:#111114;--bg2:#1a1a1f;--bg3:#232329;
+  --border:rgba(255,255,255,0.10);--border2:rgba(255,255,255,0.14);--border3:rgba(255,255,255,0.22);
+  --t1:#f5f5f4;--t2:#e0e0dc;--t3:#b0b0ac;--t4:#8a8a86;--t5:#636360;
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.12);--green-t:#6ee7a0;
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.12);--red-t:#fca5a5;
+  --blue:#3b82f6;--blue-bg:rgba(59,130,246,0.12);--blue-t:#93c5fd;
+  --yellow:#eab308;--yellow-bg:rgba(234,179,8,0.12);--yellow-t:#fde047;
+  --purple:#a855f7;--purple-bg:rgba(168,85,247,0.12);--purple-t:#d8b4fe;
+  --orange:#f97316;--orange-bg:rgba(249,115,22,0.12);--orange-t:#fdba74;
+  --cyan:#06b6d4;--cyan-bg:rgba(6,182,212,0.12);--cyan-t:#67e8f9;
+  --amber:#d97706;--amber-bg:rgba(217,119,6,0.10);--amber-t:#fbbf24;--amber-border:rgba(217,119,6,0.30);
+  --radius:10px;--radius-sm:6px;--radius-lg:14px
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t2);-webkit-font-smoothing:antialiased;height:100vh;overflow:hidden;font-size:13px;line-height:1.6}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+textarea{font-family:inherit;outline:none;resize:none}
+
+.app{display:flex;height:100vh;flex-direction:column}
+
+/* TOPBAR */
+.topbar{height:48px;background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 16px;justify-content:space-between;flex-shrink:0;z-index:10}
+.topbar-left{display:flex;align-items:center;gap:16px}
+.logo-group{display:flex;align-items:center;gap:10px}
+.logo{width:22px;height:22px;border-radius:5px;background:#fff;display:flex;align-items:center;justify-content:center}
+.logo svg{width:10px;height:10px}
+.wordmark{font-size:13px;font-weight:700;color:#fff;letter-spacing:-0.03em}
+.top-nav{display:flex;align-items:center;gap:2px;margin-left:8px}
+.top-nav-item{font-size:12px;font-weight:500;color:var(--t4);padding:6px 12px;border-radius:6px;cursor:pointer;transition:all .15s}
+.top-nav-item:hover{color:var(--t2);background:rgba(255,255,255,.05)}
+.top-nav-item.active{color:#fff;background:rgba(255,255,255,.08)}
+.top-nav-sep{width:1px;height:16px;background:var(--border);margin:0 4px}
+.btn-primary{background:#fff;color:#000;font-weight:600;font-size:12px;border-radius:7px;padding:6px 14px;letter-spacing:-0.01em;transition:opacity .15s}
+.btn-primary:hover{opacity:.85}
+.btn-ghost{background:transparent;color:var(--t3);font-size:12px;font-weight:500;padding:6px 10px;border-radius:7px;transition:all .15s}
+.btn-ghost:hover{color:var(--t1);background:rgba(255,255,255,.06)}
+.main-area{flex:1;display:flex;overflow:hidden}
+
+/* KANBAN */
+.kanban-view{display:flex;flex:1;overflow:hidden}
+.kanban-chat{width:340px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg1)}
+.kanban-board{flex:1;display:flex;overflow-x:auto;padding:16px;gap:12px;background:var(--bg)}
+.k-column{min-width:280px;width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:6px}
+.k-col-header{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 10px}
+.k-col-title{font-size:12px;font-weight:600;color:var(--t3);letter-spacing:0.02em}
+.k-col-count{font-size:10px;font-weight:600;color:var(--t4);background:var(--bg2);padding:2px 7px;border-radius:20px}
+.k-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:13px 14px;cursor:pointer;transition:all .4s ease}
+.k-card:hover{border-color:var(--border3);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.k-card.moving{transform:translateX(40px);opacity:.5;pointer-events:none}
+.k-card.arriving{animation:cardArrive .5s ease forwards}
+@keyframes cardArrive{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+.k-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.k-stage-tag{font-size:9.5px;font-weight:600;padding:2.5px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:4px}
+.tag-drafting-spec{background:var(--purple-bg);color:var(--purple-t)}
+.tag-spec-review{background:var(--blue-bg);color:var(--blue-t)}
+.tag-writing-code{background:var(--orange-bg);color:var(--orange-t)}
+.tag-running-tests{background:var(--cyan-bg);color:var(--cyan-t)}
+.tag-ready-review{background:var(--green-bg);color:var(--green-t)}
+.tag-awaiting-approval{background:rgba(255,255,255,.08);color:var(--t3)}
+.tag-pr-ready{background:var(--green-bg);color:var(--green-t)}
+.tag-dot{width:4px;height:4px;border-radius:50%;background:currentColor;animation:blink 1.4s ease-in-out infinite}
+.tag-dot-static{width:4px;height:4px;border-radius:50%;background:currentColor}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.k-title{font-size:12.5px;font-weight:500;color:var(--t1);line-height:1.5;margin-bottom:8px}
+.k-foot{display:flex;align-items:center;justify-content:space-between}
+.k-id{font-size:10px;color:var(--t4);font-family:'JetBrains Mono',monospace}
+.k-progress{height:2px;background:var(--bg3);border-radius:1px;margin-top:8px;overflow:hidden}
+.k-progress-fill{height:100%;border-radius:1px;transition:width 1s ease}
+
+/* CHAT */
+.chat-panel{display:flex;flex-direction:column;flex:1;min-height:0}
+.chat-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.chat-header-title{font-size:12px;font-weight:600;color:var(--t3)}
+.chat-messages{flex:1;overflow-y:auto;padding:8px 0}
+.chat-messages::-webkit-scrollbar{width:5px}
+.chat-messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+.msg{padding:4px 16px;display:flex}
+.msg-ai{justify-content:flex-start}
+.msg-user{justify-content:flex-end}
+.msg-bubble{max-width:88%;font-size:13px;line-height:1.75;padding:10px 14px;border-radius:14px}
+.msg-ai .msg-bubble{background:var(--bg2);color:var(--t2);border-bottom-left-radius:4px}
+.msg-user .msg-bubble{background:var(--bg3);color:var(--t1);border-bottom-right-radius:4px;border:1px solid var(--border2)}
+.code-inline{background:rgba(255,255,255,.1);font-family:'JetBrains Mono',monospace;font-size:11px;padding:2px 6px;border-radius:4px;color:var(--t1)}
+.status-msg{padding:4px 16px}
+.status-block{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;max-width:88%}
+.status-header{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;transition:background .1s}
+.status-header:hover{background:rgba(255,255,255,.04)}
+.status-dot-sm{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.status-label{font-size:12px;font-weight:500;color:var(--t1);flex:1}
+.status-time{font-size:10px;color:var(--t4)}
+.status-chev{font-size:10px;color:var(--t4);transition:transform .2s}
+.status-chev.open{transform:rotate(90deg)}
+.status-detail{border-top:1px solid var(--border);background:var(--bg);padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;line-height:1.9;color:var(--t4);max-height:180px;overflow-y:auto}
+.sd-line{display:flex;gap:8px;align-items:baseline}
+.sd-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0}
+.sd-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.composer{padding:10px 14px 12px;border-top:1px solid var(--border);background:var(--bg1)}
+.composer-inner{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 12px;display:flex;align-items:flex-end;gap:8px;transition:border-color .15s}
+.composer-inner:focus-within{border-color:var(--border3)}
+.composer-attach{width:28px;height:28px;background:transparent;border:none;color:var(--t3);font-size:16px;display:flex;align-items:center;justify-content:center;border-radius:6px;flex-shrink:0}
+.composer-attach:hover{color:var(--t1);background:rgba(255,255,255,.06)}
+.composer-ta{flex:1;background:transparent;border:none;font-size:13px;color:var(--t1);min-height:20px;max-height:120px;line-height:1.5}
+.composer-ta::placeholder{color:var(--t4)}
+.composer-send{width:28px;height:28px;background:#fff;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#000;font-weight:700;flex-shrink:0;transition:opacity .15s}
+.composer-send:hover{opacity:.85}
+
+/* TICKET */
+.ticket-view{display:flex;flex:1;overflow:hidden}
+.ticket-chat{width:380px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg1)}
+.ticket-title-bar{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--bg1)}
+.ticket-title-id{font-size:10px;color:var(--t4);font-family:'JetBrains Mono',monospace;margin-bottom:3px}
+.ticket-title-text{font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.03em;line-height:1.3}
+.right-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.right-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border2);padding:0 16px;flex-shrink:0}
+.right-tab{padding:11px 14px;font-size:12px;font-weight:500;color:var(--t4);cursor:pointer;border-bottom:1.5px solid transparent;margin-bottom:-1px;transition:color .15s}
+.right-tab:hover{color:var(--t2)}
+.right-tab.active{color:#fff;border-bottom-color:#fff;font-weight:600}
+.right-tab.disabled{color:var(--t5);opacity:.4;cursor:default;pointer-events:none}
+.right-content{flex:1;overflow-y:auto;padding:20px 22px}
+.right-content::-webkit-scrollbar{width:5px}
+.right-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+
+/* SPEC */
+.spec-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:22px 24px}
+.spec-title-edit{font-size:16px;font-weight:700;color:#fff;letter-spacing:-0.03em;margin-bottom:2px;outline:none;border-radius:4px;padding:2px 4px;margin:-2px -4px;transition:background .1s}
+.spec-title-edit:hover,.spec-title-edit:focus{background:rgba(255,255,255,.05)}
+.spec-id-line{font-size:10px;color:var(--t4);font-family:'JetBrains Mono',monospace;margin-bottom:20px}
+.spec-section{margin-bottom:18px}
+.spec-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--t3);margin-bottom:6px}
+.spec-section-body{font-size:13px;color:var(--t2);line-height:1.8;padding:6px 8px;margin:-6px -8px;border-radius:6px;outline:none;transition:background .1s}
+.spec-section-body:hover,.spec-section-body:focus{background:rgba(255,255,255,.04)}
+.spec-tags{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.spec-tag-pill{font-size:10px;font-weight:500;padding:3px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--t2)}
+.spec-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.spec-hint{font-size:11px;color:var(--t4)}
+.spec-attachments{margin-top:10px}
+.spec-attach-grid{display:flex;gap:8px;flex-wrap:wrap}
+.spec-attach-item{width:96px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;overflow:hidden;cursor:pointer;transition:all .15s}
+.spec-attach-item:hover{border-color:var(--border3);transform:translateY(-1px)}
+.spec-attach-thumb{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center}
+.spec-attach-name{padding:5px 7px;font-size:9.5px;font-weight:500;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-top:1px solid var(--border)}
+.spec-attach-type{font-size:8.5px;color:var(--t4);padding:0 7px 5px;text-transform:uppercase;font-weight:600;letter-spacing:0.04em}
+
+/* DIFF */
+.diff-container{border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden}
+.diff-topbar{background:var(--bg2);padding:10px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.diff-stats{display:flex;gap:10px}
+.diff-stat{font-size:11px;font-weight:600}
+.diff-stat.add{color:var(--green-t)}
+.diff-stat.rem{color:var(--red-t)}
+.diff-body{display:flex}
+.diff-tree{width:200px;flex-shrink:0;background:var(--bg1);border-right:1px solid var(--border);padding:6px 0}
+.diff-file{display:flex;align-items:center;gap:6px;padding:7px 12px;font-size:10px;cursor:pointer;transition:background .1s}
+.diff-file:hover{background:rgba(255,255,255,.05)}
+.diff-file.sel{background:rgba(255,255,255,.07)}
+.diff-file-name{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.diff-file.sel .diff-file-name{color:var(--t1)}
+.diff-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
+.db-new{background:var(--green-bg);color:var(--green-t)}
+.db-mod{background:var(--yellow-bg);color:var(--yellow-t)}
+.diff-code{flex:1;background:var(--bg);padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:10.5px;line-height:2.1;overflow-x:auto}
+.d-fh{color:var(--blue-t);font-size:10px;display:inline-block;margin-bottom:4px;font-weight:500;background:var(--blue-bg);padding:2px 8px;border-radius:3px}
+.d-a{color:var(--green-t);display:block}.d-n{color:var(--t5);display:block}
+
+/* PREVIEW */
+.preview-container{border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden}
+.preview-topbar{background:var(--bg2);padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.preview-url{display:flex;align-items:center;gap:7px;background:var(--bg1);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:5px 12px;flex:1;max-width:340px}
+.preview-url-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.preview-url-text{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.preview-frame{background:#e8e8ec;padding:24px;min-height:280px;display:flex;align-items:flex-start;justify-content:center}
+.mock-app{background:#fff;border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,.12);overflow:hidden;width:340px}
+.mock-header{background:#18181b;padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
+.mock-header-title{font-size:13px;font-weight:700;color:#fff}
+.mock-badge-w{background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+.mock-item{display:flex;gap:10px;padding:10px 13px;border-bottom:1px solid #e8e8ea}
+.mock-item:last-child{border-bottom:none}
+.mock-dot{width:7px;height:7px;border-radius:50%;background:#18181b;flex-shrink:0;margin-top:4px}
+.mock-dot.read{background:#c4c4c8}
+.mock-item-title{font-size:12px;font-weight:600;color:#111;margin-bottom:2px}
+.mock-item-sub{font-size:11px;color:#666}
+.mock-item-time{font-size:10px;color:#999;margin-left:auto;flex-shrink:0}
+
+/* REVIEW */
+.review-section{margin-bottom:22px}
+.review-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--t3);margin-bottom:10px}
+.pr-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.pr-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:-0.02em;margin-bottom:2px}
+.pr-sub{font-size:12px;color:var(--t3)}
+.risk-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;margin-bottom:8px}
+.risk-card.approved{border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.04)}
+.risk-main{display:flex;gap:12px;padding:14px 16px;align-items:flex-start}
+.role-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.rb-designer{background:var(--purple-bg);color:var(--purple-t);border:1px solid rgba(168,85,247,.25)}
+.rb-backend{background:var(--blue-bg);color:var(--blue-t);border:1px solid rgba(59,130,246,.25)}
+.rb-pm{background:var(--yellow-bg);color:var(--yellow-t);border:1px solid rgba(234,179,8,.25)}
+.rb-frontend{background:var(--green-bg);color:var(--green-t);border:1px solid rgba(34,197,94,.25)}
+.rb-legal{background:var(--amber-bg);color:var(--amber-t);border:1px solid var(--amber-border)}
+.risk-info{flex:1}.risk-title{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:3px}
+.risk-desc{font-size:11.5px;color:var(--t3);line-height:1.5}
+.risk-files{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.risk-file{font-size:10px;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.risk-actions{display:flex;gap:5px;flex-shrink:0;align-items:center}
+.approved-badge{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--green-t)}
+.approved-icon{width:16px;height:16px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;font-size:9px}
+.btn-sm{font-size:11px;font-weight:600;padding:6px 12px;border-radius:7px;transition:all .15s}
+.btn-approve-sm{background:#fff;color:#000}.btn-approve-sm:hover{opacity:.85}
+.btn-fb-sm{background:transparent;color:var(--t3);border:1px solid var(--border2)}.btn-fb-sm:hover{color:var(--t1);border-color:var(--border3)}
+.test-summary{display:flex;gap:12px;margin-bottom:12px}
+.test-stat{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 18px;flex:1;text-align:center}
+.test-stat-num{font-size:24px;font-weight:800;letter-spacing:-0.04em;margin-bottom:2px}
+.test-stat-num.green{color:var(--green-t)}.test-stat-num.blue{color:var(--blue-t)}
+.test-stat-label{font-size:10px;color:var(--t3);font-weight:500}
+.test-list{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden}
+.test-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px}
+.test-row:last-child{border-bottom:none}
+.test-check{width:16px;height:16px;border-radius:50%;background:var(--green-bg);color:var(--green-t);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.test-name{flex:1;color:var(--t2);font-family:'JetBrains Mono',monospace;font-size:11px}
+.test-time{font-size:10px;color:var(--t4)}
+.video-embed{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden}
+.video-bar{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.video-bar-label{font-size:12px;font-weight:600;color:var(--t1)}
+.video-bar-badge{font-size:10px;font-weight:600;color:var(--green-t);background:var(--green-bg);padding:2px 8px;border-radius:20px}
+.video-body{background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.video-play{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;cursor:pointer;transition:all .2s;z-index:2}
+.video-play:hover{background:rgba(255,255,255,.28);transform:scale(1.08)}
+.video-overlay{position:absolute;inset:0;background:linear-gradient(135deg,#0d1117 0%,#111827 50%,#0f172a 100%)}
+.video-grid{position:absolute;inset:0;opacity:.12;background-image:linear-gradient(rgba(255,255,255,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.1) 1px,transparent 1px);background-size:20px 20px}
+
+/* TERMINAL */
+.terminal-wrap{padding:0;height:100%;display:flex;flex-direction:column}
+.terminal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:#0d1117;flex-shrink:0;border-radius:var(--radius) var(--radius) 0 0}
+.terminal-live{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--green-t)}
+.terminal-live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.4s ease-in-out infinite}
+.terminal-count{font-size:10px;color:#6e7681;font-family:'JetBrains Mono',monospace}
+.terminal-body{flex:1;overflow-y:auto;background:#0d1117;padding:8px 0;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.75;border-radius:0 0 var(--radius) var(--radius)}
+.terminal-body::-webkit-scrollbar{width:5px}
+.terminal-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.t-row{display:flex;gap:10px;align-items:baseline;padding:2px 16px;transition:background .1s}
+.t-row:hover{background:rgba(255,255,255,.03)}
+.t-ts{color:#484f58;flex-shrink:0;width:78px;font-size:10.5px}
+.t-badge{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:3px;flex-shrink:0}
+.tb-grep{background:rgba(103,232,249,.12);color:#67e8f9}
+.tb-read{background:rgba(147,197,253,.12);color:#93c5fd}
+.tb-write{background:rgba(253,224,71,.1);color:#fde047}
+.tb-bash{background:rgba(255,255,255,.06);color:#b0b0ac}
+.tb-agent{background:rgba(110,231,183,.08);color:#6ee7a0}
+.t-content{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10.5px;color:#8b949e}
+.t-content.tool-ref{color:#79c0ff}.t-content.output{color:#6e7681;padding-left:16px}
+.t-content.output-hl{color:#e3b341;padding-left:16px}
+.t-content.thought{color:#c9d1d9;font-style:italic;white-space:normal;line-height:1.6}
+.t-content.success{color:#67e8f9}
+.t-json{padding:2px 16px 2px 104px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#444c56;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.7}
+.t-artifact{margin:6px 16px;background:#161b22;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:9px}
+.t-artifact-icon{color:#79c0ff;font-size:13px}.t-artifact-name{font-size:11px;font-weight:600;color:#c9d1d9;flex:1}
+.t-artifact-size{font-size:10px;color:#484f58}
+.t-divider{border-top:1px solid rgba(255,255,255,.04);margin:6px 16px}
+
+/* BUG AUTOMATIONS */
+.bugs-view{display:flex;flex:1;overflow:hidden}
+.bugs-sidebar{width:300px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg1)}
+.bugs-sidebar-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.bugs-sidebar-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--t3)}
+.bugs-list{flex:1;overflow-y:auto}
+.bugs-list::-webkit-scrollbar{width:5px}
+.bugs-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.bug-cfg{padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.bug-cfg:hover{background:rgba(255,255,255,.03)}
+.bug-cfg.sel{background:rgba(59,130,246,.08);border-left:2px solid var(--blue)}
+.bug-cfg-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.bug-cfg-id{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--green-t)}
+.bug-cfg.sel .bug-cfg-id{color:var(--blue-t)}
+.bug-cfg-actions{display:flex;gap:4px;opacity:0;transition:opacity .15s}
+.bug-cfg:hover .bug-cfg-actions,.bug-cfg.sel .bug-cfg-actions{opacity:1}
+.bug-cfg-action{width:24px;height:24px;border-radius:5px;border:1px solid var(--border2);background:var(--bg2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--t4);padding:0}
+.bug-cfg-action:hover{background:var(--bg3);border-color:var(--border3);color:var(--t2)}
+.bug-cfg-action.run{background:var(--blue-bg);border-color:rgba(59,130,246,.25);color:var(--blue-t)}
+.bug-cfg-action.run:hover{background:rgba(59,130,246,.18)}
+.bug-cfg-name{font-size:12px;font-weight:500;color:var(--t3);margin-bottom:4px}
+.bug-cfg.sel .bug-cfg-name{color:var(--t2)}
+.bug-cfg-meta{font-size:10px;color:var(--t5);display:flex;gap:10px}
+.bug-cfg.sel .bug-cfg-meta{color:var(--t4)}
+.bug-cfg-tags{display:flex;gap:5px;margin-top:7px}
+.bug-status-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;display:inline-flex;align-items:center;gap:5px}
+.bst-active{background:var(--green-bg);color:var(--green-t);border:1px solid rgba(34,197,94,.2)}
+.bst-paused{background:rgba(255,255,255,.06);color:var(--t4);border:1px solid var(--border)}
+.bug-ticket-tag{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;background:var(--bg2);color:var(--t3);border:1px solid var(--border)}
+
+.bugs-board{flex:1;overflow:auto;padding:18px 20px;background:var(--bg)}
+.bugs-board::-webkit-scrollbar{width:5px;height:5px}
+.bugs-board::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.bugs-col-headers{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:10px;margin-bottom:10px;min-width:920px}
+.bugs-col-header{display:flex;align-items:center;justify-content:space-between}
+.bugs-col-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--t4)}
+.bugs-col-count{font-size:10px;font-weight:600;background:var(--bg2);color:var(--t5);padding:1px 7px;border-radius:20px}
+.bugs-columns{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:10px;align-items:start;min-width:920px}
+.bug-ticket{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 13px;margin-bottom:7px;cursor:pointer;transition:all .15s}
+.bug-ticket:hover{border-color:var(--border3)}
+.bug-ticket.bt-active{border-left:2px solid var(--blue);border-radius:0 var(--radius) var(--radius) 0}
+.bug-ticket.bt-done{border-left:2px solid var(--green);border-radius:0 var(--radius) var(--radius) 0}
+.bug-ticket.bt-skip{opacity:.4}
+.bt-id{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--t2);margin-bottom:4px}
+.bt-desc{font-size:11.5px;color:var(--t3);line-height:1.45;margin-bottom:8px}
+.bt-foot{display:flex;align-items:center;justify-content:space-between}
+.bt-feat{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--blue-bg);color:var(--blue-t);border-radius:4px;padding:2px 6px}
+.bt-conf{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t5);background:var(--bg);border-radius:4px;padding:2px 6px}
+.bt-dot{width:6px;height:6px;border-radius:50%}
+.bugs-empty{border:1px dashed var(--border2);border-radius:var(--radius);padding:16px;text-align:center;font-size:11px;color:var(--t5)}
+
+/* NEW AUTOMATION FORM */
+.new-auto-form{padding:16px;border-bottom:1px solid var(--border);background:var(--bg);animation:fadeIn .2s ease}
+.naf-title{font-size:12px;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.naf-close{width:24px;height:24px;border-radius:5px;background:transparent;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;color:var(--t4);font-size:13px;cursor:pointer;transition:all .15s}
+.naf-close:hover{color:var(--t1);background:rgba(255,255,255,.06);border-color:var(--border3)}
+.naf-field{margin-bottom:12px}
+.naf-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--t3);margin-bottom:5px;display:block}
+.naf-input{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;padding:8px 11px;font-size:12px;font-family:inherit;color:var(--t1);outline:none;transition:border-color .15s}
+.naf-input:focus{border-color:var(--border3)}
+.naf-input::placeholder{color:var(--t5)}
+.naf-input-mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+.naf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.naf-select{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;padding:8px 11px;font-size:12px;font-family:inherit;color:var(--t1);outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%238a8a86' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;cursor:pointer;transition:border-color .15s}
+.naf-select:focus{border-color:var(--border3)}
+.naf-hint{font-size:10px;color:var(--t5);margin-top:4px}
+.naf-actions{display:flex;gap:6px;margin-top:14px}
+.naf-btn-create{background:#fff;color:#000;font-weight:600;font-size:12px;border-radius:7px;padding:7px 16px;flex:1;transition:opacity .15s;text-align:center}
+.naf-btn-create:hover{opacity:.85}
+.naf-btn-cancel{background:transparent;color:var(--t3);font-size:12px;font-weight:500;border:1px solid var(--border2);border-radius:7px;padding:7px 14px;transition:all .15s}
+.naf-btn-cancel:hover{color:var(--t1);border-color:var(--border3)}
+.naf-divider{height:1px;background:var(--border);margin:4px -16px 0}
+
+.hidden{display:none!important}
+.fade-in{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.back-btn{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--t3);background:transparent;padding:4px 8px;border-radius:6px;transition:all .15s}
+.back-btn:hover{color:var(--t1);background:rgba(255,255,255,.06)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo-group"><div class="logo"><svg viewBox="0 0 14 14" fill="none"><path d="M7 1L13 4V10L7 13L1 10V4L7 1Z" fill="#000"/></svg></div><span class="wordmark">Artemis</span></div>
+      <div class="top-nav-sep"></div>
+      <div class="top-nav">
+        <div class="top-nav-item active" data-view="features" onclick="switchView('features')">Features</div>
+        <div class="top-nav-item" data-view="bugs" onclick="switchView('bugs')">Bug Automations</div>
+      </div>
+    </div>
+    <div class="topbar-right" id="topRight"><button class="btn-primary" id="topBtn" onclick="showKanban()">+ New feature</button></div>
+  </div>
+  <div class="main-area">
+    <!-- KANBAN -->
+    <div class="kanban-view" id="kanbanView">
+      <div class="kanban-chat"><div class="chat-panel"><div class="chat-header"><span class="chat-header-title">Artemis</span></div><div class="chat-messages" id="kanbanMessages"><div class="msg msg-ai"><div class="msg-bubble">Good morning. You have 7 active features — 2 are building right now, and 1 is ready for review. Want to create something new or check in on progress?</div></div></div><div class="composer"><div class="composer-inner"><button class="composer-attach">+</button><textarea class="composer-ta" placeholder="Describe a feature, paste a design, drop a file…" rows="1"></textarea><button class="composer-send">↑</button></div></div></div></div>
+      <div class="kanban-board" id="kanbanBoard"></div>
+    </div>
+    <!-- TICKET -->
+    <div class="ticket-view hidden" id="ticketView">
+      <div class="ticket-chat"><div class="ticket-title-bar"><button class="back-btn" onclick="showKanban()">← Board</button><div style="margin-top:8px"><div class="ticket-title-id" id="ticketId"></div><div class="ticket-title-text" id="ticketTitle"></div></div></div><div class="chat-panel"><div class="chat-messages" id="ticketMessages"></div><div class="composer"><div class="composer-inner"><button class="composer-attach">+</button><textarea class="composer-ta" placeholder="Chat with Artemis…" rows="1"></textarea><button class="composer-send">↑</button></div></div></div></div>
+      <div class="right-panel"><div class="right-tabs" id="rightTabs"></div><div class="right-content" id="rightContent"></div></div>
+    </div>
+    <!-- BUG AUTOMATIONS -->
+    <div class="bugs-view hidden" id="bugsView">
+      <div class="kanban-chat"><div class="chat-panel"><div class="chat-header"><span class="chat-header-title">Artemis</span></div><div class="chat-messages" id="bugsChatMessages"><div class="msg msg-ai"><div class="msg-bubble">You have 3 bug automations configured — 2 active, 1 paused. Performance bugs is scanning every 10 minutes with 2 tickets in progress. Want to create a new automation or adjust an existing one?</div></div></div><div class="composer"><div class="composer-inner"><button class="composer-attach">+</button><textarea class="composer-ta" placeholder="Ask about automations, create new configs…" rows="1"></textarea><button class="composer-send">↑</button></div></div></div></div>
+      <div class="bugs-sidebar">
+        <div class="bugs-sidebar-head"><span class="bugs-sidebar-title">Automations</span><button class="btn-primary" style="font-size:11px;padding:5px 12px" onclick="toggleNewForm()">+ New</button></div>
+        <div class="bugs-list" id="bugsList"></div>
+      </div>
+      <div class="bugs-board" id="bugsBoard"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── TOP NAV ──
+function switchView(v){
+  document.querySelectorAll('.top-nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===v));
+  document.getElementById('kanbanView').classList.add('hidden');
+  document.getElementById('ticketView').classList.add('hidden');
+  document.getElementById('bugsView').classList.add('hidden');
+  if(v==='features'){document.getElementById('kanbanView').classList.remove('hidden');document.getElementById('topRight').innerHTML='<button class="btn-primary" id="topBtn" onclick="showKanban()">+ New feature</button>';renderKanban();clearTimeout(ato);scheduleAutoMove()}
+  else if(v==='bugs'){document.getElementById('bugsView').classList.remove('hidden');document.getElementById('topRight').innerHTML='';renderBugs()}
+}
+
+// ── FEATURES DATA ──
+const TAB_ORDER=['Spec','Diff','Preview','Review','Activity'];
+const cards=[
+  {id:'JIRA-9102',title:'Add real-time notifications for benefits enrollment',lane:'planning',subStage:'Drafting spec',subClass:'tag-drafting-spec',animated:true,progress:35,stage:'planning'},
+  {id:'JIRA-9088',title:'Persist dashboard filter state across sessions',lane:'planning',subStage:'Spec review',subClass:'tag-spec-review',animated:false,progress:60,stage:'planning'},
+  {id:'JIRA-9198',title:'Export button missing on mobile Safari',lane:'planning',subStage:'Awaiting approval',subClass:'tag-awaiting-approval',animated:false,progress:80,stage:'planning'},
+  {id:'JIRA-8455',title:'Implement SSO integration for new identity provider',lane:'building',subStage:'Writing code',subClass:'tag-writing-code',animated:true,progress:52,stage:'building'},
+  {id:'JIRA-9177',title:'Improve onboarding empty state UX',lane:'building',subStage:'Running tests',subClass:'tag-running-tests',animated:true,progress:74,stage:'building'},
+  {id:'JIRA-9001',title:'Add CSV export to reports page',lane:'review',subStage:'Ready for review',subClass:'tag-ready-review',animated:false,progress:100,stage:'review'},
+  {id:'JIRA-8991',title:'Payment retry loop on pending status',lane:'shipped',subStage:'PR merged',subClass:'tag-pr-ready',animated:false,progress:100,stage:'shipped'},
+  {id:'JIRA-8820',title:'Multi-currency support for invoices',lane:'shipped',subStage:'PR merged',subClass:'tag-pr-ready',animated:false,progress:100,stage:'shipped'},
+];
+const lanes=[{key:'planning',label:'Planning'},{key:'building',label:'Building'},{key:'review',label:'Review'},{key:'shipped',label:'Shipped'}];
+const pC={planning:'rgba(255,255,255,.4)',building:'var(--yellow-t)',review:'var(--blue-t)',shipped:'var(--green-t)'};
+function ai(t){return `<div class="msg msg-ai"><div class="msg-bubble">${t}</div></div>`}
+function usr(t){return `<div class="msg msg-user"><div class="msg-bubble">${t}</div></div>`}
+
+function renderKanban(){
+  const b=document.getElementById('kanbanBoard');b.innerHTML='';
+  lanes.forEach(l=>{const lc=cards.filter(c=>c.lane===l.key);const col=document.createElement('div');col.className='k-column';
+  col.innerHTML=`<div class="k-col-header"><span class="k-col-title">${l.label}</span><span class="k-col-count">${lc.length}</span></div>`;
+  lc.forEach(c=>{const el=document.createElement('div');el.className='k-card';el.id='card-'+c.id;if(l.key==='shipped')el.style.opacity='0.55';el.onclick=()=>openTicket(c.stage,c.id);
+  el.innerHTML=`<div class="k-tags"><span class="k-stage-tag ${c.subClass}">${c.animated?'<span class="tag-dot"></span>':'<span class="tag-dot-static"></span>'}${c.subStage}</span></div><div class="k-title">${c.title}</div><div class="k-foot"><span class="k-id">${c.id}</span></div><div class="k-progress"><div class="k-progress-fill" style="width:${c.progress}%;background:${pC[l.key]}"></div></div>`;
+  col.appendChild(el)});b.appendChild(col)});
+}
+let ato;
+function scheduleAutoMove(){ato=setTimeout(()=>{const c=cards.find(x=>x.id==='JIRA-9177');if(c&&c.lane==='building'){const el=document.getElementById('card-JIRA-9177');if(el){el.classList.add('moving');setTimeout(()=>{c.lane='review';c.subStage='Ready for review';c.subClass='tag-ready-review';c.animated=false;c.progress=100;c.stage='review';renderKanban();const n=document.getElementById('card-JIRA-9177');if(n)n.classList.add('arriving')},500)}}},6000)}
+function showKanban(){switchView('features')}
+function openTicket(stage,id){document.getElementById('kanbanView').classList.add('hidden');document.getElementById('ticketView').classList.remove('hidden');clearTimeout(ato);
+  const card=cards.find(c=>c.id===id)||cards[0];document.getElementById('ticketId').textContent=card.id;document.getElementById('ticketTitle').textContent=card.title;
+  const m=document.getElementById('ticketMessages'),t=document.getElementById('rightTabs');
+  if(stage==='planning')renderPlanning(m,t,card);else if(stage==='building')renderBuilding(m,t,card);else if(stage==='review')renderReview(m,t,card);else renderPlanning(m,t,card)}
+
+function renderPlanning(m,t,c){const a=c.subStage==='Awaiting approval'||c.subStage==='Spec review';m.innerHTML=ai(`I've read the ticket and scanned 3 repos — the notification infrastructure lives in <span class="code-inline">bamboo-core</span>. Before I write the spec, what's the delivery channel?`)+usr('Both — in-app and mobile push as a fallback when the user isn\'t active.')+ai(`Got it. I found 6 enrollment events. I've drafted the spec — edit anything inline${a?'.':' and hit <strong>Approve & build</strong> when ready.'}`);setTabs(t,['Spec','Activity'],'Spec');renderSpecTab(a);m.scrollTop=m.scrollHeight}
+function renderBuilding(m,t,c){m.innerHTML=ai('Spec approved. Starting the build — I\'ll post progress as I go.')+sbl('Scaffolding SSO module','3m ago',false,[{b:'Read',c:'#93c5fd',bg:'rgba(96,165,250,.15)',t:'SSOProvider.ts — reading existing auth patterns'},{b:'Write',c:'#fde047',bg:'rgba(251,191,36,.14)',t:'SSOModule.ts — creating module scaffold'}])+sbl('Implementing SAML flow','2m ago',false,[{b:'Grep',c:'#67e8f9',bg:'rgba(6,182,212,.15)',t:'Searching for SAML assertion patterns'},{b:'Write',c:'#fde047',bg:'rgba(251,191,36,.14)',t:'SAMLHandler.ts — writing assertion validator'}])+sbl('Building OAuth2 callback handler','Just now',false,[{b:'Read',c:'#93c5fd',bg:'rgba(96,165,250,.15)',t:'OAuthConfig.ts — reading callback URLs'}],'building')+usr('Make sure the SAML flow handles IdP-initiated login, not just SP-initiated.')+ai('Good catch — updating SAMLHandler to accept unsolicited responses and validate InResponseTo conditionally.');setTabs(t,['Spec','Diff','Preview','Activity'],'Spec',{Diff:1,Preview:1});renderSpecTab(true);setTimeout(()=>{enableTab('Diff');enableTab('Preview')},100);m.scrollTop=m.scrollHeight}
+function renderReview(m,t,c){m.innerHTML=ai('Build complete — all tests passing. Review is ready on the right.')+sbl('Build completed','8m ago',false,[{b:'Write',c:'#fde047',bg:'rgba(251,191,36,.14)',t:'CSVExporter.ts — main export logic'},{b:'Bash',c:'#b0b0ac',bg:'rgba(255,255,255,.08)',t:'47 unit + 8 E2E tests passing'}]);setTabs(t,['Spec','Diff','Preview','Review','Activity'],'Review');renderReviewTab();m.scrollTop=m.scrollHeight}
+
+function sbl(label,time,open,items,state){const id='s'+Math.random().toString(36).substr(2,6);const dot=state==='building'?'background:var(--yellow);animation:blink 1.4s ease-in-out infinite':'background:var(--green)';return `<div class="status-msg"><div class="status-block"><div class="status-header" onclick="ts('${id}')"><span class="status-dot-sm" style="${dot}"></span><span class="status-label">${label}</span><span class="status-time">${time}</span><span class="status-chev${open?' open':''}" id="${id}_c">›</span></div><div class="status-detail" id="${id}" style="display:${open?'block':'none'}">${items.map(i=>`<div class="sd-line"><span class="sd-badge" style="background:${i.bg};color:${i.c}">${i.b}</span><span class="sd-text">${i.t}</span></div>`).join('')}</div></div></div>`}
+function ts(id){const e=document.getElementById(id),c=document.getElementById(id+'_c');if(e.style.display==='none'){e.style.display='block';c.classList.add('open')}else{e.style.display='none';c.classList.remove('open')}}
+function setTabs(container,avail,active,dis){const ord=TAB_ORDER.filter(t=>avail.includes(t));container.innerHTML=ord.map(t=>`<div class="right-tab${t===active?' active':''}${dis&&dis[t]?' disabled':''}" data-tab="${t}" onclick="switchTab('${t}')">${t}</div>`).join('')}
+function enableTab(n){document.querySelectorAll('.right-tab').forEach(t=>{if(t.dataset.tab===n)t.classList.remove('disabled')})}
+function switchTab(n){document.querySelectorAll('.right-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===n));({Spec:()=>renderSpecTab(true),Preview:renderPreviewTab,Diff:renderDiffTab,Review:renderReviewTab,Activity:renderActivityTab})[n]()}
+
+function renderSpecTab(approved){document.getElementById('rightContent').innerHTML=`<div class="spec-card fade-in"><div class="spec-title-edit" contenteditable="true" spellcheck="false">Real-time notifications for benefits enrollment</div><div class="spec-id-line">FEAT-170F98DC · from JIRA-9102</div><div class="spec-section"><div class="spec-section-label">Overview</div><div class="spec-section-body" contenteditable="true" spellcheck="false">Add real-time WebSocket broadcast and mobile push fallback for all 6 benefits enrollment events. Extends the existing <span class="code-inline">ShouldBroadcast</span> pattern — no new infrastructure required.</div></div><div class="spec-section"><div class="spec-section-label">Scope</div><div class="spec-section-body" contenteditable="true" spellcheck="false">6 events: plan selected, enrollment opened, deadline reminder, confirmation, waiver signed, dependent added. In-app via WebSocket + mobile push via <span class="code-inline">PushNotificationSendEvent</span> as fallback.</div><div class="spec-tags"><span class="spec-tag-pill">3 new files</span><span class="spec-tag-pill">1 modified</span><span class="spec-tag-pill">No new infra</span><span class="spec-tag-pill">Additive</span></div></div><div class="spec-section"><div class="spec-section-label">Acceptance criteria</div><div class="spec-section-body" contenteditable="true" spellcheck="false">· All 6 events trigger in-app notification within 5 s via WebSocket<br>· Mobile push fires as fallback with no active session<br>· No duplicate notifications for the same event<br>· No regressions in existing notification flows</div></div><div class="spec-section"><div class="spec-section-label">Attachments</div><div class="spec-attachments"><div class="spec-attach-grid"><div class="spec-attach-item"><div class="spec-attach-thumb"><div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div></div><div class="spec-attach-name">notification-design.fig</div><div class="spec-attach-type">Figma</div></div><div class="spec-attach-item"><div class="spec-attach-thumb"><div style="width:100%;height:100%;background:linear-gradient(135deg,#f093fb,#f5576c);display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div></div><div class="spec-attach-name">push-mock.png</div><div class="spec-attach-type">Image</div></div><div class="spec-attach-item"><div class="spec-attach-thumb"><div style="width:100%;height:100%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div></div><div class="spec-attach-name">enrollment-events.md</div><div class="spec-attach-type">Document</div></div></div></div></div><div class="spec-footer"><span class="spec-hint">Click any section to edit inline</span>${approved?'':'<button class="btn-primary" onclick="openTicket(\'building\',\'JIRA-9102\')">Approve & build →</button>'}</div></div>`}
+function renderPreviewTab(){document.getElementById('rightContent').innerHTML=`<div class="preview-container fade-in"><div class="preview-topbar"><div class="preview-url"><span class="preview-url-dot"></span><span class="preview-url-text">localhost:3000/notifications</span></div><div style="display:flex;gap:5px;margin-left:auto"><button class="btn-ghost" style="font-size:11px">↺</button><button class="btn-ghost" style="font-size:11px">⤢ Full screen</button></div></div><div class="preview-frame"><div class="mock-app"><div class="mock-header"><span class="mock-header-title">Notifications</span><span class="mock-badge-w">3 new</span></div><div class="mock-item"><div class="mock-dot"></div><div style="flex:1"><div class="mock-item-title">Benefits enrollment updated</div><div class="mock-item-sub">Your open enrollment window closes in 3 days.</div></div><div class="mock-item-time">2m</div></div><div class="mock-item"><div class="mock-dot"></div><div style="flex:1"><div class="mock-item-title">Plan selection confirmed</div><div class="mock-item-sub">You've selected the Premium Health plan.</div></div><div class="mock-item-time">1h</div></div><div class="mock-item"><div class="mock-dot read"></div><div style="flex:1"><div class="mock-item-title">Dependent added</div><div class="mock-item-sub">Alex Smith has been added to your plan.</div></div><div class="mock-item-time">2d</div></div></div></div></div>`}
+function renderDiffTab(){document.getElementById('rightContent').innerHTML=`<div class="diff-container fade-in"><div class="diff-topbar"><span style="font-size:11px;font-weight:500;color:var(--t2)">3 files changed</span><div class="diff-stats"><span class="diff-stat add">+187</span><span class="diff-stat rem">−12</span></div></div><div class="diff-body"><div class="diff-tree"><div class="diff-file sel"><span class="diff-file-name">BenefitEnrollmentListener.ts</span><span class="diff-badge db-new">new</span></div><div class="diff-file"><span class="diff-file-name">NotificationService.ts</span><span class="diff-badge db-mod">mod</span></div><div class="diff-file"><span class="diff-file-name">EnrollmentNotification.ts</span><span class="diff-badge db-new">new</span></div></div><div class="diff-code"><span class="d-fh">BenefitEnrollmentListener.ts (new)</span><br><span class="d-a">+ import { ShouldQueue } from '../contracts/ShouldQueue';</span><span class="d-a">+ import { BenefitEnrollmentEvent } from '../events';</span><span class="d-n">&nbsp;</span><span class="d-a">+ export class BenefitEnrollmentListener implements ShouldQueue {</span><span class="d-a">+   handle(event: BenefitEnrollmentEvent) {</span><span class="d-a">+     Notification.send(event.employee,</span><span class="d-a">+       new EnrollmentNotification(event));</span><span class="d-a">+   }</span><span class="d-a">+ }</span></div></div></div>`}
+function renderReviewTab(){document.getElementById('rightContent').innerHTML=`<div class="fade-in"><div class="pr-card"><div><div class="pr-title">Create pull request</div><div class="pr-sub">CI green · 47 unit + 8 E2E tests passing</div></div><button class="btn-primary">Generate PR →</button></div><div class="review-section"><div class="review-section-title">Risk assessment</div><div class="risk-card"><div class="risk-main"><span class="role-badge rb-legal">Legal</span><div class="risk-info"><div class="risk-title">Legal review required</div><div class="risk-desc">The specification describes a direct REST API integration with SelectHealth, a third-party health insurance carrier, requiring legal review of data sharing terms and any API usage agreement.</div><div class="risk-files"><span class="risk-file">SelectHealthAPI.ts</span><span class="risk-file">benefit-costs.config.ts</span></div></div><div class="risk-actions"><button class="btn-sm btn-approve-sm">Approve</button><button class="btn-sm btn-fb-sm">Feedback</button></div></div></div><div class="risk-card"><div class="risk-main"><span class="role-badge rb-designer">Designer</span><div class="risk-info"><div class="risk-title">New download button in report toolbar</div><div class="risk-desc">Component doesn't match existing icon button pattern.</div><div class="risk-files"><span class="risk-file">ReportDownload.tsx</span><span class="risk-file">toolbar.css</span></div></div><div class="risk-actions"><button class="btn-sm btn-approve-sm">Approve</button><button class="btn-sm btn-fb-sm">Feedback</button></div></div></div><div class="risk-card"><div class="risk-main"><span class="role-badge rb-backend">Backend</span><div class="risk-info"><div class="risk-title">New streaming endpoint for large exports</div><div class="risk-desc">Memory-efficient streaming added. Queue priority should be confirmed.</div><div class="risk-files"><span class="risk-file">CSVExporter.ts</span></div></div><div class="risk-actions"><button class="btn-sm btn-approve-sm">Approve</button><button class="btn-sm btn-fb-sm">Feedback</button></div></div></div><div class="risk-card approved"><div class="risk-main"><span class="role-badge rb-pm">PM</span><div class="risk-info"><div class="risk-title">Export format and column mapping confirmed</div><div class="risk-desc">Approved by Riya M.</div><div class="risk-files"><span class="risk-file">export.config.ts</span></div></div><div class="risk-actions"><div class="approved-badge"><span class="approved-icon">✓</span>Approved</div></div></div></div><div class="risk-card" style="opacity:.5"><div class="risk-main"><span class="role-badge rb-frontend">Frontend</span><div class="risk-info"><div class="risk-title">No visual regression — optional</div><div class="risk-desc">Not blocking.</div></div><div class="risk-actions"><button class="btn-sm btn-approve-sm">Approve</button><button class="btn-sm btn-fb-sm">Feedback</button></div></div></div></div><div class="review-section"><div class="review-section-title">Playwright E2E recording</div><div class="video-embed"><div class="video-bar"><span class="video-bar-label">csv-export-flow.spec.ts</span><span class="video-bar-badge">8/8 passed</span></div><div class="video-body"><div class="video-overlay"><div class="video-grid"></div></div><div class="video-play">▶</div></div></div></div><div class="review-section"><div class="review-section-title">Test results</div><div class="test-summary"><div class="test-stat"><div class="test-stat-num green">47</div><div class="test-stat-label">Unit tests passed</div></div><div class="test-stat"><div class="test-stat-num blue">8</div><div class="test-stat-label">E2E tests passed</div></div><div class="test-stat"><div class="test-stat-num green">0</div><div class="test-stat-label">Failures</div></div></div><div class="test-list"><div class="test-row"><span class="test-check">✓</span><span class="test-name">csv-export › generates valid CSV</span><span class="test-time">24ms</span></div><div class="test-row"><span class="test-check">✓</span><span class="test-name">csv-export › handles special chars</span><span class="test-time">18ms</span></div><div class="test-row"><span class="test-check">✓</span><span class="test-name">csv-export › respects column visibility</span><span class="test-time">31ms</span></div><div class="test-row"><span class="test-check">✓</span><span class="test-name">csv-export › streams large datasets</span><span class="test-time">142ms</span></div><div class="test-row"><span class="test-check">✓</span><span class="test-name">download-btn › renders in toolbar</span><span class="test-time">12ms</span></div><div class="test-row" style="color:var(--t3);font-size:11px;justify-content:center;padding:8px">+ 42 more passing</div></div></div></div>`}
+function renderActivityTab(){const rc=document.getElementById('rightContent');rc.style.padding='0';rc.innerHTML=`<div class="terminal-wrap fade-in"><div class="terminal-header"><div class="terminal-live"><span class="terminal-live-dot"></span>Live</div><span class="terminal-count">404 events</span></div><div class="terminal-body"><div class="t-row"><span class="t-ts">05:29:03 PM</span><span class="t-badge tb-grep">Grep</span><span class="t-content">{"pattern":"class Notification\\\\b","path":"/workspaces/FEAT-170F98DC/app/BambooH...</span></div><div class="t-row"><span class="t-ts">05:29:12 PM</span><span class="t-badge tb-grep">Grep</span><span class="t-content">{"pattern":"interface NotificationInterface","path":"/workspaces/FEAT-170F98DC/a...</span></div><div class="t-row"><span class="t-ts">05:29:21 PM</span><span class="t-content output-hl">→ 5:use BambooHR\\Silo\\Company\\CompanyApplicationService; 6:use BambooHR\\Common\\DataObjects\\Notification…</span></div><div class="t-row"><span class="t-ts">05:29:25 PM</span><span class="t-badge tb-read">Read</span><span class="t-content">{"file_path":"/workspaces/FEAT-170F98DC/app/BambooHR/Common/DataObjects/Notifica...</span></div><div class="t-row"><span class="t-ts">05:29:30 PM</span><span class="t-badge tb-read">Read</span><span class="t-content">{"file_path":"/workspaces/FEAT-170F98DC/app/BambooHR/Common/Interfaces/Notificat...</span></div><div class="t-divider"></div><div class="t-row"><span class="t-ts">05:30:08 PM</span><span class="t-badge tb-grep">Grep</span><span class="t-content">{"pattern":"ShouldBroadcast","path":"/workspaces/FEAT-170F98DC/app/"}</span></div><div class="t-row"><span class="t-ts">05:30:08 PM</span><span class="t-content output">→ Found 14 matches across 8 files</span></div><div class="t-row"><span class="t-ts">05:30:22 PM</span><span class="t-badge tb-bash">Bash</span><span class="t-content">cd /workspaces/FEAT-170F98DC && grep -r "PushNotificationSendEvent" --include="*.php" -l</span></div><div class="t-divider"></div><div class="t-row"><span class="t-ts">05:31:14 PM</span><span class="t-badge tb-agent">Agent</span><span class="t-content thought">Now I have all the information needed to produce the architecture plan…</span></div><div class="t-row"><span class="t-ts">05:31:14 PM</span><span class="t-content success">Headless execution completed: 36 turns, 516.6s, cost $1.2973</span></div><div class="t-artifact"><span class="t-artifact-icon">◈</span><span class="t-artifact-name">architecture.md</span><span class="t-artifact-size">19 KB</span></div><div class="t-row"><span class="t-ts">05:31:15 PM</span><span class="t-badge tb-write">Write</span><span class="t-content tool-ref">architecture.md</span></div><div class="t-divider"></div><div class="t-row"><span class="t-ts">05:32:01 PM</span><span class="t-badge tb-bash">Bash</span><span class="t-content">php artisan make:event BenefitEnrollmentEvent</span></div><div class="t-row"><span class="t-ts">05:32:08 PM</span><span class="t-badge tb-write">Write</span><span class="t-content tool-ref">app/Events/BenefitEnrollmentEvent.php</span></div><div class="t-row"><span class="t-ts">05:32:30 PM</span><span class="t-badge tb-bash">Bash</span><span class="t-content">php artisan test --filter=BenefitEnrollment</span></div><div class="t-row"><span class="t-ts">05:32:42 PM</span><span class="t-content success">Tests: 12 passed (0 failed) — 11.8s</span></div><div class="t-row"><span class="t-ts">05:32:50 PM</span><span class="t-badge tb-agent">Agent</span><span class="t-content thought">All unit tests passing. Moving on to Playwright E2E tests.</span></div><div class="t-row"><span class="t-ts">05:33:02 PM</span><span class="t-badge tb-write">Write</span><span class="t-content tool-ref">tests/e2e/notification-flow.spec.ts</span></div><div class="t-row"><span class="t-ts">05:33:45 PM</span><span class="t-content success">8 tests passed — 26.4s</span></div></div></div>`;const ob=new MutationObserver(()=>{if(!rc.querySelector('.terminal-wrap')){rc.style.padding='20px 22px';ob.disconnect()}});ob.observe(rc,{childList:true});const tb=rc.querySelector('.terminal-body');if(tb)tb.scrollTop=tb.scrollHeight}
+
+// ── BUG AUTOMATIONS ──
+const bugConfigs=[
+  {id:'bac-db196ca1',name:'Performance bugs',domain:'performance',interval:'10m',maxC:3,conc:2,status:'active',runs:[
+    {id:'BUGS-34932',desc:'Null pointer in enrollment listener',state:'active',feat:'FEAT-1B5894F6',c:'C2'},
+    {id:'BUGS-35029',desc:'Duplicate notification on re-enroll',state:'active',feat:'FEAT-6DC9AECE',c:'C3'},
+    {id:'BUGS-34985',desc:'Export button missing on Safari',state:'skipped',feat:null,c:'C4'},
+    {id:'BUGS-34554',desc:'Dashboard filter resets on reload',state:'skipped',feat:null,c:'C4'},
+    {id:'BUGS-34501',desc:'Session token lost across tabs',state:'skipped',feat:null,c:'C5'}
+  ]},
+  {id:'bac-a3f9912b',name:'Security backlog',domain:'security',interval:'30m',maxC:4,conc:1,status:'active',runs:[
+    {id:'SEC-1021',desc:'JWT not invalidated on logout',state:'active',feat:'FEAT-AA910C',c:'C3'},
+    {id:'SEC-1019',desc:'CORS headers too permissive on /api',state:'skipped',feat:null,c:'C5'},
+    {id:'SEC-1018',desc:'Rate limit bypassable via IP rotation',state:'skipped',feat:null,c:'C5'}
+  ]},
+  {id:'bac-77c3e401',name:'UI regressions',domain:'frontend',interval:'1h',maxC:2,conc:3,status:'paused',runs:[
+    {id:'UI-882',desc:'Sidebar collapses on resize',state:'completed',feat:'FEAT-CC2210',c:'C1'},
+    {id:'UI-880',desc:'Modal z-index broken behind nav',state:'completed',feat:'FEAT-CC1190',c:'C2'},
+    {id:'UI-879',desc:'Tooltip flickers on hover',state:'skipped',feat:null,c:'C3'}
+  ]}
+];
+let bugSel=0;
+let showNewForm=false;
+
+function renderBugs(){renderBugSidebar();renderBugBoard()}
+function cnt(runs,st){return runs.filter(r=>r.state===st).length}
+
+function toggleNewForm(){showNewForm=!showNewForm;renderBugSidebar();if(!showNewForm)renderBugBoard()}
+function cancelNewForm(){showNewForm=false;renderBugs()}
+
+function renderNewFormBoard(){
+  document.getElementById('bugsBoard').innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--t5);font-size:13px"><div style="text-align:center"><div style="font-size:32px;margin-bottom:12px;opacity:.3">⚙</div><div style="color:var(--t3);font-weight:500;margin-bottom:4px">Configure your automation</div><div style="font-size:12px;color:var(--t5);max-width:320px;line-height:1.6">Fill out the form on the left to create a new bug automation. Artemis will automatically scan for matching bugs and begin fixing them based on your schedule and priority settings.</div></div></div>`}
+
+function createAutomation(){
+  const name=document.getElementById('naf-name').value||'Untitled automation';
+  const domain=document.getElementById('naf-domain').value||'general';
+  const interval=document.getElementById('naf-interval').value||'30m';
+  const maxC=parseInt(document.getElementById('naf-maxc').value)||3;
+  const conc=parseInt(document.getElementById('naf-conc').value)||1;
+  const newId='bac-'+Math.random().toString(36).substr(2,8);
+  bugConfigs.unshift({id:newId,name,domain,interval,maxC,conc,status:'active',runs:[]});
+  bugSel=0;showNewForm=false;renderBugs()
+}
+
+function renderBugSidebar(){
+  const formHtml=showNewForm?`<div class="new-auto-form">
+    <div class="naf-title"><span>New automation</span><button class="naf-close" onclick="cancelNewForm()">✕</button></div>
+    <div class="naf-field"><label class="naf-label">Name</label><input class="naf-input" id="naf-name" placeholder="e.g. Performance bugs, Security backlog…"></div>
+    <div class="naf-field"><label class="naf-label">Domain</label><select class="naf-select" id="naf-domain"><option value="performance">Performance</option><option value="security">Security</option><option value="frontend">Frontend</option><option value="backend">Backend</option><option value="infrastructure">Infrastructure</option><option value="general">General</option></select></div>
+    <div class="naf-row">
+      <div class="naf-field"><label class="naf-label">Scan interval</label><select class="naf-select" id="naf-interval"><option value="5m">Every 5m</option><option value="10m">Every 10m</option><option value="30m" selected>Every 30m</option><option value="1h">Every 1h</option><option value="6h">Every 6h</option><option value="24h">Every 24h</option></select></div>
+      <div class="naf-field"><label class="naf-label">Max confidence</label><select class="naf-select" id="naf-maxc"><option value="2">C ≤ 2</option><option value="3" selected>C ≤ 3</option><option value="4">C ≤ 4</option><option value="5">C ≤ 5</option></select></div>
+    </div>
+    <div class="naf-field"><label class="naf-label">Concurrency</label><select class="naf-select" id="naf-conc"><option value="1" selected>1 at a time</option><option value="2">2 parallel</option><option value="3">3 parallel</option><option value="5">5 parallel</option></select><div class="naf-hint">How many bugs to fix simultaneously</div></div>
+    <div class="naf-actions"><button class="naf-btn-cancel" onclick="cancelNewForm()">Cancel</button><button class="naf-btn-create" onclick="createAutomation()">Create automation</button></div>
+  </div>`:'';
+
+  document.getElementById('bugsList').innerHTML=formHtml+bugConfigs.map((c,i)=>{
+    const s=i===bugSel;const isA=c.status==='active';
+    return `<div class="bug-cfg${s?' sel':''}" onclick="pickBug(${i})">
+      <div class="bug-cfg-top"><span class="bug-cfg-id">${c.id}</span>
+        <div class="bug-cfg-actions"><button class="bug-cfg-action run" title="Run now">▶</button><button class="bug-cfg-action" title="${isA?'Pause':'Resume'}">${isA?'⏸':'▶'}</button><button class="bug-cfg-action" title="Edit">⚙</button></div>
+      </div>
+      <div class="bug-cfg-name" style="font-size:14px">${c.name}</div>
+      <div class="bug-cfg-meta" style="font-size:12px"><span>Every ${c.interval}</span><span>C≤${c.maxC}</span><span>${c.domain}</span></div>
+      <div class="bug-cfg-tags">
+        <span class="bug-status-tag ${isA?'bst-active':'bst-paused'}"><span style="width:5px;height:5px;border-radius:50%;background:${isA?'var(--green)':'var(--t5)'};display:inline-block"></span>${isA?'Active':'Paused'}</span>
+        <span class="bug-ticket-tag">${c.runs.length} tickets</span>
+      </div>
+    </div>`}).join('')}
+
+function renderBugBoard(){
+  const c=bugConfigs[bugSel];
+  const states=['active','completed','failed','skipped'];
+  const labels=['In progress','Completed','Failed','Skipped'];
+  const dotC={active:'var(--blue-t)',completed:'var(--green-t)',failed:'var(--red-t)',skipped:'var(--bg3)'};
+  const hdr=labels.map((l,i)=>`<div class="bugs-col-header"><span class="bugs-col-label">${l}</span><span class="bugs-col-count">${cnt(c.runs,states[i])}</span></div>`).join('');
+  const cols=states.map(st=>{
+    const tickets=c.runs.filter(r=>r.state===st);
+    return `<div>${tickets.length?tickets.map(r=>{
+      const cls='bug-ticket'+(st==='active'?' bt-active':st==='completed'?' bt-done':st==='skipped'?' bt-skip':'');
+      const foot=r.feat?`<span class="bt-feat">${r.feat}</span>`:`<span class="bt-conf">${r.c}</span>`;
+      return `<div class="${cls}"><div class="bt-id">${r.id}</div><div class="bt-desc">${r.desc}</div><div class="bt-foot">${foot}<div class="bt-dot" style="background:${dotC[st]}"></div></div></div>`}).join(''):'<div class="bugs-empty">—</div>'}</div>`}).join('');
+  document.getElementById('bugsBoard').innerHTML=`<div class="bugs-col-headers">${hdr}</div><div class="bugs-columns">${cols}</div>`}
+
+function pickBug(i){bugSel=i;renderBugs()}
+
+// Init
+renderKanban();scheduleAutoMove();
+</script>
+</body>
+</html>

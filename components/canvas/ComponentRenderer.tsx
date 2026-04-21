@@ -21,6 +21,9 @@ import { EuOverviewCanvas } from "./EuOverviewCanvas";
 import { PdsOverviewCanvas } from "./PdsOverviewCanvas";
 import { EsCaseStudyCanvas } from "./EsCaseStudyCanvas";
 import { QlCaseStudyCanvas } from "./QlCaseStudyCanvas";
+import { OnboardingCaseStudyCanvas } from "./OnboardingCaseStudyCanvas";
+import { ArtemisCaseStudyCanvas } from "./ArtemisCaseStudyCanvas";
+import { PasswordGate } from "./PasswordGate";
 import { QlUserProfilesCanvas } from "./QlUserProfilesCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
@@ -342,6 +345,8 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
     selectedComponentId === "especialty"      ||
     selectedComponentId === "ql-redesign"     ||
     selectedComponentId === "ql-user-profiles" ||
+    selectedComponentId === "onboarding-flow"  ||
+    selectedComponentId === "project-artemis"  ||
     selectedComponentId === "about"            ||
     isGridCanvas
   );
@@ -442,6 +447,14 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
         {!showWelcome && !isGridCanvas && selectedComponentId === "ql-user-profiles" && (
           <QlUserProfilesCanvas />
         )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "onboarding-flow" && (
+          <OnboardingCaseStudyCanvas />
+        )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "project-artemis" && (
+          <PasswordGate pageId="project-artemis">
+            <ArtemisCaseStudyCanvas />
+          </PasswordGate>
+        )}
         {!showWelcome && !isGridCanvas && selectedComponentId === "eu-overview" && (
           <EuOverviewCanvas />
         )}
@@ -465,6 +478,8 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "especialty"      &&
           selectedComponentId !== "ql-redesign"     &&
           selectedComponentId !== "ql-user-profiles" &&
+          selectedComponentId !== "onboarding-flow"  &&
+          selectedComponentId !== "project-artemis"  &&
           isRegistered(selectedComponentId) && (
           <LiveComponentCanvas componentId={selectedComponentId} />
         )}
@@ -485,6 +500,8 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "especialty"      &&
           selectedComponentId !== "ql-redesign"     &&
           selectedComponentId !== "ql-user-profiles" &&
+          selectedComponentId !== "onboarding-flow"  &&
+          selectedComponentId !== "project-artemis"  &&
           selectedComponentId !== "about"            &&
           !isRegistered(selectedComponentId) && (
           <PlaceholderState componentId={selectedComponentId} />

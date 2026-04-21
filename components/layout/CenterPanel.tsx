@@ -178,7 +178,7 @@ function CanvasHeader({
   const showInspect = !!selectedComponentId && !["welcome","about","pds-guide","rc-guide","eu-guide","eu-embedded","especialty","ql-redesign","ql-user-profiles","pds-color-tokens"].includes(selectedComponentId) && selectedSectionId === null;
 
   // Pages where left panel is hidden — show logo in top bar
-  const NO_LEFT = ["rc-case-study", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "about", "work"];
+  const NO_LEFT = ["rc-case-study", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "about", "work", "onboarding-flow", "project-artemis"];
   const isWorkSection = selectedSectionId === "work" && selectedComponentId === null;
   const showLogo = launched && (
     (!!selectedComponentId && NO_LEFT.includes(selectedComponentId)) || isWorkSection

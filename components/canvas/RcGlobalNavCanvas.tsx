@@ -4,7 +4,8 @@
 // Showcases a BambooHR-style Global Navigation component — collapsible sidebar
 // + top header — in a simulated browser frame.
 //
-// Icon library: Font Awesome Free (fa-solid).
+// Nav/content icons: Phosphor (regular/outline weight).
+// UI chrome icons (chevrons, magnifier, inbox, etc.): Font Awesome solid.
 //
 // Expressive craft moment: when the sidebar expands, labels slide in with a
 // per-item stagger (10ms apart). The cascading wave of appearing text makes
@@ -25,18 +26,6 @@ import { createPortal } from "react-dom";
 import { useAppStore } from "@/lib/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHouse,
-  faUser,
-  faUsers,
-  faClipboardList,
-  faChartPie,
-  faFile,
-  faDollarSign,
-  faHeartPulse,
-  faDesktop,
-  faGlobe,
-  faCircleQuestion,
-  faGear,
   faChevronLeft,
   faChevronDown,
   faChevronRight,
@@ -44,19 +33,16 @@ import {
   faAnglesRight,
   faMagnifyingGlass,
   faInbox,
-  faWandMagicSparkles,
-  faPeopleGroup,
-  faFileLines,
-  faClock,
-  faUserPlus,
-  faChartBar,
-  faBriefcase,
   faArrowRight,
   faBars,
   faXmark,
-  faFolder,
 } from "@fortawesome/free-solid-svg-icons";
-import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import {
+  House, User, Users, ClipboardText, ChartPie, File, CurrencyDollar,
+  Heartbeat, Monitor, UsersThree, Globe, Question, GearSix,
+  Clock, ChartBar, MagicWand, FileText, Folder, UserPlus, Briefcase,
+} from "@phosphor-icons/react";
+import type { Icon as PhosphorIcon } from "@phosphor-icons/react";
 
 // ─── Breakpoints ──────────────────────────────────────────────────────────────
 
@@ -85,51 +71,51 @@ function useScrollbarFade<T extends HTMLElement>(fadeDelay = 800) {
 
 // ─── Nav data ─────────────────────────────────────────────────────────────────
 
-type NavEntry = { id: string; label: string; sublabel?: string; icon: IconDefinition; };
+type NavEntry = { id: string; label: string; sublabel?: string; icon: PhosphorIcon; };
 type NavRow   = NavEntry | "divider";
 
 const NAV_ROWS: NavRow[] = [
-  { id: "home",              label: "Home",              icon: faHouse },
-  { id: "my-info",           label: "My Info",           icon: faUser },
-  { id: "people",            label: "People",            icon: faUsers },
-  { id: "hiring",            label: "Hiring",            icon: faClipboardList },
-  { id: "reports",           label: "Reports",           icon: faChartPie },
-  { id: "files",             label: "Files",             icon: faFile },
-  { id: "payroll",           label: "Payroll",           icon: faDollarSign },
-  { id: "benefits",          label: "Benefits",          icon: faHeartPulse },
-  { id: "compensation",      label: "Compensation",      icon: faDesktop },
+  { id: "home",              label: "Home",              icon: House },
+  { id: "my-info",           label: "My Info",           icon: User },
+  { id: "people",            label: "People",            icon: Users },
+  { id: "hiring",            label: "Hiring",            icon: ClipboardText },
+  { id: "reports",           label: "Reports",           icon: ChartPie },
+  { id: "files",             label: "Files",             icon: File },
+  { id: "payroll",           label: "Payroll",           icon: CurrencyDollar },
+  { id: "benefits",          label: "Benefits",          icon: Heartbeat },
+  { id: "compensation",      label: "Compensation",      icon: Monitor },
   "divider",
-  { id: "community",         label: "Community",         icon: faPeopleGroup },
-  { id: "global-employment", label: "Global Employment", sublabel: "Powered by Remote", icon: faGlobe },
+  { id: "community",         label: "Community",         icon: UsersThree },
+  { id: "global-employment", label: "Global Employment", sublabel: "Powered by Remote", icon: Globe },
   "divider",
-  { id: "resources",         label: "Resources",         icon: faCircleQuestion },
-  { id: "settings",          label: "Settings",          icon: faGear },
+  { id: "resources",         label: "Resources",         icon: Question },
+  { id: "settings",          label: "Settings",          icon: GearSix },
 ];
 
 // Sub-items for expandable nav items
-type SubEntry = { id: string; label: string; count?: number; icon: IconDefinition; };
+type SubEntry = { id: string; label: string; count?: number; icon: PhosphorIcon; };
 type SubItem  = SubEntry | "divider";
 const NAV_SUB_ITEMS: Record<string, SubItem[]> = {
   "reports": [
-    { id: "reports-recent",     label: "Recent",             icon: faClock },
-    { id: "reports-dashboards", label: "Dashboards",         icon: faChartBar },
-    { id: "reports-standard",   label: "Standard Reports",   icon: faChartPie },
-    { id: "reports-benchmarks", label: "Benchmarks",         icon: faDesktop },
+    { id: "reports-recent",     label: "Recent",             icon: Clock },
+    { id: "reports-dashboards", label: "Dashboards",         icon: ChartBar },
+    { id: "reports-standard",   label: "Standard Reports",   icon: ChartPie },
+    { id: "reports-benchmarks", label: "Benchmarks",         icon: Monitor },
     "divider",
-    { id: "reports-custom",     label: "Custom Reports",     icon: faClipboardList },
-    { id: "reports-new",        label: "New Custom Reports", icon: faWandMagicSparkles },
+    { id: "reports-custom",     label: "Custom Reports",     icon: ClipboardText },
+    { id: "reports-new",        label: "New Custom Reports", icon: MagicWand },
     "divider",
-    { id: "reports-signed",     label: "Signed Documents",   icon: faFileLines },
-    { id: "reports-payroll",    label: "Payroll Reports",    icon: faDollarSign },
+    { id: "reports-signed",     label: "Signed Documents",   icon: FileText },
+    { id: "reports-payroll",    label: "Payroll Reports",    icon: CurrencyDollar },
   ],
   "files": [
-    { id: "files-all",       label: "All Files",            icon: faFolder },
-    { id: "files-sigs",      label: "Signature Templates",  icon: faFileLines },
+    { id: "files-all",       label: "All Files",            icon: Folder },
+    { id: "files-sigs",      label: "Signature Templates",  icon: FileText },
     "divider",
-    { id: "files-benefits",  label: "Benefits Docs",  count: 137, icon: faFile },
-    { id: "files-payroll",   label: "Payroll",        count: 12,  icon: faDollarSign },
-    { id: "files-trainings", label: "Trainings",      count: 23,  icon: faUsers },
-    { id: "files-policies",  label: "Company Policies", count: 7, icon: faClipboardList },
+    { id: "files-benefits",  label: "Benefits Docs",  count: 137, icon: File },
+    { id: "files-payroll",   label: "Payroll",        count: 12,  icon: CurrencyDollar },
+    { id: "files-trainings", label: "Trainings",      count: 23,  icon: Users },
+    { id: "files-policies",  label: "Company Policies", count: 7, icon: ClipboardText },
   ],
 };
 
@@ -149,26 +135,26 @@ const ACCOUNT_ITEMS: AccountItem[] = [
 // ─── Search data ──────────────────────────────────────────────────────────────
 
 type SearchCategory = "People" | "Pages" | "Actions";
-type SearchResult   = { id: string; label: string; sublabel: string; category: SearchCategory; icon: IconDefinition; };
+type SearchResult   = { id: string; label: string; sublabel: string; category: SearchCategory; icon: PhosphorIcon; };
 
 const ALL_RESULTS: SearchResult[] = [
-  { id: "p1",  label: "Alice Johnson",      sublabel: "Senior Engineer · Engineering",     category: "People",  icon: faUser },
-  { id: "p2",  label: "Marcus Webb",        sublabel: "Product Designer · Design",         category: "People",  icon: faUser },
-  { id: "p3",  label: "Priya Patel",        sublabel: "Engineering Manager · Engineering", category: "People",  icon: faUser },
-  { id: "p4",  label: "Derek Okonkwo",      sublabel: "Recruiter · Hiring",                category: "People",  icon: faUser },
-  { id: "p5",  label: "Sarah Chen",         sublabel: "Head of People Ops · HR",           category: "People",  icon: faUser },
-  { id: "p6",  label: "James Rivera",       sublabel: "Data Analyst · Analytics",          category: "People",  icon: faUser },
-  { id: "pg1", label: "Reports Dashboard",  sublabel: "Analytics & reporting",             category: "Pages",   icon: faChartBar },
-  { id: "pg2", label: "Hiring Pipeline",    sublabel: "Open roles & candidates",           category: "Pages",   icon: faClipboardList },
-  { id: "pg3", label: "Benefits Summary",   sublabel: "Health, dental, vision",            category: "Pages",   icon: faHeartPulse },
-  { id: "pg4", label: "Employee Directory", sublabel: "All employees",                     category: "Pages",   icon: faUsers },
-  { id: "pg5", label: "Files & Documents",  sublabel: "Shared company docs",               category: "Pages",   icon: faFileLines },
-  { id: "pg6", label: "Compensation Bands", sublabel: "Salary ranges by level",            category: "Pages",   icon: faDesktop },
-  { id: "a1",  label: "Request Time Off",   sublabel: "Submit a PTO request",              category: "Actions", icon: faClock },
-  { id: "a2",  label: "Add New Employee",   sublabel: "Onboard a team member",             category: "Actions", icon: faUserPlus },
-  { id: "a3",  label: "Post a New Job",     sublabel: "Create a job listing",              category: "Actions", icon: faBriefcase },
-  { id: "a4",  label: "Generate Report",    sublabel: "Custom analytics report",           category: "Actions", icon: faChartBar },
-  { id: "a5",  label: "Run Payroll",        sublabel: "Process this pay period",           category: "Actions", icon: faDollarSign },
+  { id: "p1",  label: "Alice Johnson",      sublabel: "Senior Engineer · Engineering",     category: "People",  icon: User },
+  { id: "p2",  label: "Marcus Webb",        sublabel: "Product Designer · Design",         category: "People",  icon: User },
+  { id: "p3",  label: "Priya Patel",        sublabel: "Engineering Manager · Engineering", category: "People",  icon: User },
+  { id: "p4",  label: "Derek Okonkwo",      sublabel: "Recruiter · Hiring",                category: "People",  icon: User },
+  { id: "p5",  label: "Sarah Chen",         sublabel: "Head of People Ops · HR",           category: "People",  icon: User },
+  { id: "p6",  label: "James Rivera",       sublabel: "Data Analyst · Analytics",          category: "People",  icon: User },
+  { id: "pg1", label: "Reports Dashboard",  sublabel: "Analytics & reporting",             category: "Pages",   icon: ChartBar },
+  { id: "pg2", label: "Hiring Pipeline",    sublabel: "Open roles & candidates",           category: "Pages",   icon: ClipboardText },
+  { id: "pg3", label: "Benefits Summary",   sublabel: "Health, dental, vision",            category: "Pages",   icon: Heartbeat },
+  { id: "pg4", label: "Employee Directory", sublabel: "All employees",                     category: "Pages",   icon: Users },
+  { id: "pg5", label: "Files & Documents",  sublabel: "Shared company docs",               category: "Pages",   icon: FileText },
+  { id: "pg6", label: "Compensation Bands", sublabel: "Salary ranges by level",            category: "Pages",   icon: Monitor },
+  { id: "a1",  label: "Request Time Off",   sublabel: "Submit a PTO request",              category: "Actions", icon: Clock },
+  { id: "a2",  label: "Add New Employee",   sublabel: "Onboard a team member",             category: "Actions", icon: UserPlus },
+  { id: "a3",  label: "Post a New Job",     sublabel: "Create a job listing",              category: "Actions", icon: Briefcase },
+  { id: "a4",  label: "Generate Report",    sublabel: "Custom analytics report",           category: "Actions", icon: ChartBar },
+  { id: "a5",  label: "Run Payroll",        sublabel: "Process this pay period",           category: "Actions", icon: CurrencyDollar },
 ];
 
 // ─── BambooHR palette ─────────────────────────────────────────────────────────
@@ -177,9 +163,10 @@ const C = {
   sidebarBg:      "#FFFFFF",
   headerBg:       "#FFFFFF",
   border:         "#E5E7EB",
-  activeBg:       "#F5F4F1",
-  activeText:     "#3D7A30",
-  activeIcon:     "#3D7A30",
+  activeBg:       "#2d7817",
+  activeText:     "#FFFFFF",
+  activeIcon:     "#FFFFFF",
+  hoverBg:        "#f0efeb",
   navText:        "#374151",
   navIcon:        "#6B7280",
   contentBg:      "#F0EFEB",
@@ -472,12 +459,12 @@ export function RcGlobalNavCanvas() {
                                 <button
                                   key={sub.id}
                                   onClick={() => setActiveId(sub.id)}
-                                  style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", height: "36px", padding: "0 8px 0 0", marginLeft: "8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease", animation: "rc-nav-label-in 160ms cubic-bezier(0.2,0,0,1) both" }}
-                                  onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
+                                  style={{ display: "flex", alignItems: "center", gap: "10px", width: "calc(100% - 16px)", height: "30px", padding: "0 8px", margin: "2px 8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease", animation: "rc-nav-label-in 160ms cubic-bezier(0.2,0,0,1) both" }}
+                                  onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = C.hoverBg; }}
                                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
                                 >
                                   <span style={{ width: "18px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                    <FontAwesomeIcon icon={sub.icon} style={{ width: 15, height: 15, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
+                                    <sub.icon size={15} color={activeId === sub.id ? C.activeIcon : C.navIcon} />
                                   </span>
                                   <span style={{ fontSize: "13px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                     {sub.label}
@@ -572,12 +559,12 @@ export function RcGlobalNavCanvas() {
                                       <button
                                         key={sub.id}
                                         onClick={() => { setActiveId(sub.id); setDrawerOpen(false); }}
-                                        style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", height: "40px", padding: "0 10px 0 0", marginLeft: "8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
-                                        onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
+                                        style={{ display: "flex", alignItems: "center", gap: "10px", width: "calc(100% - 16px)", height: "32px", padding: "0 8px", margin: "2px 8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
+                                        onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = C.hoverBg; }}
                                         onMouseLeave={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
                                       >
                                         <span style={{ width: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                          <FontAwesomeIcon icon={sub.icon} style={{ width: 16, height: 16, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
+                                          <sub.icon size={16} color={activeId === sub.id ? C.activeIcon : C.navIcon} />
                                         </span>
                                         <span style={{ fontSize: "14px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                                           {sub.label}
@@ -601,7 +588,7 @@ export function RcGlobalNavCanvas() {
                       <button
                         onClick={isMobile ? () => setAccountOpen(true) : undefined}
                         style={{ padding: "12px 16px 16px", display: "flex", alignItems: "center", gap: "10px", flexShrink: 0, background: "transparent", border: "none", borderTop: `1px solid ${C.border}`, cursor: isMobile ? "pointer" : "default", width: "100%", textAlign: "left", transition: "background 80ms ease" }}
-                        onMouseEnter={(e) => { if (isMobile) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
+                        onMouseEnter={(e) => { if (isMobile) (e.currentTarget as HTMLElement).style.background = C.hoverBg; }}
                         onMouseLeave={(e) => { if (isMobile) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -882,15 +869,17 @@ function DrawerNavButton({
   labelIndex:   number;
   onClick:      () => void;
 }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <button
       onClick={onClick}
-      style={{ display: "flex", alignItems: "center", gap: "12px", height: "46px", padding: "0 10px", borderRadius: "8px", border: "none", cursor: "pointer", width: "100%", textAlign: "left", background: isActive ? C.activeBg : "transparent", color: isActive ? C.activeText : C.navText, transition: "background 80ms ease", flexShrink: 0, animation: `rc-nav-label-in 200ms cubic-bezier(0.2,0,0,1) ${labelIndex * 8}ms both` }}
-      onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
-      onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{ display: "flex", alignItems: "center", gap: "12px", height: "40px", padding: "0 10px", borderRadius: "8px", border: "none", cursor: "pointer", width: "100%", textAlign: "left", background: isActive ? C.activeBg : isHovered ? C.hoverBg : "transparent", color: isActive ? C.activeText : C.navText, transition: "background 80ms ease", flexShrink: 0, marginBottom: "2px", animation: `rc-nav-label-in 200ms cubic-bezier(0.2,0,0,1) ${labelIndex * 8}ms both` }}
     >
-      <span style={{ width: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: isActive ? C.activeIcon : C.navIcon }}>
-        <FontAwesomeIcon icon={row.icon} style={{ width: 17, height: 17 }} />
+      <span style={{ width: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <row.icon size={17} color={isActive ? C.activeIcon : C.navIcon} />
       </span>
       <span style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
         <span style={{ fontSize: "14px", fontWeight: isActive ? 600 : 400, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{row.label}</span>
@@ -994,7 +983,7 @@ function SearchResultRow({ result, isHovered, onHover, onSelect }: { result: Sea
   return (
     <button onMouseEnter={() => onHover(result.id)} onMouseLeave={() => onHover(null)} onClick={onSelect} style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", padding: "8px 16px", border: "none", cursor: "pointer", background: isHovered ? C.activeBg : "transparent", textAlign: "left", transition: "background 60ms ease" }}>
       <span style={{ width: "28px", height: "28px", borderRadius: "6px", background: isHovered ? "rgba(61, 122, 48, 0.12)" : "#F3F4F6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "background 60ms ease" }}>
-        <FontAwesomeIcon icon={result.icon} style={{ width: 12, height: 12, color: isHovered ? C.activeIcon : "#6B7280" }} />
+        <result.icon size={12} color={isHovered ? C.activeIcon : "#6B7280"} />
       </span>
       <span style={{ display: "flex", flexDirection: "column", gap: "1px", overflow: "hidden" }}>
         <span style={{ fontSize: "13px", fontWeight: 400, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{result.label}</span>
@@ -1024,6 +1013,7 @@ function NavButton({
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
     if (!collapsed && hasSubItems) { onToggleSub?.(); }
@@ -1031,6 +1021,7 @@ function NavButton({
   };
 
   const handleMouseEnter = () => {
+    setIsHovered(true);
     if (!collapsed || !btnRef.current) return;
     const r = btnRef.current.getBoundingClientRect();
     if (hasSubItems) {
@@ -1041,6 +1032,7 @@ function NavButton({
   };
 
   const handleMouseLeave = () => {
+    setIsHovered(false);
     if (collapsed && hasSubItems) onHideFlyout?.();
     setTooltipPos(null);
   };
@@ -1075,10 +1067,10 @@ function NavButton({
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ display: "flex", alignItems: "center", gap: "12px", height: "44px", padding: collapsed ? "0" : "0 10px", borderRadius: "8px", border: "none", cursor: "pointer", width: "100%", textAlign: "left", background: (!collapsed && (isActive || isExpanded)) ? C.activeBg : "transparent", color: isActive ? C.activeText : C.navText, justifyContent: collapsed ? "center" : "flex-start", transition: "background 80ms ease", flexShrink: 0 }}
+      style={{ display: "flex", alignItems: "center", gap: "12px", height: "38px", padding: collapsed ? "0" : "0 10px", borderRadius: "8px", border: "none", cursor: "pointer", width: "100%", textAlign: "left", background: (!collapsed && isActive) ? C.activeBg : (!collapsed && isHovered) ? C.hoverBg : "transparent", color: isActive ? C.activeText : C.navText, justifyContent: collapsed ? "center" : "flex-start", transition: "background 80ms ease", flexShrink: 0, marginBottom: "2px" }}
     >
-      <span style={{ width: collapsed ? "42px" : "20px", height: collapsed ? "42px" : "auto", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: isActive ? C.activeIcon : C.navIcon, transition: "color 80ms ease", borderRadius: (collapsed && isActive) ? "10px" : "0", background: (collapsed && isActive) ? C.activeBg : "transparent" }}>
-        <FontAwesomeIcon icon={row.icon} style={{ width: 17, height: 17 }} />
+      <span style={{ width: collapsed ? "42px" : "20px", height: collapsed ? "42px" : "auto", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "color 80ms ease", borderRadius: (collapsed && isActive) ? "10px" : "0", background: (collapsed && isActive) ? C.activeBg : "transparent" }}>
+        <row.icon size={17} color={isActive ? C.activeIcon : C.navIcon} />
       </span>
       {!collapsed && (
         <>
@@ -1143,12 +1135,12 @@ function NavFlyout({
           <button
             key={sub.id}
             onClick={() => onSelect(sub.id)}
-            style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%", padding: "10px 14px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
-            onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
+            style={{ display: "flex", alignItems: "center", gap: "10px", width: "calc(100% - 16px)", height: "32px", padding: "0 8px", margin: "2px 8px", border: "none", background: activeId === sub.id ? C.activeBg : "transparent", borderRadius: "6px", cursor: "pointer", textAlign: "left", transition: "background 60ms ease" }}
+            onMouseEnter={(e) => { if (activeId !== sub.id) (e.currentTarget as HTMLElement).style.background = C.hoverBg; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = activeId === sub.id ? C.activeBg : "transparent"; }}
           >
             <span style={{ width: "20px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <FontAwesomeIcon icon={sub.icon} style={{ width: 14, height: 14, color: activeId === sub.id ? C.activeIcon : C.navIcon }} />
+              <sub.icon size={14} color={activeId === sub.id ? C.activeIcon : C.navIcon} />
             </span>
             <span style={{ fontSize: "14px", color: activeId === sub.id ? C.activeText : C.navText, flex: 1 }}>{sub.label}</span>
             {sub.count != null && <span style={{ fontSize: "11px", color: "#9CA3AF", flexShrink: 0 }}>({sub.count})</span>}
@@ -1168,7 +1160,7 @@ function CollapseButton({ collapsed, onClick }: { collapsed: boolean; onClick: (
       onClick={onClick}
       title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       style={{ width: collapsed ? "42px" : "100%", height: "34px", borderRadius: "7px", border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start", flexShrink: 0, transition: "background 100ms ease, width 220ms cubic-bezier(0.4,0,0.2,1)", gap: "8px", color: C.navIcon, padding: collapsed ? 0 : "0 10px" }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#F3F4F6"; }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = C.hoverBg; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
     >
       <FontAwesomeIcon icon={collapsed ? faAnglesRight : faAnglesLeft} style={{ width: 13, height: 13, flexShrink: 0 }} />

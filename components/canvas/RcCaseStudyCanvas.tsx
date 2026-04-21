@@ -75,7 +75,7 @@ export function RcCaseStudyCanvas() {
               lineHeight:    1.1,
             }}
           >
-            Responsive Site Development
+            Responsive Navigation
           </h1>
         </div>
 
@@ -126,19 +126,33 @@ export function RcCaseStudyCanvas() {
 
       {/* ── Problem ────────────────────────────────────────────────────── */}
       <ScrollReveal>
-      <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
-        <SectionLabel>Problem</SectionLabel>
-        <SectionHeading>
-          BambooHR&apos;s desktop-only approach introduced growing strategic and operational risk.
-        </SectionHeading>
-        <Body>
-          Over 19% of unique users accessed the platform on mobile over a 90-day period, yet
-          encountered experiences not designed for touch or small screens. At the same time,
-          non-responsive layouts limited accessibility compliance efforts, blocked AI-assisted
-          workflows, and created artificial constraints — such as dialog docking requiring
-          ~2300px screen widths — that excluded the vast majority of users.
-        </Body>
-      </section>
+        <>
+          <section style={{ marginBottom: "32px", maxWidth: "800px" }}>
+            <SectionLabel>Problem</SectionLabel>
+            <SectionHeading>
+              BambooHR&apos;s desktop-only approach introduced growing strategic and operational risk.
+            </SectionHeading>
+            <Body>
+              Over 19% of unique users accessed the platform on mobile over a 90-day period, yet
+              encountered experiences not designed for touch or small screens. At the same time,
+              non-responsive layouts limited accessibility compliance efforts, blocked AI-assisted
+              workflows, and created artificial constraints — such as dialog docking requiring
+              ~2300px screen widths — that excluded the vast majority of users.
+            </Body>
+          </section>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/problem_navigation.png"
+            alt="Problem: navigation constraints"
+            style={{
+              display:      "block",
+              width:        "100%",
+              marginBottom: "56px",
+              borderRadius: "10px",
+              border:       "1px solid var(--shouf-border)",
+            }}
+          />
+        </>
       </ScrollReveal>
 
       <Divider />
@@ -151,11 +165,19 @@ export function RcCaseStudyCanvas() {
           Establish responsiveness as a built-in platform standard, not a one-off exception.
         </SectionHeading>
         <Body>
-          Rather than a disruptive rewrite, the approach anchors responsive foundations in the
-          design system (Fabricants), enabling teams to inherit responsiveness by default as part
-          of normal product work. This also enables a &ldquo;Strategic Hybrid&rdquo; mobile
-          architecture, allowing native app teams to embed responsive web features directly —
-          addressing a 40:1 web-to-mobile engineering gap.
+          Instead of a disruptive rewrite, we&apos;re embedding responsive foundations directly
+          into the Fabric Design System so teams get responsiveness by default as part of their
+          normal product work. This also opens the door to a hybrid mobile architecture where
+          native app teams can embed responsive web features directly — helping close a 40:1
+          web-to-mobile engineering gap.
+        </Body>
+        <Body>
+          For navigation specifically, we&apos;re removing stacked navigation levels by nesting
+          them within the left nav. This works better across the board — on mobile, on desktop
+          when split panes are active, or when the Ask BambooHR AI panel is taking up screen real
+          estate. When the left nav is collapsed, fly-out menus surface the sub-navigation. As an
+          interim step, until we can rework the Settings side nav, mobile will show a dropdown at
+          the top of the page while desktop keeps the side navigation.
         </Body>
       </section>
       </ScrollReveal>
@@ -164,32 +186,77 @@ export function RcCaseStudyCanvas() {
 
       {/* ── Research ───────────────────────────────────────────────────── */}
       <ScrollReveal>
-      <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
-        <SectionLabel>Research</SectionLabel>
-        <SectionHeading>User Interviews</SectionHeading>
-        <Body>
-          To inform the responsive approach, we conducted two rounds of user research. The first
-          was 12 moderated interviews using wireframes, allowing us to gather early directional
-          feedback on layout and structure. The second was 15 unmoderated interviews with a
-          working prototype, focused specifically on navigational patterns and how users moved
-          through the experience across screen sizes.
-        </Body>
-      </section>
+        <>
+          <section style={{ marginBottom: "32px", maxWidth: "800px" }}>
+            <SectionLabel>Research</SectionLabel>
+            <SectionHeading>User Interviews</SectionHeading>
+            <Body>
+              To inform the responsive approach, we conducted two rounds of user research. The first
+              was 12 moderated interviews using wireframes, allowing us to gather early directional
+              feedback on layout and structure. The second was 15 unmoderated interviews with a
+              working prototype, focused specifically on navigational patterns and how users moved
+              through the experience across screen sizes.
+            </Body>
+          </section>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/testing_navigation.png"
+            alt="Research: navigation testing"
+            style={{
+              display:      "block",
+              width:        "100%",
+              marginBottom: "56px",
+              borderRadius: "10px",
+              border:       "1px solid var(--shouf-border)",
+            }}
+          />
+        </>
       </ScrollReveal>
 
       <Divider />
 
       {/* ── Next Steps ─────────────────────────────────────────────────── */}
       <ScrollReveal>
-      <section style={{ marginBottom: "56px", maxWidth: "800px" }}>
-        <SectionLabel>Next Steps</SectionLabel>
-        <SectionHeading>Pilot surface enablement</SectionHeading>
-        <Body>
-          Pilot surface enablement will convert a high-impact workflow to validate patterns.
-          Responsive compliance becomes a default expectation for all new UI work, with VPAT
-          alignment to follow.
-        </Body>
-      </section>
+        <>
+          <section style={{ marginBottom: "32px", maxWidth: "800px" }}>
+            <SectionLabel>Next Steps</SectionLabel>
+            <SectionHeading>A phased rollout built around real constraints</SectionHeading>
+            <Body>
+              The prototype above shows the desired end state of the responsive navigation.
+              However, due to architectural constraints, we will adopt this in a phased approach.
+              Currently the navigation components are in a separate repo and each link uses an API
+              call to connect it to another repo&apos;s pages. These API calls are slower than desired
+              and would result in a poor user experience if we had to make API calls for each nested
+              layer of the navigation component.
+            </Body>
+            <Body>
+              For this first phase, the side navigation for each page will be shown as its own page
+              on mobile. For example, for Files, instead of immediately landing on the All Files page
+              or being able to choose which sub page you land on, it will take you to a /files page
+              that shows only the sub navigation component.
+            </Body>
+            <Body>
+              Once all critical foundational Fabric components are made responsive, these will all
+              be released behind a feature flag. The page will render as is on mobile and will no
+              longer be mocked to 900px. Feature teams will then have Q3 and Q4 to work on their
+              product areas to complete additional work required to make these pages fully
+              responsive. During this time, the rest of the Fabric components will be released and
+              responsive compliance will become a default expectation for all teams.
+            </Body>
+          </section>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/current_navigation.png"
+            alt="Next steps: current navigation"
+            style={{
+              display:      "block",
+              width:        "100%",
+              marginBottom: "56px",
+              borderRadius: "10px",
+              border:       "1px solid var(--shouf-border)",
+            }}
+          />
+        </>
       </ScrollReveal>
 
       <Divider />
