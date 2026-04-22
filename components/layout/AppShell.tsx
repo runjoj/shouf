@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useAppStore } from "@/lib/store";
 import { LeftPanel } from "./LeftPanel";
 import { CenterPanel } from "./CenterPanel";
@@ -250,6 +251,29 @@ function DesktopView() {
 // ─── AppShell ─────────────────────────────────────────────────────────────────
 
 export function AppShell() {
+  const router = useRouter();
+  const { launch } = useAppStore();
+
+  // Global shortcut: Cmd/Ctrl + \  →  enter presentation mode (fullscreen)
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "\\") {
+        e.preventDefault();
+        // Request fullscreen from this user gesture before navigating.
+        const el = document.documentElement;
+        if (!document.fullscreenElement && el.requestFullscreen) {
+          el.requestFullscreen().catch(() => { /* ignore — some browsers block */ });
+        }
+        // Mark the app as launched so the intro/typing screen is skipped
+        // if the user later exits the presentation back to the portfolio.
+        launch();
+        router.push("/present");
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [router, launch]);
+
   return (
     <div className="h-screen overflow-hidden">
       {/* Canvas ripple layer — fixed, full-screen, pointer-events: none.
