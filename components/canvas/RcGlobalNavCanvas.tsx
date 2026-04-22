@@ -200,13 +200,18 @@ export function RcGlobalNavCanvas() {
   const [frameWidth, setFrameWidth] = useState<number | null>(null);
   const [collapsed,  setCollapsed]  = useState(false);
 
-  // On mobile viewports, start at the minimum frame width so the component
-  // demo opens in its compact mobile navigation mode rather than filling
-  // the full canvas width.
+  // Real-device mobile detection — on actual phones the drag handle and
+  // "drag to resize" framing are nonsensical (you can't resize the device).
+  // We collapse the simulated-browser chrome and let the frame fill the
+  // container, which will measure <500px and trigger mobile nav mode naturally.
+  const [isRealMobile, setIsRealMobile] = useState(false);
   useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth < 1024) {
-      setFrameWidth(BP_MIN);
-    }
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsRealMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
   }, []);
 
   // ── Sync viewport control → frame width ─────────────────────────────────
@@ -397,25 +402,28 @@ export function RcGlobalNavCanvas() {
   return (
     <div
       ref={canvasRef}
-      style={{ flex: 1, height: "100%", display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden", padding: "20px 24px 24px", background: "var(--shouf-canvas)", position: "relative", userSelect: isDragging ? "none" : undefined }}
+      style={{ flex: 1, height: "100%", display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden", padding: isRealMobile ? "12px" : "20px 24px 24px", background: "var(--shouf-canvas)", position: "relative", userSelect: isDragging ? "none" : undefined }}
     >
-      {/* Canvas label */}
-      <div style={{ fontSize: "13px", fontFamily: "var(--font-mono)", color: "var(--shouf-text)", marginBottom: "14px", letterSpacing: "0.04em", flexShrink: 0, display: "flex", alignItems: "center", gap: "10px" }}>
-        <span>
-          Responsive Components / Global Navigation — click items and the{" "}
-          <span style={{ color: "var(--shouf-accent)" }}>«</span> toggle to interact
-        </span>
-        {showBadge ? (
-          <span style={{ fontSize: "10px", fontFamily: "var(--font-mono)", padding: "2px 8px", borderRadius: "4px", background: "var(--shouf-hover)", color: isMobile ? "var(--shouf-accent)" : isTablet ? "var(--shouf-accent)" : "var(--shouf-text)", border: `1px solid var(--shouf-border)`, whiteSpace: "nowrap" }}>
-            {frameWidth !== null ? `${frameWidth}px` : `${measuredWidth}px`}
-            {isMobile ? " · mobile" : isTablet ? " · tablet" : " · desktop"}
+      {/* Canvas label — simplified / hidden on real mobile since drag-to-resize
+          doesn't apply when the device itself sets the width */}
+      {!isRealMobile && (
+        <div style={{ fontSize: "13px", fontFamily: "var(--font-mono)", color: "var(--shouf-text)", marginBottom: "14px", letterSpacing: "0.04em", flexShrink: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+          <span>
+            Responsive Components / Global Navigation — click items and the{" "}
+            <span style={{ color: "var(--shouf-accent)" }}>«</span> toggle to interact
           </span>
-        ) : (
-          <span style={{ color: "var(--shouf-text-muted)" }}>
-            — drag{" "}<span style={{ display: "inline-block", width: "3px", height: "10px", borderRadius: "2px", background: "currentColor", verticalAlign: "middle", margin: "0 2px" }} />{" "}right edge to resize
-          </span>
-        )}
-      </div>
+          {showBadge ? (
+            <span style={{ fontSize: "10px", fontFamily: "var(--font-mono)", padding: "2px 8px", borderRadius: "4px", background: "var(--shouf-hover)", color: isMobile ? "var(--shouf-accent)" : isTablet ? "var(--shouf-accent)" : "var(--shouf-text)", border: `1px solid var(--shouf-border)`, whiteSpace: "nowrap" }}>
+              {frameWidth !== null ? `${frameWidth}px` : `${measuredWidth}px`}
+              {isMobile ? " · mobile" : isTablet ? " · tablet" : " · desktop"}
+            </span>
+          ) : (
+            <span style={{ color: "var(--shouf-text-muted)" }}>
+              — drag{" "}<span style={{ display: "inline-block", width: "3px", height: "10px", borderRadius: "2px", background: "currentColor", verticalAlign: "middle", margin: "0 2px" }} />{" "}right edge to resize
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Frame + handle wrapper */}
       <div ref={wrapperRef} style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "stretch", position: "relative", overflow: "hidden" }}>
@@ -423,7 +431,7 @@ export function RcGlobalNavCanvas() {
         {/* ── Browser frame ─────────────────────────────────────────────────── */}
         <div
           ref={frameRef}
-          style={{ flex: frameWidth === null ? 1 : "0 0 auto", width: frameWidth !== null ? `${frameWidth}px` : undefined, maxWidth: "100%", minWidth: `${BP_MIN}px`, height: "100%", display: "flex", flexDirection: "column", borderRadius: "10px", border: `1px solid ${isDragging ? C.handleHover : "var(--shouf-border)"}`, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)", background: C.sidebarBg, transition: isDragging ? "none" : "border-color 200ms ease", position: "relative" }}
+          style={{ flex: frameWidth === null ? 1 : "0 0 auto", width: frameWidth !== null ? `${frameWidth}px` : undefined, maxWidth: "100%", minWidth: isRealMobile ? 0 : `${BP_MIN}px`, height: "100%", display: "flex", flexDirection: "column", borderRadius: isRealMobile ? "8px" : "10px", border: `1px solid ${isDragging ? C.handleHover : "var(--shouf-border)"}`, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)", background: C.sidebarBg, transition: isDragging ? "none" : "border-color 200ms ease", position: "relative" }}
         >
           {/* App layout */}
           <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden", position: "relative" }}>
@@ -664,21 +672,25 @@ export function RcGlobalNavCanvas() {
           );
         })()}
 
-        {/* Resize handle — touch-friendly: padded hit area, touch events */}
-        <div
-          onMouseDown={onHandleMouseDown}
-          onTouchStart={onHandleTouchStart}
-          title="Drag to resize"
-          style={{ position: "absolute", left: frameWidth !== null ? `min(${frameWidth}px, 100%) ` : "100%", top: "50%", transform: "translate(-50%, -50%)", width: "8px", height: "40px", borderRadius: "4px", background: isDragging ? C.handleHover : C.handleBg, cursor: "col-resize", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "center", transition: isDragging ? "none" : "background 150ms ease", boxShadow: isDragging ? `0 0 0 3px rgba(61, 122, 48, 0.20)` : "none", touchAction: "none" }}
-          onMouseEnter={(e) => { if (!isDragging) e.currentTarget.style.background = C.handleHover; }}
-          onMouseLeave={(e) => { if (!isDragging) e.currentTarget.style.background = C.handleBg; }}
-        >
-          <svg width="4" height="20" viewBox="0 0 4 20" fill="none">
-            <circle cx="2" cy="5"  r="1.5" fill={isDragging ? "#fff" : "#9CA3AF"} />
-            <circle cx="2" cy="10" r="1.5" fill={isDragging ? "#fff" : "#9CA3AF"} />
-            <circle cx="2" cy="15" r="1.5" fill={isDragging ? "#fff" : "#9CA3AF"} />
-          </svg>
-        </div>
+        {/* Resize handle — hidden on real mobile devices (you can't resize
+            the physical viewport, so the handle is misleading and clutters
+            the compact layout). */}
+        {!isRealMobile && (
+          <div
+            onMouseDown={onHandleMouseDown}
+            onTouchStart={onHandleTouchStart}
+            title="Drag to resize"
+            style={{ position: "absolute", left: frameWidth !== null ? `min(${frameWidth}px, 100%) ` : "100%", top: "50%", transform: "translate(-50%, -50%)", width: "8px", height: "40px", borderRadius: "4px", background: isDragging ? C.handleHover : C.handleBg, cursor: "col-resize", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "center", transition: isDragging ? "none" : "background 150ms ease", boxShadow: isDragging ? `0 0 0 3px rgba(61, 122, 48, 0.20)` : "none", touchAction: "none" }}
+            onMouseEnter={(e) => { if (!isDragging) e.currentTarget.style.background = C.handleHover; }}
+            onMouseLeave={(e) => { if (!isDragging) e.currentTarget.style.background = C.handleBg; }}
+          >
+            <svg width="4" height="20" viewBox="0 0 4 20" fill="none">
+              <circle cx="2" cy="5"  r="1.5" fill={isDragging ? "#fff" : "#9CA3AF"} />
+              <circle cx="2" cy="10" r="1.5" fill={isDragging ? "#fff" : "#9CA3AF"} />
+              <circle cx="2" cy="15" r="1.5" fill={isDragging ? "#fff" : "#9CA3AF"} />
+            </svg>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -7,7 +7,7 @@
 // Card interaction: hover lifts with accent border, click navigates to the
 // project page. Framer Motion handles entrance stagger and hover spring.
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
 
@@ -275,6 +275,16 @@ function WorkCard({
 export function WorkIndexCanvas() {
   const { selectComponent, selectSection, setActiveMobilePanel } = useAppStore();
 
+  // Collapse the 3-column grid to a single vertical stack on mobile viewports.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
   const handleSelect = useCallback(
     (id: string) => {
       selectSection(null);
@@ -322,7 +332,7 @@ export function WorkIndexCanvas() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
           gap: "24px",
         }}
       >

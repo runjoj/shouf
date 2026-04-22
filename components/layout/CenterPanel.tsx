@@ -227,8 +227,8 @@ function CanvasHeader({
         </>
       )}
 
-      {/* Navigation links — Welcome / About / Work — hidden on mobile */}
-      <div className="hidden sm:flex items-center gap-1" style={introStyle(D_NAV, launched, skipIntro)}>
+      {/* Navigation links — Welcome / About / Work */}
+      <div className="flex items-center gap-1" style={introStyle(D_NAV, launched, skipIntro)}>
         <TopBarNavLink
           label="Home"
           isSelected={selectedComponentId === "welcome"}

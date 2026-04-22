@@ -41,18 +41,19 @@ export function QlCaseStudyCanvas() {
         overflowY:     "auto",
         display:       "flex",
         flexDirection: "column",
-        padding:       "40px 192px 80px",
+        padding:       "40px clamp(20px, 10vw, 192px) 80px",
+        boxSizing:     "border-box",
       }}
     >
         <BackButton onClick={goToWork} />
 
-        {/* ── Hero — two-column overview ─────────────────────────────────── */}
+        {/* ── Hero — two-column overview (stacks on mobile) ──────────────── */}
         <section
           style={{
             marginBottom:        "48px",
             display:             "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap:                 "64px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
+            gap:                 "32px",
             alignItems:          "start",
           }}
         >
@@ -86,7 +87,7 @@ export function QlCaseStudyCanvas() {
           </div>
 
           {/* Right column — overview paragraph */}
-          <div style={{ paddingTop: "36px" }}>
+          <div>
             <Body>
               The Qualiti Portal is an application that uses AI to create tests for engineers.
               It was originally built as a working prototype by a software engineer. It was not

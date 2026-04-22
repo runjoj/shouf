@@ -5,7 +5,7 @@
 // Full-page, no left nav, no max-width constraint. Content spans full width.
 // Uses shared case study primitives for consistent storytelling.
 
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { RcGlobalNavCanvas } from "./RcGlobalNavCanvas";
 import { MONO, SectionLabel, SectionHeading, Body, Divider, BackButton, ScrollReveal } from "./CaseStudyShared";
@@ -14,6 +14,18 @@ import { MONO, SectionLabel, SectionHeading, Body, Divider, BackButton, ScrollRe
 
 export function RcCaseStudyCanvas() {
   const { selectComponent, selectSection, setActiveMobilePanel } = useAppStore();
+
+  // Mobile detection — shrink the embedded live-component frame height so it
+  // fits inside a phone viewport without dwarfing the rest of the page.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
 
   const goToWork = useCallback(() => {
     selectComponent(null);
@@ -34,19 +46,20 @@ export function RcCaseStudyCanvas() {
         overflowY:     "auto",
         display:       "flex",
         flexDirection: "column",
-        padding:       "40px 192px 80px",
+        padding:       "40px clamp(20px, 10vw, 192px) 80px",
+        boxSizing:     "border-box",
       }}
     >
       {/* ── Back button ──────────────────────────────────────────────── */}
       <BackButton onClick={goToWork} />
 
-      {/* ── Hero — two-column overview ─────────────────────────────────── */}
+      {/* ── Hero — two-column overview (stacks on mobile) ──────────────── */}
       <section
         style={{
           marginBottom:        "48px",
           display:             "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap:                 "64px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
+          gap:                 "32px",
           alignItems:          "start",
         }}
       >
@@ -80,7 +93,7 @@ export function RcCaseStudyCanvas() {
         </div>
 
         {/* Right column — overview body text */}
-        <div style={{ paddingTop: "36px" }}>
+        <div>
           <Body>
             BambooHR&apos;s in-platform experience was built desktop-first, with over 95% of the
             product lacking responsive behavior. This initiative proposes a strategic shift toward
@@ -110,7 +123,7 @@ export function RcCaseStudyCanvas() {
         <div
           style={{
             width:        "100%",
-            height:       "820px",
+            height:       isMobile ? "560px" : "820px",
             border:       "1px solid var(--shouf-border)",
             borderRadius: "12px",
             overflow:     "hidden",

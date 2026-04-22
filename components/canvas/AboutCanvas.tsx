@@ -126,11 +126,14 @@ const MILESTONES: Milestone[] = [
 // ─── CSS ──────────────────────────────────────────────────────────────────────
 const CSS = `
   @media (max-width: 680px) {
-    .ab-hero  { flex-direction: column !important; gap: 32px !important; align-items: center !important; }
-    .ab-photo { width: 200px !important; min-width: unset !important; height: 240px !important; align-self: center !important; }
+    .ab-hero       { flex-direction: column !important; gap: 24px !important; align-items: center !important; }
+    .ab-photo-w    { width: 220px !important; min-width: unset !important; align-self: center !important; margin-top: 0 !important; }
+    .ab-photo      { width: 100% !important; height: auto !important; }
+    .ab-heading    { font-size: clamp(20px, 5.6vw, 44px) !important; white-space: nowrap !important; }
+    .ab-heading-wrap { margin-bottom: 24px !important; }
   }
   @media (max-width: 768px) {
-    .ab-main { padding-bottom: 32px !important; }
+    .ab-main { padding: 32px 20px 32px !important; }
     .tl-wrap  { margin-top: 32px !important; }
   }
 
@@ -408,8 +411,9 @@ export function AboutCanvas() {
           }}
         >
           {/* ── Page heading ─────────────────────────────────────────── */}
-          <div style={{ marginBottom: "48px" }}>
+          <div className="ab-heading-wrap" style={{ marginBottom: "48px" }}>
             <h1
+              className="ab-heading"
               style={{
                 fontSize:   "58px",
                 fontWeight: 700,
@@ -435,7 +439,7 @@ export function AboutCanvas() {
             className="ab-hero"
             style={{ display: "flex", gap: "64px", alignItems: "flex-start" }}
           >
-            <ScrollReveal style={{ width: "300px", minWidth: "300px", flexShrink: 0, marginTop: "12px" }}>
+            <ScrollReveal className="ab-photo-w" style={{ width: "300px", minWidth: "300px", flexShrink: 0, marginTop: "12px" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/about_photo.JPG"

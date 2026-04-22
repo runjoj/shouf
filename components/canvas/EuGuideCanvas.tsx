@@ -169,7 +169,7 @@ export function EuGuideCanvas() {
           <div
             style={{
               display:         "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))",
               gap:             "1px",
               backgroundColor: "var(--shouf-border-sub)",
               border:          "1px solid var(--shouf-border-sub)",

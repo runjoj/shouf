@@ -9,7 +9,7 @@
 // the "sandbox coming to life" narrative: a moment of materialisation before
 // the prototype is ready to use.
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppStore } from "@/lib/store";
 import {
   MONO,
@@ -30,12 +30,24 @@ const SANDBOX_URL = "https://69e799799e5d8a34e48e1b72--ps-dcefc1f4.netlify.app/p
 function IframeEmbed() {
   const [loaded, setLoaded] = useState(false);
 
+  // On mobile, render the iframe at its natural container width (no 125% scale)
+  // so the embedded BambooHR sandbox sees a phone-width viewport and renders its
+  // own mobile layout instead of being visually squished.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
   return (
     <div
       style={{
         position:     "relative",
         width:        "100%",
-        height:       "750px",
+        height:       isMobile ? "600px" : "750px",
         border:       "1px solid var(--shouf-border)",
         borderRadius: "12px",
         overflow:     "hidden",
@@ -111,12 +123,14 @@ function IframeEmbed() {
         src={SANDBOX_URL}
         title="Product Sandbox — BambooHR mirror"
         style={{
-          // Render at 1/0.8 = 125% size, then scale down to 80%
-          width:          "125%",
-          height:         "125%",
-          border:         "none",
-          display:        "block",
-          transform:      "scale(0.8)",
+          // Desktop: render at 125% and scale down to 80% so full product chrome
+          // fits without clipping. Mobile: render at natural size so the embedded
+          // app sees a real phone-width viewport and renders its mobile layout.
+          width:           isMobile ? "100%" : "125%",
+          height:          isMobile ? "100%" : "125%",
+          border:          "none",
+          display:         "block",
+          transform:       isMobile ? "none" : "scale(0.8)",
           transformOrigin: "top left",
           // Fade the iframe in once loaded so the scan line can finish
           opacity:    loaded ? 1 : 0.15,
@@ -160,19 +174,20 @@ export function PsSandboxCaseStudyCanvas() {
         overflowY:     "auto",
         display:       "flex",
         flexDirection: "column",
-        padding:       "40px 192px 80px",
+        padding:       "40px clamp(20px, 10vw, 192px) 80px",
+        boxSizing:     "border-box",
       }}
     >
       {/* ── Back button ───────────────────────────────────────────────── */}
       <BackButton onClick={goToWork} />
 
-      {/* ── Hero — two-column overview ────────────────────────────────── */}
+      {/* ── Hero — two-column overview (stacks on mobile) ─────────────── */}
       <section
         style={{
           marginBottom:        "48px",
           display:             "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap:                 "64px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
+          gap:                 "32px",
           alignItems:          "start",
         }}
       >
@@ -217,7 +232,7 @@ export function PsSandboxCaseStudyCanvas() {
         </div>
 
         {/* Right — overview body text */}
-        <div style={{ paddingTop: "36px" }}>
+        <div>
           <Body>
             A standalone mirror of BambooHR built with the design system but
             disconnected from production code and real employee data. Created

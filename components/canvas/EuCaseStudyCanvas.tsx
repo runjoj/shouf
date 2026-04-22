@@ -28,19 +28,20 @@ export function EuCaseStudyCanvas() {
         overflowY:     "auto",
         display:       "flex",
         flexDirection: "column",
-        padding:       "40px 192px 80px",
+        padding:       "40px clamp(20px, 10vw, 192px) 80px",
+        boxSizing:     "border-box",
       }}
     >
         {/* ── Back button ──────────────────────────────────────────────── */}
         <BackButton onClick={goToWork} />
 
-        {/* ── Hero — two-column overview ─────────────────────────────────── */}
+        {/* ── Hero — two-column overview (stacks on mobile) ──────────────── */}
         <section
           style={{
             marginBottom:        "48px",
             display:             "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap:                 "64px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
+            gap:                 "32px",
             alignItems:          "start",
           }}
         >
@@ -74,7 +75,7 @@ export function EuCaseStudyCanvas() {
           </div>
 
           {/* Right column — overview body text */}
-          <div style={{ paddingTop: "36px" }}>
+          <div>
             <Body>
               Adding tests to the test library was not an ideal experience due to its heavy use of
               modals. This was originally chosen due to legacy code, but when the time became

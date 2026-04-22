@@ -116,7 +116,7 @@ export function PdsOverviewCanvas() {
       </div>
 
       {/* ── Divider between tiles and case study ─────────────────────────── */}
-      <div style={{ padding: "0 192px" }}>
+      <div style={{ padding: "0 clamp(20px, 10vw, 192px)" }}>
         <div
           style={{
             height:     "1px",
@@ -130,7 +130,8 @@ export function PdsOverviewCanvas() {
       <div
         style={{
           width:         "100%",
-          padding:       "0 192px 80px",
+          padding:       "0 clamp(20px, 10vw, 192px) 80px",
+          boxSizing:     "border-box",
           display:       "flex",
           flexDirection: "column",
         }}

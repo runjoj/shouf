@@ -252,7 +252,18 @@ function DesktopView() {
 
 export function AppShell() {
   const router = useRouter();
-  const { launch } = useAppStore();
+  const { launch, launched } = useAppStore();
+
+  // Skip the intro/typing screen entirely on mobile viewports (< lg breakpoint).
+  // IntroAnimation's border-draw positions are hardcoded to desktop panel widths
+  // and the typing animation inside WelcomeCanvas runs whenever !launched.
+  // Calling launch() before paint on mobile jumps straight to the final state.
+  useEffect(() => {
+    if (launched) return;
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(max-width: 1023px)");
+    if (mql.matches) launch();
+  }, [launched, launch]);
 
   // Global shortcut: Cmd/Ctrl + /  →  enter presentation mode (fullscreen)
   useEffect(() => {

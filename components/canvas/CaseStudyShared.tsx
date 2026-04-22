@@ -61,10 +61,12 @@ export function ScrollReveal({
   children,
   delay = 0,
   style,
+  className,
 }: {
   children: ReactNode;
   delay?: number;
   style?: CSSProperties;
+  className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -96,6 +98,7 @@ export function ScrollReveal({
   return (
     <div
       ref={ref}
+      className={className}
       style={{
         opacity:    visible ? 1 : 0,
         transform:  visible ? "translateY(0)" : "translateY(16px)",
