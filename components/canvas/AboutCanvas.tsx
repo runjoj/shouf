@@ -407,29 +407,42 @@ export function AboutCanvas() {
             padding:  "56px 60px 80px",
           }}
         >
+          {/* ── Page heading ─────────────────────────────────────────── */}
+          <div style={{ marginBottom: "48px" }}>
+            <h1
+              style={{
+                fontSize:   "58px",
+                fontWeight: 700,
+                color:      "var(--shouf-text)",
+                margin:     0,
+                fontFamily: "var(--font-mono)",
+                textAlign:  "center",
+              }}
+            >
+              Hello, it&apos;s Jo Ann Saab.
+            </h1>
+            <div
+              style={{
+                height:     "1px",
+                marginTop:  "20px",
+                background: "linear-gradient(to right, transparent, var(--shouf-border-sub) 15%, var(--shouf-border-sub) 50%, transparent)",
+              }}
+            />
+          </div>
+
           {/* ── Hero ─────────────────────────────────────────────────────── */}
           <section
             className="ab-hero"
             style={{ display: "flex", gap: "64px", alignItems: "flex-start" }}
           >
-            <ScrollReveal style={{ width: "300px", minWidth: "300px", alignSelf: "stretch", flexShrink: 0 }}>
-            <div
-              className="ab-photo"
-              style={{
-                width:        "100%",
-                height:       "100%",
-                borderRadius: "14px",
-                overflow:     "hidden",
-                position:     "relative",
-              }}
-            >
+            <ScrollReveal style={{ width: "300px", minWidth: "300px", flexShrink: 0, marginTop: "12px" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/about_photo.JPG"
                 alt="Jo Ann Saab"
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+                className="ab-photo"
+                style={{ width: "100%", height: "auto", display: "block", borderRadius: "14px" }}
               />
-            </div>
             </ScrollReveal>
 
             <div style={{ flex: 1, paddingTop: "4px", maxWidth: "540px" }}>
