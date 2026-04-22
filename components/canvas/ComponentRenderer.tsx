@@ -25,6 +25,7 @@ import { OnboardingCaseStudyCanvas } from "./OnboardingCaseStudyCanvas";
 import { ArtemisCaseStudyCanvas } from "./ArtemisCaseStudyCanvas";
 import { PasswordGate } from "./PasswordGate";
 import { QlUserProfilesCanvas } from "./QlUserProfilesCanvas";
+import { PsSandboxCaseStudyCanvas } from "./PsSandboxCaseStudyCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
 
@@ -347,6 +348,7 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
     selectedComponentId === "ql-user-profiles" ||
     selectedComponentId === "onboarding-flow"  ||
     selectedComponentId === "project-artemis"  ||
+    selectedComponentId === "product-sandbox"  ||
     selectedComponentId === "about"            ||
     isGridCanvas
   );
@@ -455,6 +457,11 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
             <ArtemisCaseStudyCanvas />
           </PasswordGate>
         )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "product-sandbox" && (
+          <PasswordGate pageId="product-sandbox">
+            <PsSandboxCaseStudyCanvas />
+          </PasswordGate>
+        )}
         {!showWelcome && !isGridCanvas && selectedComponentId === "eu-overview" && (
           <EuOverviewCanvas />
         )}
@@ -480,6 +487,7 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "ql-user-profiles" &&
           selectedComponentId !== "onboarding-flow"  &&
           selectedComponentId !== "project-artemis"  &&
+          selectedComponentId !== "product-sandbox"  &&
           isRegistered(selectedComponentId) && (
           <LiveComponentCanvas componentId={selectedComponentId} />
         )}
@@ -502,6 +510,7 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "ql-user-profiles" &&
           selectedComponentId !== "onboarding-flow"  &&
           selectedComponentId !== "project-artemis"  &&
+          selectedComponentId !== "product-sandbox"  &&
           selectedComponentId !== "about"            &&
           !isRegistered(selectedComponentId) && (
           <PlaceholderState componentId={selectedComponentId} />

@@ -28,11 +28,12 @@ type WorkProject = {
 const PROJECTS: WorkProject[] = [
   {
     id: "product-sandbox",
-    tag: "Coming Soon",
+    tag: "Product Design · Design System",
     title: "Product Sandbox",
-    description: "",
-    company: "",
-    disabled: true,
+    description:
+      "A standalone BambooHR mirror built with the design system and synthetic data — enabling high-fidelity user testing without engineering support.",
+    company: "BambooHR",
+    thumbnail: "/sandbox.png",
   },
   {
     id: "project-artemis",

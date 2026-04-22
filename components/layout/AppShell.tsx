@@ -156,10 +156,10 @@ function MobileView() {
 }
 
 // Pages that should NOT show controls/inspect panels (guides, landing, about).
-const NO_PANELS = new Set(["about", "pds-guide", "pds-overview", "rc-guide", "rc-case-study", "eu-guide", "eu-overview", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "onboarding-flow", "project-artemis"]);
+const NO_PANELS = new Set(["about", "pds-guide", "pds-overview", "rc-guide", "rc-case-study", "eu-guide", "eu-overview", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "onboarding-flow", "project-artemis", "product-sandbox"]);
 
 // Pages that hide the left nav — case studies, about, and work index.
-const NO_LEFT_PANEL = new Set(["rc-case-study", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "about", "onboarding-flow", "project-artemis"]);
+const NO_LEFT_PANEL = new Set(["rc-case-study", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "about", "onboarding-flow", "project-artemis", "product-sandbox"]);
 
 // ─── Desktop three-panel view ─────────────────────────────────────────────────
 
@@ -254,10 +254,10 @@ export function AppShell() {
   const router = useRouter();
   const { launch } = useAppStore();
 
-  // Global shortcut: Cmd/Ctrl + \  →  enter presentation mode (fullscreen)
+  // Global shortcut: Cmd/Ctrl + /  →  enter presentation mode (fullscreen)
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "\\") {
+      if ((e.metaKey || e.ctrlKey) && e.key === "/") {
         e.preventDefault();
         // Request fullscreen from this user gesture before navigating.
         const el = document.documentElement;

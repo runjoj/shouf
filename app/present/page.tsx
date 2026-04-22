@@ -769,8 +769,8 @@ export default function PresentPage() {
   // Keyboard navigation
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      // Cmd/Ctrl + \  →  exit presentation, return to portfolio home
-      if ((e.metaKey || e.ctrlKey) && e.key === "\\") {
+      // Cmd/Ctrl + /  →  exit presentation, return to portfolio home
+      if ((e.metaKey || e.ctrlKey) && e.key === "/") {
         e.preventDefault();
         if (document.fullscreenElement && document.exitFullscreen) {
           document.exitFullscreen().catch(() => { /* ignore */ });
