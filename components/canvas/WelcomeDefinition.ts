@@ -5,9 +5,9 @@ import type { ComponentRegistration, ComponentControlValues, TokenRow } from "@/
 // Changing these values requires updating the SIZE_MAP in WelcomeCanvas too.
 
 const SIZE_TOKENS = {
-  sm: { fontSize: "clamp(1.4rem, 1.8vw, 1.8rem)", tokenName: "--welcome-font-sm" },
-  md: { fontSize: "clamp(1.8rem, 2.4vw, 2.4rem)", tokenName: "--welcome-font-md" },
-  lg: { fontSize: "clamp(2.2rem, 3vw, 3rem)",     tokenName: "--welcome-font-lg" },
+  sm: { fontSize: "clamp(1.55rem, 2vw, 2rem)",       tokenName: "--welcome-font-sm" },
+  md: { fontSize: "clamp(2rem, 2.65vw, 2.65rem)",    tokenName: "--welcome-font-md" },
+  lg: { fontSize: "clamp(2.4rem, 3.3vw, 3.3rem)",    tokenName: "--welcome-font-lg" },
 } as const;
 
 // ─── getTokens ───────────────────────────────────────────────────────────────

@@ -155,6 +155,18 @@ function IframeEmbed() {
 export function PsSandboxCaseStudyCanvas() {
   const { selectComponent, selectSection, setActiveMobilePanel } = useAppStore();
 
+  // Hide the embedded sandbox iframe on mobile — the BambooHR product inside
+  // isn't meaningfully usable at phone size.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
   const goToWork = useCallback(() => {
     selectComponent(null);
     selectSection("work");
@@ -243,27 +255,31 @@ export function PsSandboxCaseStudyCanvas() {
         </div>
       </section>
 
-      {/* ── Live Sandbox — embedded iframe ───────────────────────────── */}
-      <ScrollReveal>
-        <section style={{ marginBottom: "48px" }}>
-          <div
-            style={{
-              fontFamily:    MONO,
-              fontSize:      "14px",
-              fontWeight:    600,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color:         "var(--shouf-text-faint)",
-              marginBottom:  "16px",
-            }}
-          >
-            Live Sandbox
-          </div>
-          <IframeEmbed />
-        </section>
-      </ScrollReveal>
+      {/* ── Live Sandbox — hidden on mobile (product iframe not usable at phone size) ── */}
+      {!isMobile && (
+        <>
+          <ScrollReveal>
+            <section style={{ marginBottom: "48px" }}>
+              <div
+                style={{
+                  fontFamily:    MONO,
+                  fontSize:      "14px",
+                  fontWeight:    600,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color:         "var(--shouf-text-faint)",
+                  marginBottom:  "16px",
+                }}
+              >
+                Live Sandbox
+              </div>
+              <IframeEmbed />
+            </section>
+          </ScrollReveal>
 
-      <Divider />
+          <Divider />
+        </>
+      )}
 
       {/* ── Problem ──────────────────────────────────────────────────── */}
       <ScrollReveal>

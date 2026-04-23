@@ -104,38 +104,42 @@ export function RcCaseStudyCanvas() {
         </div>
       </section>
 
-      {/* ── Live Component — full width, immersive ───────────────────────── */}
-      <ScrollReveal>
-      <section style={{ marginBottom: "48px" }}>
-        <div
-          style={{
-            fontFamily:    MONO,
-            fontSize:      "14px",
-            fontWeight:    600,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            color:         "var(--shouf-text-faint)",
-            marginBottom:  "16px",
-          }}
-        >
-          Live Component
-        </div>
-        <div
-          style={{
-            width:        "100%",
-            height:       isMobile ? "560px" : "820px",
-            border:       "1px solid var(--shouf-border)",
-            borderRadius: "12px",
-            overflow:     "hidden",
-            background:   "var(--shouf-panel)",
-          }}
-        >
-          <RcGlobalNavCanvas />
-        </div>
-      </section>
-      </ScrollReveal>
+      {/* ── Live Component — hidden on mobile (desktop-only interactive demo) ─ */}
+      {!isMobile && (
+        <>
+          <ScrollReveal>
+          <section style={{ marginBottom: "48px" }}>
+            <div
+              style={{
+                fontFamily:    MONO,
+                fontSize:      "14px",
+                fontWeight:    600,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color:         "var(--shouf-text-faint)",
+                marginBottom:  "16px",
+              }}
+            >
+              Live Component
+            </div>
+            <div
+              style={{
+                width:        "100%",
+                height:       "820px",
+                border:       "1px solid var(--shouf-border)",
+                borderRadius: "12px",
+                overflow:     "hidden",
+                background:   "var(--shouf-panel)",
+              }}
+            >
+              <RcGlobalNavCanvas />
+            </div>
+          </section>
+          </ScrollReveal>
 
-      <Divider />
+          <Divider />
+        </>
+      )}
 
       {/* ── Problem ────────────────────────────────────────────────────── */}
       <ScrollReveal>

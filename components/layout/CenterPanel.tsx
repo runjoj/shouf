@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from "react";
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useAppStore } from "@/lib/store";
 import { useTheme } from "@/lib/theme";
 import { ComponentRenderer } from "@/components/canvas/ComponentRenderer";
@@ -9,6 +10,7 @@ import { ControlsBar } from "@/components/canvas/ControlsBar";
 import { PdsToggle } from "@/components/ui/PdsToggle";
 import { AccentPicker } from "@/components/ui/AccentPicker";
 import { ACCENT_PRESETS } from "@/lib/accent";
+import { isRegistered } from "@/lib/registry";
 
 // ─── Zoom constants ────────────────────────────────────────────────────────────
 const ZOOM_MIN  = 50;
@@ -37,27 +39,68 @@ function introStyle(delay: number, launched: boolean, skip = false): CSSProperti
 
 function MobileThemeButton() {
   const [open, setOpen] = useState(false);
-  const { theme, toggleTheme, accentId } = useTheme();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const { theme, toggleTheme, accentId, setAccent } = useTheme();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef   = useRef<HTMLDivElement>(null);
 
   const currentPreset = ACCENT_PRESETS.find((p) => p.id === accentId) ?? ACCENT_PRESETS[0];
 
-  // Close dropdown when clicking outside
+  // Portal needs to wait for client mount (createPortal into document.body)
+  useEffect(() => { setMounted(true); }, []);
+
+  // Measure the button on open so the portaled menu anchors under it
   useEffect(() => {
     if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (!containerRef.current?.contains(e.target as Node)) setOpen(false);
+    const update = () => {
+      if (buttonRef.current) setAnchorRect(buttonRef.current.getBoundingClientRect());
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    update();
+    window.addEventListener("resize", update);
+    window.addEventListener("scroll", update, true);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", update, true);
+    };
   }, [open]);
 
+  // Close on outside click / escape
+  useEffect(() => {
+    if (!open) return;
+    const handlePointer = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as Node;
+      if (buttonRef.current?.contains(target)) return;
+      if (menuRef.current?.contains(target))   return;
+      setOpen(false);
+    };
+    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", handlePointer);
+    document.addEventListener("touchstart", handlePointer);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handlePointer);
+      document.removeEventListener("touchstart", handlePointer);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [open]);
+
+  // Position the menu: right-aligned under the button, inset 8px from viewport edge.
+  const MENU_W     = 240;
+  const EDGE_INSET = 12;
+  const menuTop  = anchorRect ? anchorRect.bottom + 10 : 0;
+  const menuLeft = anchorRect
+    ? Math.max(EDGE_INSET, Math.min(anchorRect.right - MENU_W, window.innerWidth - MENU_W - EDGE_INSET))
+    : 0;
+
   return (
-    <div ref={containerRef} style={{ position: "relative", flexShrink: 0 }}>
-      {/* Accent circle button */}
+    <>
       <button
+        ref={buttonRef}
         onClick={() => setOpen((o) => !o)}
         title="Theme & accent"
+        aria-haspopup="menu"
+        aria-expanded={open}
         style={{
           width:           22,
           height:          22,
@@ -70,23 +113,27 @@ function MobileThemeButton() {
           display:         "block",
           flexShrink:      0,
           transition:      "outline 120ms ease",
+          padding:         0,
         }}
       />
 
-      {/* Dropdown */}
-      {open && (
+      {/* Dropdown portaled to body — escapes ancestor overflow:hidden clipping */}
+      {mounted && open && anchorRect && createPortal(
         <div
+          ref={menuRef}
+          role="menu"
           style={{
-            position:        "absolute",
-            right:           0,
-            top:             "calc(100% + 10px)",
-            zIndex:          200,
+            position:        "fixed",
+            top:             menuTop,
+            left:            menuLeft,
+            width:           MENU_W,
+            zIndex:          1000,
             backgroundColor: "var(--shouf-panel)",
             border:          "1px solid var(--shouf-border)",
             borderRadius:    12,
-            padding:         "12px",
-            boxShadow:       "0 8px 32px rgba(0,0,0,0.18)",
-            minWidth:        172,
+            padding:         "14px",
+            boxShadow:       "0 12px 36px rgba(0,0,0,0.22)",
+            animation:       "intro-reveal 160ms ease both",
           }}
         >
           {/* Theme toggle row */}
@@ -96,7 +143,9 @@ function MobileThemeButton() {
               alignItems:     "center",
               justifyContent: "space-between",
               gap:            12,
-              marginBottom:   12,
+              marginBottom:   14,
+              paddingBottom:  12,
+              borderBottom:   "1px solid var(--shouf-border-sub)",
             }}
           >
             <span
@@ -116,11 +165,85 @@ function MobileThemeButton() {
               label="Toggle theme"
             />
           </div>
-          {/* Accent swatches */}
-          <AccentPicker size="sm" />
-        </div>
+
+          {/* Accent label */}
+          <div
+            style={{
+              fontSize:      11,
+              color:         "var(--shouf-text-faint)",
+              fontFamily:    "var(--font-mono)",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              marginBottom:  10,
+            }}
+          >
+            --accent
+          </div>
+
+          {/* Accent list — labeled rows, easy to tap */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {ACCENT_PRESETS.map((preset) => {
+              const selected = preset.id === accentId;
+              return (
+                <button
+                  key={preset.id}
+                  role="menuitemradio"
+                  aria-checked={selected}
+                  onClick={() => { setAccent(preset.id); setOpen(false); }}
+                  style={{
+                    display:        "flex",
+                    alignItems:     "center",
+                    gap:            12,
+                    width:          "100%",
+                    padding:        "8px 8px",
+                    border:         "none",
+                    background:     selected ? "var(--shouf-hover)" : "transparent",
+                    borderRadius:   8,
+                    cursor:         "pointer",
+                    textAlign:      "left",
+                    transition:     "background 120ms ease",
+                  }}
+                >
+                  <span
+                    style={{
+                      width:           18,
+                      height:          18,
+                      borderRadius:    "50%",
+                      backgroundColor: preset.hex,
+                      flexShrink:      0,
+                      outline:         selected ? `2px solid ${preset.hex}` : "2px solid transparent",
+                      outlineOffset:   "2px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize:   13,
+                      fontWeight: selected ? 600 : 500,
+                      color:      selected ? "var(--shouf-text)" : "var(--shouf-text-muted)",
+                      flex:       1,
+                    }}
+                  >
+                    {preset.label}
+                  </span>
+                  {selected && (
+                    <span
+                      style={{
+                        fontSize:   11,
+                        color:      "var(--shouf-text-faint)",
+                        fontFamily: "var(--font-mono)",
+                      }}
+                    >
+                      ✓
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 }
 
@@ -174,8 +297,13 @@ function CanvasHeader({
   const { selectedComponentId, selectedSectionId, launched, activeMobilePanel, setActiveMobilePanel, selectComponent, selectSection } = useAppStore();
   const { theme, toggleTheme } = useTheme();
 
-  // Show inspect button only when a component canvas is active
-  const showInspect = !!selectedComponentId && !["welcome","about","pds-guide","rc-guide","eu-guide","eu-embedded","especialty","ql-redesign","ql-user-profiles","pds-color-tokens"].includes(selectedComponentId) && selectedSectionId === null;
+  // Show inspect button only when the inspect panel has real content —
+  // i.e. a registered component is selected (unregistered components show
+  // a placeholder/skeleton, which isn't worth a dedicated mobile entry point).
+  const showInspect =
+    !!selectedComponentId &&
+    selectedSectionId === null &&
+    isRegistered(selectedComponentId);
 
   // Pages where left panel is hidden — show logo in top bar
   const NO_LEFT = ["rc-case-study", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "about", "work", "onboarding-flow", "project-artemis"];
@@ -327,8 +455,12 @@ export function CenterPanel({ showControls = false, skipIntro = false }: { showC
       className="flex flex-col flex-1 h-full overflow-hidden"
       style={{ backgroundColor: "var(--shouf-bg)", minWidth: 0 }}
     >
-      {/* Toolbar — slides down from above on launch */}
-      <div style={{ flexShrink: 0, overflow: "hidden" }}>
+      {/* Toolbar — slides down from above on launch.
+          overflow:hidden is only needed during the slide-in animation (so the
+          toolbar doesn't peek out above its slot). When skipIntro is true
+          (mobile) the animation doesn't run, so we keep overflow visible —
+          otherwise popovers like the mobile accent dropdown get clipped. */}
+      <div style={{ flexShrink: 0, overflow: skipIntro ? "visible" : "hidden" }}>
         <div
           style={{
             transform:  toolbarIn ? "translateY(0)" : "translateY(-100%)",

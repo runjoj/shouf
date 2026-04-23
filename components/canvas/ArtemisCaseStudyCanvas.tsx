@@ -7,7 +7,7 @@
 //
 // To update the prototype URL: replace ARTIFACT_URL below.
 
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { MONO, SectionLabel, SectionHeading, Body, Divider, BackButton, ScrollReveal } from "./CaseStudyShared";
 
@@ -16,6 +16,17 @@ const ARTIFACT_URL = "/artemis_artifact.html";
 
 export function ArtemisCaseStudyCanvas() {
   const { selectComponent, selectSection, setActiveMobilePanel } = useAppStore();
+
+  // Hide the embedded prototype iframe on mobile — it's not usable at phone size.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
 
   const goToWork = useCallback(() => {
     selectComponent(null);
@@ -90,59 +101,63 @@ export function ArtemisCaseStudyCanvas() {
 
       <Divider />
 
-      {/* ── Prototype — full width Artifact embed ─────────────────────────── */}
-      <ScrollReveal>
-        <section style={{ marginBottom: "56px" }}>
-          <div
-            style={{
-              fontFamily:    MONO,
-              fontSize:      "14px",
-              fontWeight:    600,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color:         "var(--shouf-text-faint)",
-              marginBottom:  "16px",
-            }}
-          >
-            Prototype
-          </div>
-          <div
-            style={{
-              width:          "100%",
-              height:         "820px",
-              border:         "1px solid var(--shouf-border)",
-              borderRadius:   "12px",
-              overflow:       "hidden",
-              background:     "var(--shouf-panel)",
-              display:        "flex",
-              alignItems:     "center",
-              justifyContent: "center",
-            }}
-          >
-            {ARTIFACT_URL ? (
-              <iframe
-                src={ARTIFACT_URL}
-                style={{ width: "100%", height: "100%", border: "none" }}
-                allow="fullscreen"
-                title="Project Artemis prototype"
-              />
-            ) : (
-              <span
+      {/* ── Prototype — hidden on mobile (iframe not usable at phone size) ── */}
+      {!isMobile && (
+        <>
+          <ScrollReveal>
+            <section style={{ marginBottom: "56px" }}>
+              <div
                 style={{
                   fontFamily:    MONO,
-                  fontSize:      "13px",
+                  fontSize:      "14px",
+                  fontWeight:    600,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
                   color:         "var(--shouf-text-faint)",
-                  letterSpacing: "0.04em",
+                  marginBottom:  "16px",
                 }}
               >
-                Prototype coming soon
-              </span>
-            )}
-          </div>
-        </section>
-      </ScrollReveal>
+                Prototype
+              </div>
+              <div
+                style={{
+                  width:          "100%",
+                  height:         "820px",
+                  border:         "1px solid var(--shouf-border)",
+                  borderRadius:   "12px",
+                  overflow:       "hidden",
+                  background:     "var(--shouf-panel)",
+                  display:        "flex",
+                  alignItems:     "center",
+                  justifyContent: "center",
+                }}
+              >
+                {ARTIFACT_URL ? (
+                  <iframe
+                    src={ARTIFACT_URL}
+                    style={{ width: "100%", height: "100%", border: "none" }}
+                    allow="fullscreen"
+                    title="Project Artemis prototype"
+                  />
+                ) : (
+                  <span
+                    style={{
+                      fontFamily:    MONO,
+                      fontSize:      "13px",
+                      color:         "var(--shouf-text-faint)",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    Prototype coming soon
+                  </span>
+                )}
+              </div>
+            </section>
+          </ScrollReveal>
 
-      <Divider />
+          <Divider />
+        </>
+      )}
 
       {/* ── Problem & Context ─────────────────────────────────────────────── */}
       <ScrollReveal>

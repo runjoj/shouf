@@ -49,9 +49,9 @@ const CURSOR_HIDE_MS = TOTAL_CHAR_MS + 500 - 80;
 
 // ─── Headline size map — must match WelcomeDefinition SIZE_TOKENS ─────────────
 const WELCOME_FONT_SIZES: Record<string, string> = {
-  sm: "clamp(1.4rem, 1.8vw, 1.8rem)",
-  md: "clamp(1.8rem, 2.4vw, 2.4rem)",
-  lg: "clamp(2.2rem, 3vw, 3rem)",
+  sm: "clamp(1.55rem, 2vw, 2rem)",
+  md: "clamp(2rem, 2.65vw, 2.65rem)",
+  lg: "clamp(2.4rem, 3.3vw, 3.3rem)",
 };
 
 function WelcomeCanvas() {

@@ -226,7 +226,8 @@ export function IntroAnimation() {
           style={{
             position:       "absolute",
             // Position below the headline with generous gap.
-            top:            "calc(50% + 36px)",
+            // Nudged down slightly to account for the larger headline sizes.
+            top:            "calc(50% + 44px)",
             // Offset by (LEFT_W − RIGHT_W)/2 = −10px so the picker aligns with
             // the headline, which is centered inside CenterPanel (not the viewport).
             left:           "calc(50% - 10px)",
@@ -269,6 +270,7 @@ export function IntroAnimation() {
               style={{
                 fontSize:      "12px",
                 fontFamily:    "var(--font-mono)",
+                fontWeight:    700,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 color:         "rgba(255,255,255,1)",
