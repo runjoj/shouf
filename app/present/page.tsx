@@ -768,16 +768,27 @@ export default function PresentPage() {
 
   // Keyboard navigation
   useEffect(() => {
+    function exitToPortfolio() {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => { /* ignore */ });
+      }
+      // Skip the intro/typing landing when returning to the portfolio.
+      launch();
+      router.push("/");
+    }
+
     function onKey(e: KeyboardEvent) {
-      // Cmd/Ctrl + /  →  exit presentation, return to portfolio home
+      // Esc → exit presentation. Primary, discoverable exit so anyone who lands
+      // on /present (e.g. via direct URL) can leave without knowing a chord.
+      if (e.key === "Escape") {
+        e.preventDefault();
+        exitToPortfolio();
+        return;
+      }
+      // Cmd/Ctrl + /  →  legacy exit, kept for parity.
       if ((e.metaKey || e.ctrlKey) && e.key === "/") {
         e.preventDefault();
-        if (document.fullscreenElement && document.exitFullscreen) {
-          document.exitFullscreen().catch(() => { /* ignore */ });
-        }
-        // Skip the intro/typing landing when returning to the portfolio.
-        launch();
-        router.push("/");
+        exitToPortfolio();
         return;
       }
       if (["ArrowRight", "ArrowDown", " "].includes(e.key)) {
@@ -979,6 +990,27 @@ export default function PresentPage() {
 
       {/* Keyboard hint */}
       <KeyHint visible={showHint} />
+
+      {/* Persistent exit hint — small, dim, top-right. Always visible so anyone
+          who lands here directly (recruiter following a stale link, accidental
+          navigation, etc.) can leave without guessing a chord. */}
+      <div
+        style={{
+          position:      "fixed",
+          top:           "14px",
+          right:         "18px",
+          fontFamily:    MONO,
+          fontSize:      "11px",
+          color:         DIM,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          pointerEvents: "none",
+          zIndex:        20,
+          userSelect:    "none",
+        }}
+      >
+        Esc to exit
+      </div>
     </div>
   );
 }

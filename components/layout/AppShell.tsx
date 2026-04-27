@@ -265,12 +265,42 @@ export function AppShell() {
     if (mql.matches) launch();
   }, [launched, launch]);
 
-  // Global shortcut: Cmd/Ctrl + /  →  enter presentation mode (fullscreen)
+  // Hidden entry into presentation mode: type the sequence "jojo" anywhere on
+  // the portfolio. Chosen deliberately over a single chord (e.g. Cmd+/) because
+  // recruiters were accidentally triggering the old shortcut and getting stuck
+  // in fullscreen with no visible exit. A typed sequence is essentially
+  // impossible to hit by accident — the buffer resets after 1.5s of idle and
+  // is ignored when modifier keys are held or focus is in an editable element.
   useEffect(() => {
+    const SEQ = "jojo";
+    let buffer = "";
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    function reset() {
+      buffer = "";
+      if (timer) { clearTimeout(timer); timer = null; }
+    }
+
     function onKey(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "/") {
+      if (e.repeat) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+      // Don't capture keys when the user is typing in an input field.
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || t?.isContentEditable) return;
+
+      // Single printable characters only — ignore Tab, Shift, arrows, etc.
+      if (e.key.length !== 1) return;
+
+      buffer = (buffer + e.key.toLowerCase()).slice(-SEQ.length);
+
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(reset, 1500);
+
+      if (buffer === SEQ) {
         e.preventDefault();
-        // Request fullscreen from this user gesture before navigating.
+        reset();
         const el = document.documentElement;
         if (!document.fullscreenElement && el.requestFullscreen) {
           el.requestFullscreen().catch(() => { /* ignore — some browsers block */ });
@@ -281,8 +311,12 @@ export function AppShell() {
         router.push("/present");
       }
     }
+
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      if (timer) clearTimeout(timer);
+    };
   }, [router, launch]);
 
   return (
