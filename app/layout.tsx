@@ -43,6 +43,20 @@ export const metadata: Metadata = {
   title: "Design System Portfolio",
   description:
     "A Figma × Storybook hybrid portfolio for exploring design systems and reusable components.",
+  openGraph: {
+    title: "Design System Portfolio",
+    description:
+      "A Figma × Storybook hybrid portfolio for exploring design systems and reusable components.",
+    images: [{ url: "/embed_image.png" }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Design System Portfolio",
+    description:
+      "A Figma × Storybook hybrid portfolio for exploring design systems and reusable components.",
+    images: ["/embed_image.png"],
+  },
 };
 
 // Inline FOUC-prevention script — runs synchronously before React hydrates.
