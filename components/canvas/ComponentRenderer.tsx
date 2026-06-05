@@ -26,6 +26,7 @@ import { ArtemisCaseStudyCanvas } from "./ArtemisCaseStudyCanvas";
 import { PasswordGate } from "./PasswordGate";
 import { QlUserProfilesCanvas } from "./QlUserProfilesCanvas";
 import { PsSandboxCaseStudyCanvas } from "./PsSandboxCaseStudyCanvas";
+import { AiPatternsCaseStudyCanvas } from "./AiPatternsCaseStudyCanvas";
 
 // ─── WelcomeCanvas typing constants ───────────────────────────────────────────
 
@@ -349,6 +350,7 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
     selectedComponentId === "onboarding-flow"  ||
     selectedComponentId === "project-artemis"  ||
     selectedComponentId === "product-sandbox"  ||
+    selectedComponentId === "ai-patterns"      ||
     selectedComponentId === "about"            ||
     isGridCanvas
   );
@@ -462,6 +464,11 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
             <PsSandboxCaseStudyCanvas />
           </PasswordGate>
         )}
+        {!showWelcome && !isGridCanvas && selectedComponentId === "ai-patterns" && (
+          <PasswordGate pageId="ai-patterns">
+            <AiPatternsCaseStudyCanvas />
+          </PasswordGate>
+        )}
         {!showWelcome && !isGridCanvas && selectedComponentId === "eu-overview" && (
           <EuOverviewCanvas />
         )}
@@ -488,6 +495,7 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "onboarding-flow"  &&
           selectedComponentId !== "project-artemis"  &&
           selectedComponentId !== "product-sandbox"  &&
+          selectedComponentId !== "ai-patterns"      &&
           isRegistered(selectedComponentId) && (
           <LiveComponentCanvas componentId={selectedComponentId} />
         )}
@@ -511,6 +519,7 @@ export function ComponentRenderer({ skipIntro = false }: { skipIntro?: boolean }
           selectedComponentId !== "onboarding-flow"  &&
           selectedComponentId !== "project-artemis"  &&
           selectedComponentId !== "product-sandbox"  &&
+          selectedComponentId !== "ai-patterns"      &&
           selectedComponentId !== "about"            &&
           !isRegistered(selectedComponentId) && (
           <PlaceholderState componentId={selectedComponentId} />

@@ -306,7 +306,7 @@ function CanvasHeader({
     isRegistered(selectedComponentId);
 
   // Pages where left panel is hidden — show logo in top bar
-  const NO_LEFT = ["rc-case-study", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "about", "work", "onboarding-flow", "project-artemis"];
+  const NO_LEFT = ["rc-case-study", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "about", "work", "onboarding-flow", "project-artemis", "ai-patterns"];
   const isWorkSection = selectedSectionId === "work" && selectedComponentId === null;
   const showLogo = launched && (
     (!!selectedComponentId && NO_LEFT.includes(selectedComponentId)) || isWorkSection
