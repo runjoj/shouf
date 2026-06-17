@@ -27,14 +27,6 @@ type WorkProject = {
 
 const PROJECTS: WorkProject[] = [
   {
-    id: "ai-patterns",
-    tag: "Design System",
-    title: "AI Patterns",
-    description: "",
-    company: "BambooHR",
-    thumbnail: "/AI-patterns.png",
-  },
-  {
     id: "product-sandbox",
     tag: "Product Design · Design System",
     title: "Product Sandbox",

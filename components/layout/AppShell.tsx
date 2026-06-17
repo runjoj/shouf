@@ -156,10 +156,10 @@ function MobileView() {
 }
 
 // Pages that should NOT show controls/inspect panels (guides, landing, about).
-const NO_PANELS = new Set(["about", "pds-guide", "pds-overview", "rc-guide", "rc-case-study", "eu-guide", "eu-overview", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "onboarding-flow", "project-artemis", "product-sandbox", "ai-patterns"]);
+const NO_PANELS = new Set(["about", "pds-guide", "pds-overview", "rc-guide", "rc-case-study", "eu-guide", "eu-overview", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "onboarding-flow", "project-artemis", "product-sandbox"]);
 
 // Pages that hide the left nav — case studies, about, and work index.
-const NO_LEFT_PANEL = new Set(["rc-case-study", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "about", "onboarding-flow", "project-artemis", "product-sandbox", "ai-patterns"]);
+const NO_LEFT_PANEL = new Set(["rc-case-study", "eu-embedded", "especialty", "ql-redesign", "ql-user-profiles", "about", "onboarding-flow", "project-artemis", "product-sandbox"]);
 
 // ─── Desktop three-panel view ─────────────────────────────────────────────────
 
