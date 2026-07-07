@@ -265,14 +265,14 @@ export function AppShell() {
     if (mql.matches) launch();
   }, [launched, launch]);
 
-  // Hidden entry into presentation mode: type the sequence "jojo" anywhere on
+  // Hidden entry into presentation mode: type the sequence "joj" anywhere on
   // the portfolio. Chosen deliberately over a single chord (e.g. Cmd+/) because
   // recruiters were accidentally triggering the old shortcut and getting stuck
   // in fullscreen with no visible exit. A typed sequence is essentially
   // impossible to hit by accident — the buffer resets after 1.5s of idle and
   // is ignored when modifier keys are held or focus is in an editable element.
   useEffect(() => {
-    const SEQ = "jojo";
+    const SEQ = "joj";
     let buffer = "";
     let timer: ReturnType<typeof setTimeout> | null = null;
 

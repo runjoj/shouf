@@ -192,7 +192,10 @@ const VIEWPORT_WIDTHS: Record<string, number | null> = {
   mobile:  380,    // between BP_MIN (320) and BP_MOBILE (500)
 };
 
-export function RcGlobalNavCanvas() {
+// Optional props let a host (e.g. the interview deck) suppress the instructional
+// caption and override the surrounding canvas background. Both default to the
+// portfolio's original behavior so existing usages are unaffected.
+export function RcGlobalNavCanvas({ hideCaption = false, surface }: { hideCaption?: boolean; surface?: string } = {}) {
   const { controlValues, setControlValue } = useAppStore();
   const viewportControl = (controlValues["rc-global-nav"]?.viewport as string) ?? "desktop";
   const collapsedControl = controlValues["rc-global-nav"]?.collapsed === true;
@@ -402,11 +405,11 @@ export function RcGlobalNavCanvas() {
   return (
     <div
       ref={canvasRef}
-      style={{ flex: 1, height: "100%", display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden", padding: isRealMobile ? "12px" : "20px 24px 24px", background: "var(--shouf-canvas)", position: "relative", userSelect: isDragging ? "none" : undefined }}
+      style={{ flex: 1, height: "100%", display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden", padding: isRealMobile ? "12px" : "20px 24px 24px", background: surface ?? "var(--shouf-canvas)", position: "relative", userSelect: isDragging ? "none" : undefined }}
     >
       {/* Canvas label — simplified / hidden on real mobile since drag-to-resize
           doesn't apply when the device itself sets the width */}
-      {!isRealMobile && (
+      {!isRealMobile && !hideCaption && (
         <div style={{ fontSize: "13px", fontFamily: "var(--font-mono)", color: "var(--shouf-text)", marginBottom: "14px", letterSpacing: "0.04em", flexShrink: 0, display: "flex", alignItems: "center", gap: "10px" }}>
           <span>
             Responsive Components / Global Navigation — click items and the{" "}
