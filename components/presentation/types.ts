@@ -16,6 +16,9 @@ export type Slide =
       // labels, for when the reasons carry more weight.
       points?: Array<{ label: string; detail: string }>;
       pointsLayout?: "row" | "grid";
+      // Numbered by default; set false for comparisons (e.g. A vs B) where an
+      // ordinal would imply a sequence that isn't there.
+      numberedPoints?: boolean;
       // A concrete "case in point" set off in a bordered callout beneath the copy.
       example?: { label?: string; text: string };
     }

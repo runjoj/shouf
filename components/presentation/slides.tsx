@@ -7,7 +7,7 @@
 import { RcGlobalNavCanvas } from "@/components/canvas/RcGlobalNavCanvas";
 import { ImageSlot } from "./ImageSlot";
 import { SlideBody, SlideFrame, SlideHeadline, SlideLabel } from "./primitives";
-import { ACCENT, HAIRLINE, INK, INK_FAINT, INK_SOFT, MONO, PAPER_DIM, SANS } from "./tokens";
+import { ACCENT, HAIRLINE, INK, INK_FAINT, INK_SOFT, MONO, PAPER, PAPER_DIM, SANS } from "./tokens";
 import { ThemeContrastDiagram } from "./diagrams/ThemeContrastDiagram";
 import { RolloutTimeline } from "./diagrams/RolloutTimeline";
 import type { Slide } from "./types";
@@ -55,22 +55,12 @@ export function StatementSlide({ slide }: { slide: Extract<Slide, { type: "state
       <SlideHeadline size={slide.size ?? (slide.body ? "md" : "lg")}>{slide.headline}</SlideHeadline>
       {slide.body && <SlideBody>{slide.body}</SlideBody>}
       {slide.body2 && <SlideBody>{slide.body2}</SlideBody>}
-      {slide.example && (
-        <div style={{ marginTop: "32px", maxWidth: "740px", borderLeft: `2px solid ${ACCENT}`, paddingLeft: "22px" }}>
-          <div style={{ fontFamily: MONO, fontSize: "13px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, color: ACCENT, marginBottom: "10px" }}>
-            {slide.example.label ?? "Example"}
-          </div>
-          <div style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "17px", color: INK_SOFT, lineHeight: 1.6 }}>
-            {slide.example.text}
-          </div>
-        </div>
-      )}
       {slide.points && slide.pointsLayout === "grid" && (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: "72px", rowGap: "38px", marginTop: "44px", maxWidth: "1060px" }}>
           {slide.points.map((p, i) => (
             <div key={i}>
               <div style={{ display: "flex", alignItems: "baseline", gap: "12px", marginBottom: "10px" }}>
-                <span style={{ fontFamily: MONO, fontSize: "15px", fontWeight: 600, color: ACCENT }}>{String(i + 1).padStart(2, "0")}</span>
+                {slide.numberedPoints !== false && <span style={{ fontFamily: MONO, fontSize: "15px", fontWeight: 600, color: ACCENT }}>{String(i + 1).padStart(2, "0")}</span>}
                 <span style={{ fontFamily: SANS, fontSize: "22px", fontWeight: 600, color: INK, letterSpacing: "-0.01em" }}>{p.label}</span>
               </div>
               <div style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "17px", color: INK_SOFT, lineHeight: 1.6, maxWidth: "440px" }}>
@@ -93,6 +83,16 @@ export function StatementSlide({ slide }: { slide: Extract<Slide, { type: "state
               </div>
             </div>
           ))}
+        </div>
+      )}
+      {slide.example && (
+        <div style={{ marginTop: "36px", maxWidth: "760px", borderLeft: `2px solid ${ACCENT}`, paddingLeft: "22px" }}>
+          <div style={{ fontFamily: MONO, fontSize: "13px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, color: ACCENT, marginBottom: "10px" }}>
+            {slide.example.label ?? "Example"}
+          </div>
+          <div style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "17px", color: INK_SOFT, lineHeight: 1.6 }}>
+            {slide.example.text}
+          </div>
         </div>
       )}
     </SlideFrame>
@@ -274,20 +274,19 @@ export function TimelineSlide({ slide }: { slide: Extract<Slide, { type: "timeli
 
 export function LiveNavSlide({ slide }: { slide: Extract<Slide, { type: "live-nav" }> }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", padding: "40px 72px 52px", gap: "18px", boxSizing: "border-box" as const }}>
-      <div style={{ width: "100%", maxWidth: "1200px", flexShrink: 0 }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", padding: "28px 72px 36px", gap: "14px", boxSizing: "border-box" as const }}>
+      <div style={{ width: "100%", maxWidth: "1280px", flexShrink: 0 }}>
         <SlideLabel>{slide.label}</SlideLabel>
         {slide.headline && <div style={{ marginTop: "-16px" }}><SlideHeadline size="sm">{slide.headline}</SlideHeadline></div>}
       </div>
       {/*
         Live, interactive prototype — not a screenshot. Same component used on
-        the portfolio case study. In the deck we suppress its instructional
-        caption and give it a light paper-adjacent surround (instead of the
-        portfolio's dark canvas) so it reads cleanly on the light slide; the
-        white browser frame still separates via its own shadow.
+        the portfolio case study. Its instructional caption is suppressed and
+        the surround matches the deck's paper ground (no gray box); the white
+        browser frame separates via its own border and shadow.
       */}
-      <div style={{ width: "100%", maxWidth: "1200px", flex: 1, minHeight: 0, borderRadius: "8px", border: `1px solid ${HAIRLINE}`, overflow: "hidden", background: PAPER_DIM }}>
-        <RcGlobalNavCanvas hideCaption surface={PAPER_DIM} />
+      <div style={{ width: "100%", maxWidth: "1280px", flex: 1, minHeight: 0, borderRadius: "8px", overflow: "hidden", background: PAPER }}>
+        <RcGlobalNavCanvas hideCaption surface={PAPER} />
       </div>
       {slide.caption && (
         <div style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "15px", color: INK_SOFT, textAlign: "center" as const, maxWidth: "760px", lineHeight: 1.55, flexShrink: 0 }}>

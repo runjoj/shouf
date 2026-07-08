@@ -274,15 +274,23 @@ export function RcGlobalNavCanvas({ hideCaption = false, surface }: { hideCaptio
   const dragState  = useRef<{ startX: number; startWidth: number } | null>(null);
   const badgeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // Measure the wrapper (inside padding) — this is the actual available space
+  // Measure the wrapper (inside padding) — this is the actual available space.
+  // The measurement is deferred to an animation frame and bails when the width
+  // is unchanged, so a resize that nudges layout can't feed back into an
+  // infinite observe→setState→relayout loop ("Maximum update depth exceeded").
   const [measuredWidth, setMeasuredWidth] = useState(0);
   useLayoutEffect(() => {
     const el = wrapperRef.current;
     if (!el) return;
-    const obs = new ResizeObserver(() => setMeasuredWidth(el.clientWidth));
+    let raf = 0;
+    const measure = () => setMeasuredWidth((prev) => (prev === el.clientWidth ? prev : el.clientWidth));
+    const obs = new ResizeObserver(() => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(measure);
+    });
     obs.observe(el);
-    setMeasuredWidth(el.clientWidth);
-    return () => obs.disconnect();
+    measure();
+    return () => { cancelAnimationFrame(raf); obs.disconnect(); };
   }, []);
 
   // Clamp frameWidth to canvas when browser shrinks — keeps handle visible
