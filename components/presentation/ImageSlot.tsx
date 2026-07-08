@@ -16,6 +16,7 @@ export function ImageSlot({
   maxHeight = "calc(100vh - 340px)",
   framed = true,
   reserveSpace = false,
+  dims,
 }: {
   src: string;
   alt: string;
@@ -28,6 +29,10 @@ export function ImageSlot({
   // image loads. Only safe for tall images whose rendered height actually
   // reaches maxHeight; on wide images it over-reserves and leaves a gap.
   reserveSpace?: boolean;
+  // Natural pixel dimensions — set as width/height attributes so the browser
+  // reserves aspect-ratio-correct space before load, preventing layout shift
+  // without over-reserving. Preferred over `reserveSpace` when known.
+  dims?: { w: number; h: number };
 }) {
   const [failed, setFailed] = useState(false);
 
@@ -89,9 +94,12 @@ export function ImageSlot({
       src={src}
       alt={alt}
       onError={() => setFailed(true)}
+      {...(dims ? { width: dims.w, height: dims.h } : {})}
       style={{
         maxWidth:     "100%",
         maxHeight,
+        width:        dims ? "auto" : undefined,
+        height:       dims ? "auto" : undefined,
         objectFit:    "contain" as const,
         borderRadius: framed ? "6px" : 0,
         border:       framed ? `1px solid ${HAIRLINE}` : "none",

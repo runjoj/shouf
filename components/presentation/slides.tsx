@@ -101,21 +101,19 @@ export function StatementSlide({ slide }: { slide: Extract<Slide, { type: "state
 
 export function ImageSlide({ slide }: { slide: Extract<Slide, { type: "image" }> }) {
   const left = slide.align === "left";
-  // Header pinned at top, caption pinned at bottom, and the image lives in a
-  // flex-sized area between them. That area's height comes from flex (not the
-  // image), so the layout is stable before the image loads — no headline jump —
-  // and the image just scales to fit however wide or tall it is.
+  // Compact, vertically-centered group: label/headline, image, caption sit
+  // together and center as one block (extra space goes to the top and bottom
+  // of the slide, not between the pieces). `dims` reserves the image's real
+  // aspect-ratio space up front, so this stays stable — no headline jump.
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: left ? "flex-start" : "center", height: "100%", padding: "48px 96px", boxSizing: "border-box" as const }}>
-      <div style={{ width: "100%", maxWidth: "1200px", flexShrink: 0 }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: left ? "flex-start" : "center", justifyContent: "center", height: "100%", padding: "56px 96px", gap: slide.headline ? "24px" : "14px", boxSizing: "border-box" as const }}>
+      <div style={{ width: "100%", maxWidth: "1200px", marginBottom: slide.headline ? 0 : "-28px" }}>
         <SlideLabel>{slide.label}</SlideLabel>
         {slide.headline && <div style={{ marginTop: "-16px" }}><SlideHeadline size="sm">{slide.headline}</SlideHeadline></div>}
       </div>
-      <div style={{ flex: 1, minHeight: 0, width: "100%", display: "flex", alignItems: "center", justifyContent: left ? "flex-start" : "center", marginTop: "14px" }}>
-        <ImageSlot src={slide.src} alt={slide.alt} placeholderNote={slide.placeholderNote} framed={slide.framed ?? true} maxHeight="100%" />
-      </div>
+      <ImageSlot src={slide.src} alt={slide.alt} placeholderNote={slide.placeholderNote} framed={slide.framed ?? true} dims={slide.dims} {...(slide.maxHeight ? { maxHeight: slide.maxHeight } : {})} />
       {slide.caption && (
-        <div style={{ flexShrink: 0, marginTop: "16px", fontFamily: "var(--font-inter), sans-serif", fontSize: "16px", color: INK_SOFT, textAlign: left ? "left" : "center", maxWidth: "760px", lineHeight: 1.6, width: "100%", alignSelf: left ? "stretch" : "auto" }}>
+        <div style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "16px", color: INK_SOFT, textAlign: left ? "left" : "center", maxWidth: "760px", lineHeight: 1.6, width: "100%", alignSelf: left ? "stretch" : "auto" }}>
           {slide.caption}
         </div>
       )}

@@ -33,6 +33,10 @@ export type Slide =
       align?: "center" | "left";
       maxHeight?: string;
       framed?: boolean;
+      // Natural pixel dimensions. Setting them lets the browser reserve the
+      // correct aspect-ratio space before load, so a centered slide doesn't
+      // reflow (no headline jump) yet the group can stay compact.
+      dims?: { w: number; h: number };
     }
   | {
       type: "two-image";

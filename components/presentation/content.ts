@@ -129,6 +129,7 @@ export const SLIDES: Slide[] = [
     alt:   "Employee profile expanded to full screen",
     maxHeight: "calc(100vh - 210px)",
     framed: false,
+    dims:  { w: 2882, h: 2050 },
   },
   {
     type:     "statement",
@@ -187,7 +188,8 @@ export const SLIDES: Slide[] = [
     alt:   "Multiple nav layers stacked",
     caption: "Three nav layers compete for space. Users lose track of where they are.",
     framed: false,
-    maxHeight: "calc(100vh - 170px)",
+    maxHeight: "calc(100vh - 260px)",
+    dims:  { w: 7168, h: 3136 },
   },
   {
     type:  "image",
@@ -196,6 +198,7 @@ export const SLIDES: Slide[] = [
     src:   "/testing_navigation.png",
     alt:   "Usability testing sessions for responsive navigation",
     caption: "12 moderated sessions on wireframes for directional signal, then 15 unmoderated sessions on a working prototype, focused on how people moved between breakpoints.",
+    dims:  { w: 2414, h: 786 },
   },
   {
     type:     "statement",
