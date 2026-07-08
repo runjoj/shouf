@@ -101,17 +101,21 @@ export function StatementSlide({ slide }: { slide: Extract<Slide, { type: "state
 
 export function ImageSlide({ slide }: { slide: Extract<Slide, { type: "image" }> }) {
   const left = slide.align === "left";
+  // Header pinned at top, caption pinned at bottom, and the image lives in a
+  // flex-sized area between them. That area's height comes from flex (not the
+  // image), so the layout is stable before the image loads — no headline jump —
+  // and the image just scales to fit however wide or tall it is.
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: left ? "flex-start" : "center", justifyContent: "center", height: "100%", padding: "56px 96px", gap: slide.headline ? "22px" : "14px", boxSizing: "border-box" as const }}>
-      {/* With no headline, cancel SlideLabel's 28px bottom margin so the eyebrow
-          sits close to the image and the label+image group centers as one. */}
-      <div style={{ width: "100%", maxWidth: "1200px", marginBottom: slide.headline ? 0 : "-28px" }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: left ? "flex-start" : "center", height: "100%", padding: "48px 96px", boxSizing: "border-box" as const }}>
+      <div style={{ width: "100%", maxWidth: "1200px", flexShrink: 0 }}>
         <SlideLabel>{slide.label}</SlideLabel>
         {slide.headline && <div style={{ marginTop: "-16px" }}><SlideHeadline size="sm">{slide.headline}</SlideHeadline></div>}
       </div>
-      <ImageSlot src={slide.src} alt={slide.alt} placeholderNote={slide.placeholderNote} framed={slide.framed ?? true} {...(slide.maxHeight ? { maxHeight: slide.maxHeight } : {})} />
+      <div style={{ flex: 1, minHeight: 0, width: "100%", display: "flex", alignItems: "center", justifyContent: left ? "flex-start" : "center", marginTop: "14px" }}>
+        <ImageSlot src={slide.src} alt={slide.alt} placeholderNote={slide.placeholderNote} framed={slide.framed ?? true} maxHeight="100%" />
+      </div>
       {slide.caption && (
-        <div style={{ fontFamily: "var(--font-inter), sans-serif", fontSize: "16px", color: INK_SOFT, textAlign: left ? "left" : "center", maxWidth: "760px", lineHeight: 1.6, width: "100%", alignSelf: left ? "stretch" : "auto" }}>
+        <div style={{ flexShrink: 0, marginTop: "16px", fontFamily: "var(--font-inter), sans-serif", fontSize: "16px", color: INK_SOFT, textAlign: left ? "left" : "center", maxWidth: "760px", lineHeight: 1.6, width: "100%", alignSelf: left ? "stretch" : "auto" }}>
           {slide.caption}
         </div>
       )}
@@ -208,7 +212,7 @@ export function ResponsivePairSlide({ slide }: { slide: Extract<Slide, { type: "
               </div>
             )}
             {imgs.map((img, i) => (
-              <ImageSlot key={i} src={img.src} alt={img.alt} placeholderNote={img.placeholderNote} maxHeight={slide.imageMaxHeight ?? "230px"} framed={img.framed ?? false} />
+              <ImageSlot key={i} src={img.src} alt={img.alt} placeholderNote={img.placeholderNote} maxHeight={slide.imageMaxHeight ?? "230px"} framed={img.framed ?? false} reserveSpace />
             ))}
           </div>
         ));
@@ -260,15 +264,22 @@ export function ListSlide({ slide }: { slide: Extract<Slide, { type: "list" }> }
 }
 
 export function TimelineSlide({ slide }: { slide: Extract<Slide, { type: "timeline" }> }) {
+  // When images are present the slide carries a lot vertically (headline +
+  // timeline + two tall mockups), so it uses a tighter frame than SlideFrame
+  // to give the images room to read large.
   return (
-    <SlideFrame>
-      <SlideLabel>{slide.label}</SlideLabel>
-      <SlideHeadline size="md">{slide.headline}</SlideHeadline>
-      {slide.body && <SlideBody>{slide.body}</SlideBody>}
-      <div style={{ marginTop: "32px" }}>
-        <RolloutTimeline />
+    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", padding: "36px 80px", boxSizing: "border-box" as const }}>
+      <div style={{ width: "100%", maxWidth: "1320px", margin: "0 auto" }}>
+        <div style={{ marginTop: "24px" }}>
+          <SlideLabel>{slide.label}</SlideLabel>
+        </div>
+        <SlideHeadline size="md">{slide.headline}</SlideHeadline>
+        {slide.body && <SlideBody>{slide.body}</SlideBody>}
+        <div style={{ marginTop: "22px" }}>
+          <RolloutTimeline images={slide.images} />
+        </div>
       </div>
-    </SlideFrame>
+    </div>
   );
 }
 

@@ -78,7 +78,7 @@ export const SLIDES: Slide[] = [
   },
   {
     type:     "diagram",
-    label:    "How It Holds",
+    label:    "Custom Brand Colors",
     headline: "Customers pick the color. The system pins roles to fixed steps.",
     diagram:  "theme-contrast",
     image: {
@@ -89,8 +89,8 @@ export const SLIDES: Slide[] = [
   },
   {
     type:     "responsive-pair",
-    label:    "Technical Ownership",
-    headline: "Themed, dark, and responsive. The same component on every surface.",
+    label:    "Theme Examples",
+    headline: "Light and dark themes that work with custom branding.",
     columnGap: "24px",
     desktop:  [
       { src: "/light_desktop.png",  alt: "MCP component, light mode, desktop width" },
@@ -183,17 +183,11 @@ export const SLIDES: Slide[] = [
     type:  "image",
     label: "The Problem",
     headline: "Stacked nav levels compete for the same horizontal space.",
-    src:   "/presentation_nav1.png",
+    src:   "/nav_levels.png",
     alt:   "Multiple nav layers stacked",
     caption: "Three nav layers compete for space. Users lose track of where they are.",
-  },
-  {
-    type:  "image",
-    label: "The Problem",
-    headline: "And on mobile, it breaks entirely.",
-    src:   "/presentation_nav2.png",
-    alt:   "Header stacks break on mobile",
-    caption: "Repeated headers pack context into tighter frames, until the layout gives out.",
+    framed: false,
+    maxHeight: "calc(100vh - 170px)",
   },
   {
     type:  "image",
@@ -206,7 +200,7 @@ export const SLIDES: Slide[] = [
   {
     type:     "statement",
     label:    "Key Decision",
-    headline: "Embed responsiveness into Fabric.",
+    headline: "Nested navigation, not stacked.",
     body:     "Remove stacked navigation levels entirely. Nest them inside the left nav, with fly-out menus when it collapses. One pattern that holds on mobile, on desktop with split panes, and when the Ask BambooHR AI panel takes the screen.",
     size:     "md",
   },
@@ -215,21 +209,20 @@ export const SLIDES: Slide[] = [
     label: "Live Prototype",
   },
   {
-    type:     "timeline",
-    label:    "Technical Ownership",
-    headline: "A phased rollout, built around a real architectural constraint.",
-    body:     "Nav components live in a separate repo, and each link is an API call into another repo's pages. Nesting every layer would mean an API call per level, and worse performance right where it matters most.",
-  },
-  {
     type:     "statement",
     label:    "Challenges",
-    headline: "Going responsive broke things before it fixed them.",
-    body:     "Early phases regressed real workflows. We rolled back, adjusted, and pushed the timeline before Early Access rather than ship something broken.",
+    headline: "Architectural constraints resulted in poor UX.",
+    body:     "Navigation components live in a separate repo, and each link is an API call into another repo's pages. Nesting every layer would mean an API call per level, and worse performance right where it matters most.",
     size:     "md",
-    example: {
-      label: "Example: Modals",
-      text:  "We swapped the modal's fixed size prop, which supported three non-responsive sizes, for fit-to-content. Teams that relied on it to dictate layout lost their guardrails, and their modals broke. We restored the prop on desktop, kept it responsive on mobile, and left a more durable fix for later.",
-    },
+  },
+  {
+    type:     "timeline",
+    label:    "Solution",
+    headline: "Improved navigation in a phased rollout.",
+    images: [
+      { src: "/phased.png",   alt: "Phased navigation rollout, view one" },
+      { src: "/phased_2.png", alt: "Phased navigation rollout, view two" },
+    ],
   },
   {
     type:  "questions",

@@ -77,7 +77,7 @@ export type Slide =
       // Gap between the desktop and mobile columns.
       columnGap?: string;
     }
-  | { type: "timeline"; label: string; headline: string; body?: string }
+  | { type: "timeline"; label: string; headline: string; body?: string; images?: Array<{ src: string; alt: string }> }
   | { type: "live-nav"; label: string; headline?: string; caption?: string }
   | {
       type: "list";

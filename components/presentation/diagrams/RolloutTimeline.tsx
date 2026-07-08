@@ -4,90 +4,60 @@
 // A simple phased timeline, drawn rather than screenshotted — the honest
 // shape of a rollout constrained by a separate-repo API architecture.
 
-import { ACCENT, HAIRLINE, INK, INK_FAINT, MONO } from "../tokens";
+import { ACCENT, INK, INK_FAINT, MONO } from "../tokens";
+import { ImageSlot } from "../ImageSlot";
 
 type Phase = { label: string; detail: string; status: "done" | "active" | "pending" };
 
 const PHASES: Phase[] = [
   {
     label:  "Phase 1",
-    detail: "Each page's side nav ships as its own page on mobile",
+    detail: "Mobile-only: interim solution with separate routes for the side navigation layer",
     status: "done",
   },
   {
     label:  "Phase 2",
-    detail: "Foundational Fabric components ship behind a feature flag",
+    detail: "Mobile-only: separate panels within the global navigation",
     status: "active",
   },
   {
     label:  "Phase 3",
-    detail: "Responsive compliance becomes default · teams finish in Q3–Q4",
+    detail: "Nested navigation on both desktop and mobile",
     status: "pending",
   },
 ];
 
-function Node({ status }: { status: Phase["status"] }) {
-  if (status === "done") {
-    return <div style={{ width: "14px", height: "14px", borderRadius: "50%", background: ACCENT }} />;
-  }
-  if (status === "active") {
-    return (
-      <div
-        style={{
-          width: "14px", height: "14px", borderRadius: "50%",
-          border: `2px solid ${ACCENT}`, boxSizing: "border-box" as const,
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}
-      >
-        <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: ACCENT }} />
-      </div>
-    );
-  }
+// `images` aligns to phases by index — phase 1 gets images[0], phase 2 gets
+// images[1], and phase 3 has none. Each phase is a column so the images line
+// up directly under their phase text; a fixed-height text header keeps the
+// image tops aligned even when the detail copy wraps to different lengths.
+export function RolloutTimeline({ images = [] }: { images?: Array<{ src: string; alt: string }> } = {}) {
   return (
-    <div style={{ width: "14px", height: "14px", borderRadius: "50%", border: `2px solid ${HAIRLINE}`, boxSizing: "border-box" as const }} />
-  );
-}
-
-export function RolloutTimeline() {
-  return (
-    <div style={{ width: "100%", maxWidth: "1040px" }}>
-      <div style={{ display: "flex", alignItems: "center" }}>
+    <div style={{ width: "100%", maxWidth: "1300px", margin: "0 auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 0.8fr", columnGap: "36px", alignItems: "start" }}>
         {PHASES.map((p, i) => (
-          <div key={p.label} style={{ display: "flex", alignItems: "center", flex: i < PHASES.length - 1 ? 1 : "0 0 auto" }}>
-            <Node status={p.status} />
-            {i < PHASES.length - 1 && (
-              <div style={{ flex: 1, height: "1.5px", background: HAIRLINE, marginLeft: "6px" }} />
+          <div key={p.label} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+            <div style={{ minHeight: "104px" }}>
+              <div
+                style={{
+                  fontFamily:    MONO,
+                  fontSize:      "13px",
+                  fontWeight:    700,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase" as const,
+                  color:         p.status === "pending" ? INK_FAINT : ACCENT,
+                  marginBottom:  "8px",
+                }}
+              >
+                {p.label}
+              </div>
+              <div style={{ fontFamily: MONO, fontSize: "14px", lineHeight: 1.55, color: INK, maxWidth: "300px" }}>
+                {p.detail}
+              </div>
+            </div>
+            {images[i] && (
+              <ImageSlot src={images[i].src} alt={images[i].alt} maxHeight="clamp(340px, 50vh, 620px)" framed={false} reserveSpace />
             )}
-          </div>
-        ))}
-      </div>
-      <div style={{ display: "flex", marginTop: "18px" }}>
-        {PHASES.map((p, i) => (
-          <div
-            key={p.label}
-            style={{
-              flex:      i < PHASES.length - 1 ? 1 : "0 0 auto",
-              maxWidth:  i < PHASES.length - 1 ? undefined : "280px",
-              paddingRight: "24px",
-              boxSizing: "border-box" as const,
-            }}
-          >
-            <div
-              style={{
-                fontFamily:    MONO,
-                fontSize:      "13px",
-                fontWeight:    700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase" as const,
-                color:         p.status === "pending" ? INK_FAINT : ACCENT,
-                marginBottom:  "8px",
-              }}
-            >
-              {p.label}
-            </div>
-            <div style={{ fontFamily: MONO, fontSize: "14px", lineHeight: 1.55, color: INK, maxWidth: "260px" }}>
-              {p.detail}
-            </div>
           </div>
         ))}
       </div>

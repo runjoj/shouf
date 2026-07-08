@@ -15,6 +15,7 @@ export function ImageSlot({
   placeholderNote,
   maxHeight = "calc(100vh - 340px)",
   framed = true,
+  reserveSpace = false,
 }: {
   src: string;
   alt: string;
@@ -23,6 +24,10 @@ export function ImageSlot({
   // Images with their own chrome (e.g. dark component cards) look better bare —
   // the paper frame border + tint fights their built-in corners and background.
   framed?: boolean;
+  // Reserve `maxHeight` up front so a centered layout doesn't reflow when the
+  // image loads. Only safe for tall images whose rendered height actually
+  // reaches maxHeight; on wide images it over-reserves and leaves a gap.
+  reserveSpace?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
 
@@ -78,7 +83,7 @@ export function ImageSlot({
     );
   }
 
-  return (
+  const img = (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
@@ -95,4 +100,16 @@ export function ImageSlot({
       }}
     />
   );
+
+  // When asked, reserve `maxHeight` up front so a centered slide doesn't reflow
+  // (its headline doesn't jump) as the image loads. The wrapper shrinks to the
+  // image's width, so parent left/center alignment still holds.
+  if (reserveSpace) {
+    return (
+      <div style={{ minHeight: maxHeight, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {img}
+      </div>
+    );
+  }
+  return img;
 }
